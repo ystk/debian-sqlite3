@@ -44,7 +44,7 @@ DEB_AUTO_UPDATE_AUTOMAKE = 1.11
 #DEB_CONFIGURE_SCRIPT_ENV += LDFLAGS="-licui18n -licuuc"
 DEB_CONFIGURE_EXTRA_FLAGS = --with-tcl=/usr/lib/tcl8.5 --enable-threadsafe --enable-load-extension
 
-DEB_MAKE_BUILD_TARGET = all libtclsqlite3.la doc
+DEB_MAKE_BUILD_TARGET = all libtclsqlite3.la
 #DEB_MAKE_CHECK_TARGET = test
 
 DEB_DH_INSTALL_ARGS := --sourcedir=debian/tmp
