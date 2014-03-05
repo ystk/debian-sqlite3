@@ -126,7 +126,7 @@ static int hexio_read(
     return TCL_ERROR;
   }
   fseek(in, offset, SEEK_SET);
-  got = fread(zBuf, 1, amt, in);
+  got = (int)fread(zBuf, 1, amt, in);
   fclose(in);
   if( got<0 ){
     got = 0;
@@ -178,7 +178,7 @@ static int hexio_write(
     return TCL_ERROR;
   }
   fseek(out, offset, SEEK_SET);
-  written = fwrite(aOut, 1, nOut, out);
+  written = (int)fwrite(aOut, 1, nOut, out);
   sqlite3_free(aOut);
   fclose(out);
   Tcl_SetObjResult(interp, Tcl_NewIntObj(written));
@@ -312,8 +312,13 @@ static int utf8_to_utf8(
   sqlite3TestBinToHex(z,nOut);
   Tcl_AppendResult(interp, (char*)z, 0);
   sqlite3_free(z);
-#endif
   return TCL_OK;
+#else
+  Tcl_AppendResult(interp, 
+      "[utf8_to_utf8] unavailable - SQLITE_DEBUG not defined", 0
+  );
+  return TCL_ERROR;
+#endif
 }
 
 static int getFts3Varint(const char *p, sqlite_int64 *v){

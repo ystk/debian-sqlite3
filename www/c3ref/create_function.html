@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Create Or Redefine SQL Functions</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -153,7 +153,7 @@ These functions (collectively known as "function creation routines")
 are used to add SQL functions or aggregates or to redefine the behavior
 of existing SQL functions or aggregates.  The only differences between
 these routines are the text encoding expected for
-the the second parameter (the name of the function being created)
+the second parameter (the name of the function being created)
 and the presence or absence of a destructor callback for
 the application data pointer.</p>
 
@@ -173,7 +173,7 @@ will result in <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a> being returned.
 is the number of arguments that the SQL function or
 aggregate takes. If this parameter is -1, then the SQL function or
 aggregate may take any number of arguments between 0 and the limit
-set by <a href="../c3ref/limit.html">sqlite3_limit</a>(<a href="../c3ref/c_limit_attached.html">SQLITE_LIMIT_FUNCTION_ARG</a>).  If the third
+set by <a href="../c3ref/limit.html">sqlite3_limit</a>(<a href="../c3ref/c_limit_attached.html#sqlitelimitfunctionarg">SQLITE_LIMIT_FUNCTION_ARG</a>).  If the third
 parameter is less than -1 or greater than 127 then the behavior is
 undefined.</p>
 
@@ -192,21 +192,24 @@ encoding is used, then the fourth argument should be <a href="../c3ref/c_any.htm
 <p>The fifth parameter is an arbitrary pointer.  The implementation of the
 function can gain access to this pointer using <a href="../c3ref/user_data.html">sqlite3_user_data()</a>.</p>
 
-<p>The seventh, eighth and ninth parameters, xFunc, xStep and xFinal, are
+<p>The sixth, seventh and eighth parameters, xFunc, xStep and xFinal, are
 pointers to C-language functions that implement the SQL function or
 aggregate. A scalar SQL function requires an implementation of the xFunc
 callback only; NULL pointers must be passed as the xStep and xFinal
 parameters. An aggregate SQL function requires an implementation of xStep
 and xFinal and NULL pointer must be passed for xFunc. To delete an existing
-SQL function or aggregate, pass NULL poiners for all three function
+SQL function or aggregate, pass NULL pointers for all three function
 callbacks.</p>
 
-<p>If the tenth parameter to sqlite3_create_function_v2() is not NULL,
-then it is invoked when the function is deleted, either by being
+<p>If the ninth parameter to sqlite3_create_function_v2() is not NULL,
+then it is destructor for the application data pointer.
+The destructor is invoked when the function is deleted, either by being
 overloaded or when the database connection closes.
-When the destructure callback of the tenth parameter is invoked, it
-is passed a single argument which is a copy of the pointer which was
-the fifth parameter to sqlite3_create_function_v2().</p>
+The destructor is also invoked if the call to
+sqlite3_create_function_v2() fails.
+When the destructor callback of the tenth parameter is invoked, it
+is passed a single argument which is a copy of the application data
+pointer which was the fifth parameter to sqlite3_create_function_v2().</p>
 
 <p>It is permitted to register multiple implementations of the same
 functions with the same name but with either differing numbers of

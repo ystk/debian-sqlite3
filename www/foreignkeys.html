@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Foreign Key Support</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -122,10 +122,10 @@ a:visited { color: #734559 }
 
 
     <div class=fancy>
-    <div style="font-size:2em;text-align:center;color:#80a796">
+    <div style="font-size:2em;text-align:center;color:#044a64">
       SQLite Foreign Key Support
     </div>
-    <div style="font-size:1.5em;margin:1em;color:#80a796">
+    <div style="font-size:1.5em;margin:1em;color:#044a64">
       Table Of Contents</div>
     <div id=toc> <div style="margin-left:6ex"><a href="#fk_basics">1. Introduction to Foreign Key Constraints</a></div><div style="margin-left:6ex"><a href="#fk_enable">2. 
   Enabling Foreign Key Support
@@ -311,7 +311,8 @@ sqlite&gt; UPDATE artist SET artistid=4 WHERE artistname = 'Dean Martin';
 
     <li><p>The <b>parent key</b> is the column or set of columns in the parent 
         table that the foreign key constraint refers to. This is normally, but
-        not always, the primary key of the parent table.
+        not always, the primary key of the parent table.  The parent key must
+        be a named column or columns in the parent table, not the <a href="lang_createtable.html#rowid">rowid</a>.
 
     <li><p>The <b>child key</b> is the column or set of columns in the child 
         table that are constrained by the foreign key constraint and which
@@ -1003,7 +1004,7 @@ null
 
     <li><p>
       <b>Recursion limit on foreign key actions.</b> The 
-         <a href="limits.html#max_trigger_depth">SQLITE_MAX_TRIGGER_DEPTH</a> and <a href="c3ref/c_limit_attached.html">SQLITE_LIMIT_TRIGGER_DEPTH</a>
+         <a href="limits.html#max_trigger_depth">SQLITE_MAX_TRIGGER_DEPTH</a> and <a href="c3ref/c_limit_attached.html#sqlitelimittriggerdepth">SQLITE_LIMIT_TRIGGER_DEPTH</a>
          settings determine the maximum allowable depth of trigger
          program recursion. For the purposes of these limits,
          <a href="foreignkeys.html#fk_actions">foreign key actions</a> are considered trigger programs. The

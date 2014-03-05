@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: DROP TRIGGER</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -121,8 +121,11 @@ a:visited { color: #734559 }
 
 
 <p>The DROP TRIGGER statement removes a trigger created by the 
-<a href="lang_createtrigger.html">CREATE TRIGGER</a> statement.  The trigger is 
-deleted from the database schema. Note that triggers are automatically 
-dropped when the associated table is dropped.</p>
+<a href="lang_createtrigger.html">CREATE TRIGGER</a> statement. Once removed, the trigger definition is no
+longer present in the sqlite_master (or sqlite_temp_master) table and is
+not fired by any subsequent INSERT, UPDATE or DELETE statements.
+
+<p>Note that triggers are automatically dropped when the associated table is
+dropped.
 
 

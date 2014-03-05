@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Open A BLOB For Incremental I/O</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -162,7 +162,7 @@ then the BLOB handle is marked as "expired".
 This is true if any column of the row is changed, even a column
 other than the one the BLOB handle is open on.
 Calls to <a href="../c3ref/blob_read.html">sqlite3_blob_read()</a> and <a href="../c3ref/blob_write.html">sqlite3_blob_write()</a> for
-a expired BLOB handle fail with an return code of <a href="../c3ref/c_abort.html">SQLITE_ABORT</a>.
+an expired BLOB handle fail with a return code of <a href="../c3ref/c_abort.html">SQLITE_ABORT</a>.
 Changes written into a BLOB prior to the BLOB expiring are not
 rolled back by the expiration of the BLOB.  Such changes will eventually
 commit if the transaction continues to completion.</p>

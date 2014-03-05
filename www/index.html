@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Home Page</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -141,6 +141,7 @@ The source code for SQLite is in the
 sponsored in part by <a href="consortium.html">SQLite Consortium</a>
 members, including:</p>
 
+<a name="consortium_members"></a>
 <center>
 <table border="0" cellpadding="15">
 
@@ -149,17 +150,17 @@ members, including:</p>
   var sponsor = new Array()
   sponsor[0] = '<tr><td align="center"> <a href="http://www.mozilla.com/"> <img src="images/foreignlogos/mozilla.gif" alt="mozilla.com" border="0"> </a></td><td> <a href="http://www.mozilla.com/">Mozilla</a> - Working to preserve  choice and innovation on the internet.</td></tr>'
 
-  sponsor[1] = '<tr><td align="center"> <a href="http://www.symbian.com/"> <img src="images/foreignlogos/symbian.gif" alt="symbian.com" border="0"> </a></td><td> <a href="http://www.symbian.com/">Symbian</a> -  The market-leading open operating system for advanced  data-enabled smartphones.</td></tr>'
+  sponsor[1] = '<tr><td align="center"> <a href="http://www.bloomberg.com/"> <img src="images/foreignlogos/bloomberg.gif" alt="bloomberg.com" border="0"> </a></td><td> <a href="http://www.bloomberg.com/">Bloomberg</a> -  A world leader in financial-information technology.</td></tr>'
 
-  sponsor[2] = '<tr><td align="center"> <a href="http://www.bloomberg.com/"> <img src="images/foreignlogos/bloomberg.gif" alt="bloomberg.com" border="0"> </a></td><td> <a href="http://www.bloomberg.com/">Bloomberg</a> -  A world leader in financial-information technology.</td></tr>'
+  sponsor[2] = '<tr><td align="center"> <a href="http://www.adobe.com/"> <img src="images/foreignlogos/adobe-logo.gif" alt="adobe.com" border="0"> </a></td><td> <a href="http://www.adobe.com/">Adobe</a> revolutionizes how the  world engages with ideas and information - anywhere, anytime, and  through any medium.</td></tr>'
 
-  sponsor[3] = '<tr><td align="center"> <a href="http://www.adobe.com/"> <img src="images/foreignlogos/adobe-logo.gif" alt="adobe.com" border="0"> </a></td><td> <a href="http://www.adobe.com/">Adobe</a> revolutionizes how the  world engages with ideas and information - anywhere, anytime, and  through any medium.</td></tr>'
+  sponsor[3] = '<tr><td align="center"> <a href="http://www.oracle.com/us/technologies/embedded/"> <img src="images/foreignlogos/oracle.gif" alt="oracle.com" border="0"> </a></td><td> <a href="http://www.oracle.com/us/technologies/embedded/">Oracle</a> - Software.  Hardware.  Complete.</td></tr>'
 
-  sponsor[4] = '<tr><td align="center"> <a href="http://www.oracle.com/us/technologies/embedded/"> <img src="images/foreignlogos/oracle.gif" alt="oracle.com" border="0"> </a></td><td> <a href="http://www.oracle.com/us/technologies/embedded/">Oracle</a> - Software.  Hardware.  Complete.</td></tr>'
+  sponsor[4] = '<tr><td align="center"> <a href="http://www.bentley.com/"> <img src="images/foreignlogos/bentley.gif" alt="bentley.com" border="0"> </a></td><td> <a href="http://www.bentley.com/">Bentley</a> - Comprehensive software  solutions for Sustaining Infrastructure.</td></tr>'
 
   count = 5
   while( count>0 ){
-    i = Math.floor(Math.random()*5)
+    i = Math.floor(Math.random()*6)
     if( sponsor[i]!=null ){
       document.write(sponsor[i])
       sponsor[i] = null
@@ -179,9 +180,10 @@ members, including:</p>
 <h3>Current Status</h3>
 
 <p><ul>
-<li><a href="releaselog/3_7_3.html">Version 3.7.3</a>
+<li><a href="releaselog/3_7_13.html">Version 3.7.13</a>
 of SQLite is recommended for all new development.
-Upgrading from version 3.7.2 is optional.
+Upgrading from version 3.7.6.3, 3.7.7, 3.7.7.1, 3.7.8, 3.7.9, 3.7.11,
+3.7.12, or 3.7.12.1 is optional.
 Upgrading from all other SQLite versions is recommended.</li>
 </ul></p>
 
@@ -209,7 +211,6 @@ Upgrading from all other SQLite versions is recommended.</li>
 <li> <a href="tclsqlite.html">The TCL Interface Spec</a>
 <li> <a href="http://www.sqlite.org/src/timeline">Development Timeline</a> </li>
 <li> <a href="http://www.sqlite.org/src/wiki?name=Bug+Reports">Report a Bug</a> </li>
-<li> <a href="http://www.sqlite.org/cvstrac/wiki">Wiki</a> </li>
 </ul></p>
 
 </td></tr>

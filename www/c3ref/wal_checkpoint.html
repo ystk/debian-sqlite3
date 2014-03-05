@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Checkpoint a database</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -128,7 +128,9 @@ connection D.  If the database connection D is not in
 <p>The <a href="../pragma.html#pragma_wal_checkpoint">wal_checkpoint pragma</a> can be used to invoke this interface
 from SQL.  The <a href="../c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> interface and the
 <a href="../pragma.html#pragma_wal_autocheckpoint">wal_autocheckpoint pragma</a> can be used to cause this interface to be
-run whenever the WAL reaches a certain size threshold.
+run whenever the WAL reaches a certain size threshold.</p>
+
+<p>See also: <a href="../c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a>
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,
   <a href="constlist.html">Constants</a>, and

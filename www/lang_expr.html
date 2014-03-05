@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: expression</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -293,7 +293,7 @@ as NULL.</p>
 <p>The maximum parameter number is set at compile-time by
 the <a href="limits.html#max_variable_number">SQLITE_MAX_VARIABLE_NUMBER</a> macro.  An individual <a href="c3ref/sqlite3.html">database connections</a>
 D can reduce its maximum parameter number below the compile-time maximum
-using the <a href="c3ref/limit.html">sqlite3_limit</a>(D, <a href="c3ref/c_limit_attached.html">SQLITE_LIMIT_VARIABLE_NUMBER</a>,...) interface.
+using the <a href="c3ref/limit.html">sqlite3_limit</a>(D, <a href="c3ref/c_limit_attached.html#sqlitelimitvariablenumber">SQLITE_LIMIT_VARIABLE_NUMBER</a>,...) interface.
 </p>
 
 <a name="like"></a>
@@ -508,6 +508,8 @@ with a single column. The result of the expression is the value of the
 only column in the first row returned by the SELECT statement. If the SELECT 
 yields more than one result row, all rows after the first are ignored. If
 the SELECT yields no rows, then the value of the expression is NULL.
+The LIMIT of a scalar subquery is always 1.
+Any other LIMIT value given in the SQL text is ignored.
 
 <p>All types of <a href="lang_select.html">SELECT</a> statement, including aggregate and compound SELECT
 queries (queries with keywords like UNION or EXCEPT) are allowed as scalar
@@ -592,7 +594,7 @@ the &lt;type-name&gt; specified as part of the CAST expression.
         of the conversion is 0.
 
       <p>A cast of a REAL value into an INTEGER will truncate the fractional
-      part of the REAL.  If an REAL is too large to be represented as an 
+      part of the REAL.  If a REAL is too large to be represented as an 
       INTEGER then the result of the cast is the largest negative integer: 
       -9223372036854775808.
 

@@ -122,12 +122,12 @@ AC_CHECK_TYPES([int8_t, int16_t, int32_t, int64_t, intptr_t, uint8_t,
 
 #########
 # Check for needed/wanted headers
-AC_CHECK_HEADERS([sys/types.h stdlib.h stdint.h inttypes.h])
+AC_CHECK_HEADERS([sys/types.h stdlib.h stdint.h inttypes.h malloc.h])
 
 #########
 # Figure out whether or not we have these functions
 #
-AC_CHECK_FUNCS([usleep fdatasync localtime_r gmtime_r localtime_s])
+AC_CHECK_FUNCS([usleep fdatasync localtime_r gmtime_r localtime_s utime])
 
 #########
 # By default, we use the amalgamation (this may be changed below...)
@@ -233,6 +233,38 @@ fi
 AC_SUBST(BUILD_CC)
 
 ##########
+# Do we want to support load_extension()?
+#
+AC_ARG_ENABLE(load-extension, 
+AC_HELP_STRING([--enable-load-extension],
+	       [Include SQL functions for loading extension libraries]),,
+              enable_load_extension=auto)
+
+if test "x$enable_load_extension" = xyes ||
+   test "x$enable_load_extension" = xauto; then
+
+  can_load_extension=yes
+  # libtool will already have looked for <dlfcn.h>
+  if test $ac_cv_header_dlfcn_h = no; then
+    can_load_extension=no
+  else
+    AC_SEARCH_LIBS(dlopen, dl, , [can_load_extension=no])
+  fi
+elif test "x$enable_load_extension" = xno; then
+  can_load_extension=no
+else
+  AC_MSG_ERROR([invalid argument to --enable-load-extension])
+fi
+
+if test $can_load_extension = no; then
+  if test "x$enable_load_extension" = xyes; then
+    AC_MSG_ERROR([<dlfcn.h> routines missing, load_extension() not supported])
+  fi
+  AC_DEFINE(SQLITE_OMIT_LOAD_EXTENSION, 1,
+            [Define if the load_extension() sql function should be omitted.])
+fi
+
+##########
 # Do we want to support multithreaded use of sqlite
 #
 AC_ARG_ENABLE(threadsafe, 
@@ -267,24 +299,6 @@ else
   AC_MSG_RESULT([yes])
 fi
 AC_SUBST(XTHREADCONNECT)
-
-##########
-# Do we want to set threadsOverrideEachOthersLocks variable to be 1 (true) by
-# default. Normally, a test at runtime is performed to determine the
-# appropriate value of this variable. Use this option only if you're sure that
-# threads can safely override each others locks in all runtime situations.
-#
-AC_ARG_ENABLE(threads-override-locks, 
-AC_HELP_STRING([--enable-threads-override-locks],[Threads can override each others locks]),,enable_threads_override_locks=no)
-AC_MSG_CHECKING([whether threads can override each others locks])
-if test "$enable_threads_override_locks" = "no"; then
-  THREADSOVERRIDELOCKS='-1'
-  AC_MSG_RESULT([no])
-else
-  THREADSOVERRIDELOCKS='1'
-  AC_MSG_RESULT([yes])
-fi
-AC_SUBST(THREADSOVERRIDELOCKS)
 
 ##########
 # Do we want to support release
@@ -637,6 +651,7 @@ AC_ARG_ENABLE(load-extension, AC_HELP_STRING([--enable-load-extension],
       [use_loadextension=$enableval],[use_loadextension=no])
 if test "${use_loadextension}" = "yes" ; then
   OPT_FEATURE_FLAGS=""
+  AC_SEARCH_LIBS(dlopen, dl)
 else
   OPT_FEATURE_FLAGS="-DSQLITE_OMIT_LOAD_EXTENSION=1"
 fi

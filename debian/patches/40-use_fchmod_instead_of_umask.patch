@@ -1,0 +1,171 @@
+Index: sqlite3/src/os_unix.c
+==================================================================
+--- sqlite3/src/os_unix.c
++++ sqlite3/src/os_unix.c
+@@ -399,15 +399,11 @@
+   { "pwrite64",     (sqlite3_syscall_ptr)0,          0  },
+ #endif
+ #define osPwrite64  ((ssize_t(*)(int,const void*,size_t,off_t))\
+                     aSyscall[13].pCurrent)
+ 
+-#if SQLITE_ENABLE_LOCKING_STYLE
+   { "fchmod",       (sqlite3_syscall_ptr)fchmod,     0  },
+-#else
+-  { "fchmod",       (sqlite3_syscall_ptr)0,          0  },
+-#endif
+ #define osFchmod    ((int(*)(int,mode_t))aSyscall[14].pCurrent)
+ 
+ #if defined(HAVE_POSIX_FALLOCATE) && HAVE_POSIX_FALLOCATE
+   { "fallocate",    (sqlite3_syscall_ptr)posix_fallocate,  0 },
+ #else
+@@ -428,13 +424,10 @@
+ #define osRmdir     ((int(*)(const char*))aSyscall[19].pCurrent)
+ 
+   { "fchown",       (sqlite3_syscall_ptr)posixFchown,     0 },
+ #define osFchown    ((int(*)(int,uid_t,gid_t))aSyscall[20].pCurrent)
+ 
+-  { "umask",        (sqlite3_syscall_ptr)umask,           0 },
+-#define osUmask     ((mode_t(*)(mode_t))aSyscall[21].pCurrent)
+-
+ }; /* End of the overrideable system calls */
+ 
+ /*
+ ** This is the xSetSystemCall() method of sqlite3_vfs for all of the
+ ** "unix" VFSes.  Return SQLITE_OK opon successfully updating the
+@@ -535,31 +528,29 @@
+ ** process that is able to write to the database will also be able to
+ ** recover the hot journals.
+ */
+ static int robust_open(const char *z, int f, mode_t m){
+   int fd;
+-  mode_t m2;
+-  mode_t origM = 0;
+-  if( m==0 ){
+-    m2 = SQLITE_DEFAULT_FILE_PERMISSIONS;
+-  }else{
+-    m2 = m;
+-    origM = osUmask(0);
+-  }
++  mode_t m2 = m ? m : SQLITE_DEFAULT_FILE_PERMISSIONS;
+   do{
+ #if defined(O_CLOEXEC)
+     fd = osOpen(z,f|O_CLOEXEC,m2);
+ #else
+     fd = osOpen(z,f,m2);
+ #endif
+   }while( fd<0 && errno==EINTR );
+-  if( m ){
+-    osUmask(origM);
+-  }
++  if( fd>=0 ){
++    if( m!=0 ){
++      struct stat statbuf;
++      if( osFstat(fd, &statbuf)==0 && (statbuf.st_mode&0777)!=m ){
++        osFchmod(fd, m);
++      }
++    }
+ #if defined(FD_CLOEXEC) && (!defined(O_CLOEXEC) || O_CLOEXEC==0)
+-  if( fd>=0 ) osFcntl(fd, F_SETFD, osFcntl(fd, F_GETFD, 0) | FD_CLOEXEC);
++    osFcntl(fd, F_SETFD, osFcntl(fd, F_GETFD, 0) | FD_CLOEXEC);
+ #endif
++  }
+   return fd;
+ }
+ 
+ /*
+ ** Helper functions to obtain and relinquish the global mutex. The
+@@ -6867,11 +6858,11 @@
+   };
+   unsigned int i;          /* Loop counter */
+ 
+   /* Double-check that the aSyscall[] array has been constructed
+   ** correctly.  See ticket [bb3a86e890c8e96ab] */
+-  assert( ArraySize(aSyscall)==22 );
++  assert( ArraySize(aSyscall)==21 );
+ 
+   /* Register all VFSes defined in the aVfs[] array */
+   for(i=0; i<(sizeof(aVfs)/sizeof(sqlite3_vfs)); i++){
+     sqlite3_vfs_register(&aVfs[i], i==0);
+   }
+
+Index: sqlite3/test/pager1.test
+==================================================================
+--- sqlite3/test/pager1.test
++++ sqlite3/test/pager1.test
+@@ -881,16 +881,24 @@
+   COMMIT;
+ } {delete}
+ tv filter {}
+ db close
+ tv delete 
++catch {
++  test_syscall install fchmod
++  test_syscall fault 1 1
++}
+ do_test pager1.4.7.2 {
+   faultsim_restore_and_reopen
+   catch {file attributes test.db-journal -permissions r--------}
+   catch {file attributes test.db-journal -readonly 1}
+   catchsql { SELECT * FROM t1 }
+ } {1 {unable to open database file}}
++catch {
++  test_syscall reset
++  test_syscall fault 0 0
++}
+ do_test pager1.4.7.3 {
+   db close
+   catch {file attributes test.db-journal -permissions rw-rw-rw-}
+   catch {file attributes test.db-journal -readonly 0}
+   delete_file test.db-journal
+
+Index: sqlite3/test/tkt3457.test
+==================================================================
+--- sqlite3/test/tkt3457.test
++++ sqlite3/test/tkt3457.test
+@@ -30,11 +30,11 @@
+ #                the hot-journal file. Result: SQLITE_CANTOPEN.
+ #                
+ #   tkt3457-1.3: Application has write but not read permission on
+ #                the hot-journal file. Result: SQLITE_CANTOPEN.
+ #
+-#   tkt3457-1.4: Application has read but not write permission on
++#   tkt3457-1.4: Application has read but not write permission ongrep
+ #                the hot-journal file. Result: SQLITE_CANTOPEN.
+ #
+ #   tkt3457-1.5: Application has read/write permission on the hot-journal 
+ #                file. Result: SQLITE_OK.
+ # 
+@@ -59,10 +59,18 @@
+   puts -nonewline $fd "\xd9\xd5\x05\xf9\x20\xa1\x63\xd7"
+   close $fd
+ 
+   execsql COMMIT
+ } {}
++
++# Disable fchmod to make sure SQLite itself does not try to change the
++# permission bits on us
++#
++catch {
++  test_syscall install fchmod
++  test_syscall fault 1 1
++}
+ 
+ do_test tkt3457-1.2 {
+   forcecopy bak.db-journal test.db-journal
+   file attributes test.db-journal -permissions ---------
+   catchsql { SELECT * FROM t1 }
+@@ -81,7 +89,13 @@
+ do_test tkt3457-1.5 {
+   forcecopy bak.db-journal test.db-journal
+   file attributes test.db-journal -permissions rw-rw-rw-
+   catchsql { SELECT * FROM t1 }
+ } {0 {1 2 3 4 5 6}}
++
++# Reenable fchmod
++catch {
++  test_syscall uninstall
++  test_syscall fault 0 0
++}
+ 
+ finish_test
+

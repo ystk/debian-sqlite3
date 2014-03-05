@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: BEGIN TRANSACTION</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -197,7 +197,7 @@ finishes when it is <a href="c3ref/blob_close.html">closed</a>.
 The explicit COMMIT command runs immediately, even if there are
 pending <a href="lang_select.html">SELECT</a> statements.  However, if there are pending
 write operations, the COMMIT command
-will fail with a error code <a href="c3ref/c_abort.html">SQLITE_BUSY</a>.
+will fail with an error code <a href="c3ref/c_abort.html">SQLITE_BUSY</a>.
 </p>
 
 <p>

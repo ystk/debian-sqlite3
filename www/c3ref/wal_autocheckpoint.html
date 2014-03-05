@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Configure an auto-checkpoint</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -136,7 +136,8 @@ configured by this function.</p>
 from SQL.</p>
 
 <p>Every new <a href="../c3ref/sqlite3.html">database connection</a> defaults to having the auto-checkpoint
-enabled with a threshold of 1000 pages.  The use of this interface
+enabled with a threshold of 1000 or <a href="../compile.html#default_wal_autocheckpoint">SQLITE_DEFAULT_WAL_AUTOCHECKPOINT</a>
+pages.  The use of this interface
 is only necessary if the default setting is found to be suboptimal
 for a particular application.
 </p><p>See also lists of

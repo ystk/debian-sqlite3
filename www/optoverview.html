@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>The SQLite Query Optimizer Overview</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -238,7 +238,7 @@ a:visited { color: #734559 }
   ... WHERE b IN (1,2,3) AND c NOT NULL AND d='hello'
 </pre></blockquote><p>
   The index is not usable at all because the left-most column of the
-  index (column "a") is not constrained.)  Assuming there are no other
+  index (column "a") is not constrained.  Assuming there are no other
   indices, the query above would result in a full table scan.
 </p>
 <p>
@@ -395,7 +395,7 @@ a:visited { color: #734559 }
   evaluate to false.  Note that case insensitivity only applies to
   latin1 characters - basically the upper and lower case letters of English
   in the lower 127 byte codes of ASCII.  International character sets
-  are case sensitive in SQLite unless a application-defined
+  are case sensitive in SQLite unless an application-defined
   <a href="datatype3.html#collation">collating sequence</a> and <a href="lang_corefunc.html#like">like() SQL function</a> are provided that
   take non-ASCII characters into account.
   But if an application-defined collating sequence and/or like() SQL
@@ -482,7 +482,7 @@ a:visited { color: #734559 }
 </p>
 <a name="joins"></a>
 <h2>5.0 Joins</h2><p>
-  The ON and USING clauses of a inner join are converted into additional
+  The ON and USING clauses of an inner join are converted into additional
   terms of the WHERE clause prior to WHERE clause analysis described
   above in paragraph 1.0.  Thus with SQLite, there is no computational
   advantage to use the newer SQL92 join syntax
@@ -643,7 +643,7 @@ a:visited { color: #734559 }
   for the one scenario described in the following paragraph.
 </p>
 <p>
-  For an program that uses an SQLite database as its application file
+  For a program that uses an SQLite database as its application file
   format, when a new database instances is first created the <a href="lang_analyze.html">ANALYZE</a>
   command is ineffective because the database contain no data from which
   to gather statistics.  In that case, one could construct a large prototype
@@ -791,9 +791,9 @@ a:visited { color: #734559 }
 </p>
 <p>
   SQLite will make this determination, but only if it has been compiled
-  with <a href="compile.html#enable_stat2">SQLITE_ENABLE_STAT2</a>.  The <a href="compile.html#enable_stat2">SQLITE_ENABLE_STAT2</a> option causes
+  with <a href="compile.html#enable_stat3">SQLITE_ENABLE_STAT3</a>.  The <a href="compile.html#enable_stat3">SQLITE_ENABLE_STAT3</a> option causes
   the <a href="lang_analyze.html">ANALYZE</a> command to collect a histogram of column content in the
-  <b>sqlite_stat2</b> table and to use this histogram to make a better
+  <b>sqlite_stat3</b> table and to use this histogram to make a better
   guess at the best query to use for range constraints such as the above.
 </p>
 <p>

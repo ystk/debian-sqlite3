@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Datatypes In SQLite version 2</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -197,7 +197,7 @@ attempt to insert non-integer data will result in an error.
 <p>
 INTEGER PRIMARY KEY columns can be used to implement the equivalent
 of AUTOINCREMENT.  If you try to insert a NULL into an INTEGER PRIMARY
-KEY column, the column will actually be filled with a integer that is
+KEY column, the column will actually be filled with an integer that is
 one greater than the largest key already in the table.  Or if the
 largest key is 2147483647, then the column will be filled with a
 random integer.  Either way, the INTEGER PRIMARY KEY column will be

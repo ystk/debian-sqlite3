@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Compiling An SQL Statement</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -166,7 +166,8 @@ the nByte-th byte, whichever comes first. If the caller knows
 that the supplied string is nul-terminated, then there is a small
 performance advantage to be gained by passing an nByte parameter that
 is equal to the number of bytes in the input string <i>including</i>
-the nul-terminator bytes.</p>
+the nul-terminator bytes as this saves SQLite from having to
+make a copy of the input string.</p>
 
 <p>If pzTail is not NULL then *pzTail is made to point to the first byte
 past the end of the first SQL statement in zSql.  These routines only
@@ -201,7 +202,7 @@ statement and try to run it again.
 
 <p><li>
 When an error occurs, <a href="../c3ref/step.html">sqlite3_step()</a> will return one of the detailed
-<a href="../c3ref/c_abort.html">error codes</a> or <a href="../c3ref/c_busy_recovery.html">extended error codes</a>.  The legacy behavior was that
+<a href="../c3ref/c_abort.html">error codes</a> or <a href="../c3ref/c_abort_rollback.html">extended error codes</a>.  The legacy behavior was that
 <a href="../c3ref/step.html">sqlite3_step()</a> would only return a generic <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> result code
 and the application would have to make a second call to <a href="../c3ref/reset.html">sqlite3_reset()</a>
 in order to find the underlying cause of the problem. With the "v2" prepare
@@ -217,7 +218,7 @@ to the <a href="../c3ref/bind_blob.html">bindings</a> of that <a href="../lang_e
 The specific value of WHERE-clause <a href="../lang_expr.html#varparam">parameter</a> might influence the
 choice of query plan if the parameter is the left-hand side of a <a href="../lang_expr.html#like">LIKE</a>
 or <a href="../lang_expr.html#glob">GLOB</a> operator or if the parameter is compared to an indexed column
-and the <a href="../compile.html#enable_stat2">SQLITE_ENABLE_STAT2</a> compile-time option is enabled.
+and the <a href="../compile.html#enable_stat3">SQLITE_ENABLE_STAT3</a> compile-time option is enabled.
 the
 </li>
 </ol>

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>OS Interface File Virtual Methods Object</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -141,17 +141,18 @@ struct sqlite3_io_methods {
   /* Additional methods may be added in future releases */
 };
 </pre></blockquote><p>
-Every file opened by the <a href="../c3ref/vfs.html">sqlite3_vfs</a> xOpen method populates an
+Every file opened by the <a href="../c3ref/vfs.html#sqlite3vfsxopen">sqlite3_vfs.xOpen</a> method populates an
 <a href="../c3ref/file.html">sqlite3_file</a> object (or, more commonly, a subclass of the
 <a href="../c3ref/file.html">sqlite3_file</a> object) with a pointer to an instance of this object.
 This object defines the methods used to perform various operations
 against the open file represented by the <a href="../c3ref/file.html">sqlite3_file</a> object.</p>
 
-<p>If the xOpen method sets the sqlite3_file.pMethods element
+<p>If the <a href="../c3ref/vfs.html#sqlite3vfsxopen">sqlite3_vfs.xOpen</a> method sets the sqlite3_file.pMethods element
 to a non-NULL pointer, then the sqlite3_io_methods.xClose method
-may be invoked even if the xOpen reported that it failed.  The
-only way to prevent a call to xClose following a failed xOpen
-is for the xOpen to set the sqlite3_file.pMethods element to NULL.</p>
+may be invoked even if the <a href="../c3ref/vfs.html#sqlite3vfsxopen">sqlite3_vfs.xOpen</a> reported that it failed.  The
+only way to prevent a call to xClose following a failed <a href="../c3ref/vfs.html#sqlite3vfsxopen">sqlite3_vfs.xOpen</a>
+is for the <a href="../c3ref/vfs.html#sqlite3vfsxopen">sqlite3_vfs.xOpen</a> to set the sqlite3_file.pMethods element
+to NULL.</p>
 
 <p>The flags argument to xSync may be one of <a href="../c3ref/c_sync_dataonly.html">SQLITE_SYNC_NORMAL</a> or
 <a href="../c3ref/c_sync_dataonly.html">SQLITE_SYNC_FULL</a>.  The first choice is the normal fsync().
@@ -185,7 +186,9 @@ about the status of a lock, or to break stale locks.  The SQLite
 core reserves all opcodes less than 100 for its own use.
 A <a href="../c3ref/c_fcntl_chunk_size.html">list of opcodes</a> less than 100 is available.
 Applications that define a custom xFileControl method should use opcodes
-greater than 100 to avoid conflicts.</p>
+greater than 100 to avoid conflicts.  VFS implementations should
+return <a href="../c3ref/c_abort.html">SQLITE_NOTFOUND</a> for file control opcodes that they do not
+recognize.</p>
 
 <p>The xSectorSize() method returns the sector size of the
 device that underlies the file.  The sector size is the

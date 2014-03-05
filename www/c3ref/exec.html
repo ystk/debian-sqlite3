@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>One-Step Query Execution Interface</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -136,7 +136,7 @@ in the context of the <a href="../c3ref/sqlite3.html">database connection</a> pa
 argument.  If the callback function of the 3rd argument to
 sqlite3_exec() is not NULL, then it is invoked for each result row
 coming out of the evaluated SQL statements.  The 4th argument to
-to sqlite3_exec() is relayed through to the 1st argument of each
+sqlite3_exec() is relayed through to the 1st argument of each
 callback invocation.  If the callback pointer to sqlite3_exec()
 is NULL, then no callback is ever invoked and result rows are
 ignored.</p>

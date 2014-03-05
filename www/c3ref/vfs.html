@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>OS Interface Object</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -118,8 +118,9 @@ a:visited { color: #734559 }
 <div class=startsearch></div>
   
 <a href="intro.html"><h2>SQLite C Interface</h2></a><h2>OS Interface Object</h2><blockquote><pre>typedef struct sqlite3_vfs sqlite3_vfs;
+typedef void (*sqlite3_syscall_ptr)(void);
 struct sqlite3_vfs {
-  int iVersion;            /* Structure version number (currently 2) */
+  int iVersion;            /* Structure version number (currently 3) */
   int szOsFile;            /* Size of subclassed sqlite3_file */
   int mxPathname;          /* Maximum file pathname length */
   sqlite3_vfs *pNext;      /* Next registered VFS */
@@ -145,6 +146,13 @@ struct sqlite3_vfs {
   int (*xCurrentTimeInt64)(sqlite3_vfs*, sqlite3_int64*);
   /*
   ** The methods above are in versions 1 and 2 of the sqlite_vfs object.
+  ** Those below are for version 3 and greater.
+  */
+  int (*xSetSystemCall)(sqlite3_vfs*, const char *zName, sqlite3_syscall_ptr);
+  sqlite3_syscall_ptr (*xGetSystemCall)(sqlite3_vfs*, const char *zName);
+  const char *(*xNextSystemCall)(sqlite3_vfs*, const char *zName);
+  /*
+  ** The methods above are in versions 1 through 3 of the sqlite_vfs object.
   ** New fields may be appended in figure versions.  The iVersion
   ** value will increment whenever this happens. 
   */
@@ -152,7 +160,8 @@ struct sqlite3_vfs {
 </pre></blockquote><p>
 An instance of the sqlite3_vfs object defines the interface between
 the SQLite core and the underlying operating system.  The "vfs"
-in the name of the object stands for "virtual file system".</p>
+in the name of the object stands for "virtual file system".  See
+the <a href="../vfs.html">VFS documentation</a> for further information.</p>
 
 <p>The value of the iVersion field is initially 1 but may be larger in
 future versions of SQLite.  Additional fields may be appended to this
@@ -181,12 +190,14 @@ object once the object has been registered.</p>
 <p>The zName field holds the name of the VFS module.  The name must
 be unique across all VFS modules.</p>
 
-<p>SQLite guarantees that the zFilename parameter to xOpen
+<p><a name="sqlite3vfsxopen"></a>
+
+SQLite guarantees that the zFilename parameter to xOpen
 is either a NULL pointer or string obtained
 from xFullPathname() with an optional suffix added.
 If a suffix is added to the zFilename parameter, it will
 consist of a single "-" character followed by no more than
-10 alphanumeric and/or "-" characters.
+11 alphanumeric and/or "-" characters.
 SQLite further guarantees that
 the string will be valid and unchanged until xClose() is
 called. Because of the previous sentence,
@@ -258,7 +269,9 @@ this even if the open fails.  SQLite expects that the sqlite3_file.pMethods
 element will be valid after xOpen returns regardless of the success
 or failure of the xOpen call.</p>
 
-<p>The flags argument to xAccess() may be <a href="../c3ref/c_access_exists.html">SQLITE_ACCESS_EXISTS</a>
+<p><a name="sqlite3vfsxaccess"></a>
+
+The flags argument to xAccess() may be <a href="../c3ref/c_access_exists.html">SQLITE_ACCESS_EXISTS</a>
 to test for the existence of a file, or <a href="../c3ref/c_access_exists.html">SQLITE_ACCESS_READWRITE</a> to
 test whether a file is readable and writable, or <a href="../c3ref/c_access_exists.html">SQLITE_ACCESS_READ</a>
 to test whether a file is at least readable.   The file can be a
@@ -282,12 +295,24 @@ least the number of microseconds given.  The xCurrentTime()
 method returns a Julian Day Number for the current date and time as
 a floating point value.
 The xCurrentTimeInt64() method returns, as an integer, the Julian
-Day Number multipled by 86400000 (the number of milliseconds in
+Day Number multiplied by 86400000 (the number of milliseconds in
 a 24-hour day).
 SQLite will use the xCurrentTimeInt64() method to get the current
 date and time if that method is available (if iVersion is 2 or
 greater and the function pointer is not NULL) and will fall back
-to xCurrentTime() if xCurrentTimeInt64() is unavailable.
+to xCurrentTime() if xCurrentTimeInt64() is unavailable.</p>
+
+<p>The xSetSystemCall(), xGetSystemCall(), and xNestSystemCall() interfaces
+are not used by the SQLite core.  These optional interfaces are provided
+by some VFSes to facilitate testing of the VFS code. By overriding
+system calls with functions under its control, a test program can
+simulate faults and error conditions that would otherwise be difficult
+or impossible to induce.  The set of system calls that can be overridden
+varies from one VFS to another, and from one version of the same VFS to the
+next.  Applications that use these interfaces must be prepared for any
+or all of these interfaces to be NULL or for their behavior to change
+from one release to the next.  Applications must not attempt to access
+any of these methods if the iVersion of the VFS is less than 3.
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,
   <a href="constlist.html">Constants</a>, and

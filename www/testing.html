@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>How SQLite Is Tested</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -129,16 +129,15 @@ a:visited { color: #734559 }
 <p>The reliability and robustness of SQLite is achieved in part
 by thorough and careful testing.</p>
 
-<p>As of <a href="releaselog/3_7_0.html">version 3.7.0</a> (all statistics in the report are against that
-release of SQLite),
+<p>As of <a href="releaselog/3_7_8.html">version 3.7.8</a>,
 the SQLite library consists of approximately
-70.6 KSLOC of C code.
+77.6 KSLOC of C code.
 (KSLOC means thousands of "Source Lines Of Code" or, in other words,
 lines of code excluding blank lines and comments.)
 By comparison, the project has
-647 times as much
+1177 times as much
 test code and test scripts - 
-45716.6 KSLOC.</p>
+91392.4 KSLOC.</p>
 
 <h3>1.1 Executive Summary</h3>
 
@@ -156,6 +155,7 @@ test code and test scripts -
 <li> Malformed database tests
 <li> Extensive use of assert() and run-time checks
 <li> Valgrind analysis
+<li> Signed-integer overflow checks
 </ul>
 
 <a name="harnesses"></a>
@@ -178,13 +178,13 @@ SQLite core and like the SQLite core are in the public domain.  The
 TCL tests are the primary tests used during development.
 The TCL tests are written using the 
 <a href="http://www.tcl.tk/">TCL scripting language</a>.
-The TCL test harness itself consists of 16.8 KSLOC 
+The TCL test harness itself consists of 21.6 KSLOC 
 of C code used to create the TCL interface.  The test scripts are contained
-in 571 files totaling 
-8.7MB in size.  There are
-26439 distinct test cases, but many of the test
+in 661 files totaling 
+9.6MB in size.  There are
+28278 distinct test cases, but many of the test
 cases are parameterized and run multiple times (with different parameters)
-so that on a full test run, about 2.2 million 
+so that on a full test run, about 1.7 million 
 separate tests are performed.
 </p>
 </li>
@@ -197,10 +197,10 @@ on embedded and specialized platforms that would not easily support
 TCL or other workstation services.  TH3 tests use only the published 
 SQLite interfaces.  TH3 is free to <a href="consortium.html">SQLite Consortium</a> members 
 and is available by license to others.  TH3 consists of about
-47.5 MB or 628.4 KSLOC
-of C code implementing 30641 distinct test cases.
+48.9 MB or 650.5 KSLOC
+of C code implementing 33595 distinct test cases.
 TH3 tests are heavily parameterized, though, so a full-coverage test runs
-about 1.9 million different test
+about 0.8 million different test
 instances.  The cases that provide 100% branch test coverage constitute
 a subset of the total TH3 test suite.  A soak test
 prior to release does hundreds of millions of tests.
@@ -226,7 +226,7 @@ before each release of SQLite.</p>
 <p>Prior to each check-in to the SQLite source tree, developers
 typically run a subset (called "veryquick") of the Tcl tests
 consisting of about 
-98.2 thousand test cases.
+132.2 thousand test cases.
 The veryquick tests include everything except the anomaly, fuzz, and 
 soak tests.  The idea behind the veryquick tests are that they are
 sufficient to catch most errors, but also run in only a few minutes
@@ -260,7 +260,7 @@ SQLite be able to gracefully handle OOM errors.</p>
 
 <p>OOM testing is accomplished by simulating OOM errors.
 SQLite allows an application to substitute an alternative malloc()
-implementation using the <a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MALLOC</a>,...)
+implementation using the <a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_getmalloc.html#sqliteconfigmalloc">SQLITE_CONFIG_MALLOC</a>,...)
 interface.  The TCL and TH3 test harnesses are both capable of
 inserting a modified version of malloc() that can be rigged to fail 
 after a certain number of allocations.  These instrumented mallocs
@@ -330,7 +330,7 @@ harness to simulate the state of the database file following a crash.</p>
 <p>In the TCL test harness, the crash simulation is done in a separate
 process.  The main testing process spawns a child process which runs
 some SQLite operation and randomly crashes somewhere in the middle of
-a write operation.  A special VFS randomly reorders and corrupts
+a write operation.  A special <a href="vfs.html">VFS</a> randomly reorders and corrupts
 the unsynchronized
 write operations to simulate the effect of buffered filesystems.  After
 the child dies, the original test process opens and reads the test
@@ -341,7 +341,7 @@ occurs.</p>
 
 <p>The TH3 test harness needs to run on embedded systems that do not
 necessarily have the ability to spawn child processes, so it uses
-an in-memory VFS to simulate crashes.  The in-memory VFS can be rigged
+an in-memory <a href="vfs.html">VFS</a> to simulate crashes.  The in-memory <a href="vfs.html">VFS</a> can be rigged
 to make a snapshot of the entire filesystem after a set number of I/O
 operations.  Crash tests run in a loop.  On each iteration of the loop,
 the point at which a snapshot is made is advanced until the SQLite
@@ -383,7 +383,7 @@ resulting prepared statement is run to make sure it gives a reasonable
 result.</p>
 
 <p>The SQL fuzz generator tests are part of the TCL test suite.
-During a full test run, about 107.5 
+During a full test run, about 102.1 
 thousand fuzz SQL statements are
 generated and tested.</p>
 
@@ -459,7 +459,7 @@ harnesses are zealous to enforce this.</p>
 utility on SuSE Linux 10.1 on x86 hardware with the GCC 4.0.1 compiler.</p>
 
 <p>The "SQLite core" in the previous paragraph excludes the
-operating-system dependent <a href="c3ref/vfs.html">VFS</a> backends, since it is
+operating-system dependent <a href="vfs.html">VFS</a> backends, since it is
 not possible to write cross-platform tests for those modules.  Extensions
 such as FTS3 and RTree are also excluded from the analysis.</p>
 
@@ -617,7 +617,7 @@ testcase( mask & SQLITE_OPEN_TEMP_DB );
 if( (mask & (SQLITE_OPEN_MAIN_DB|SQLITE_OPEN_TEMP_DB))!=0 ){ ... }
 </pre></blockquote>
 
-<p>The SQLite source code contains 626
+<p>The SQLite source code contains 669
 uses of the <tt>testcase()</tt> macro.</p>
 
 <a name="mcdc"></a>
@@ -679,7 +679,7 @@ quality of SQLite.</p>
 
 <h3>8.1 Assert</h3>
 
-<p>The SQLite core contains 2957 <tt>assert()</tt>
+<p>The SQLite core contains 3432 <tt>assert()</tt>
 statements that verify function preconditions and postconditions and
 loop invariants.  Assert() is a macro which is a standard part of
 ANSI-C.  The argument is a boolean value that is assumed to always be
@@ -713,9 +713,12 @@ into a symbolic debugger at the exact point where the error occur, to
 facilitate a quick fix.</p>
 
 <p>Because it is a simulator, running a binary in Valgrind is slower than 
-running it on native hardware.  So it is impractical to run the full
+running it on native hardware.  (To a first approximation, an application
+running in Valgrind on a workstation will perform about the same as it
+would running natively on a smartphone.)  So it is impractical to run the full
 SQLite test suite through Valgrind.  However, the veryquick tests and
-a subset of the TH3 tests are run through Valgrind prior to every release.</p>
+the coverage of the TH3 tests are run through Valgrind prior to every
+release.</p>
 
 <a name="memtesting"></a>
 
@@ -755,7 +758,7 @@ in multi-threaded applications.</p>
 are atomic across system crashes and power failures is to write
 all changes into the rollback journal file prior to changing the
 database.  The TCL test harness contains an alternative
-<a href="c3ref/vfs.html">Virtual File System</a> implementation that helps to
+<a href="vfs.html">OS backend</a> implementation that helps to
 verify this is occurring correctly.  The "journal-test VFS" monitors
 all disk I/O traffic between the database file and rollback journal,
 checking to make sure that nothing is written into the database
@@ -765,6 +768,30 @@ If any discrepancies are found, an assertion fault is raised.</p>
 <p>The journal tests are an additional double-check over and above
 the crash tests to make sure that SQLite transactions will be atomic
 across system crashes and power failures.</p>
+
+<a name="intoverflow"></a>
+
+<h3>8.6 Signed-Integer Overflow Checks</h3>
+
+<p>The various C language standards say that the signed-integer overflow
+behavior is undefined.  In other words, when you add a value to a signed
+integer such that the result is too large to fit in that integer, the
+value does not necessarily wrap around to a negative number, as most
+programmers expect.  It might do that.  But it might do something completely
+different.  See, for example,
+<a href="http://thiemonagel.de/2010/01/signed-integer-overflow/">here</a>
+and <a href="http://blog.regehr.org/archives/482">here</a>.  Even the
+same compiler might do something different with signed integer overflow
+in different places in the code or at different optimizations settings.</p>
+
+<p>SQLite never overflows a signed integer.
+To verify this, the test suites are run at least once when compiled with
+the -ftrapv option to GCC.  The -ftrapv option causes GCC to generate code
+that will panic() on a signed integer overflow.  In addition, there are
+many test cases the strive to provoke integer overflows
+using boundary value calculations such as
+ "<b>SELECT -1*(-9223372036854775808);</b>".
+
 
 <a name="disopttest"></a>
 
@@ -780,45 +807,44 @@ leaves the optimizations turned on (the default setting).</p>
 <p>One verification technique used on SQLite is to run an entire test suite
 twice, once with optimizations left on and a second time with optimizations
 turned off, and verify that the same output is obtained both times.  This
-verifies that the optimizations do not introduce errors.</p>
+shows that the optimizations do not introduce errors.</p>
 
 <p>Not all test cases can be handled this way.  Some test cases check
 to verify that the optimizations really are reducing the amount of
 computation by counting the number of disk accesses, sort operations, 
 full-scan steps, or other processing steps that occur during queries.
 Those test cases will appear to fail when optimizations are disabled.
-But the majority of test cases simply look to see if the correct answer
+But the majority of test cases simply check that the correct answer
 was obtained, and all of those cases can be run successfully with and
 without the optimizations, in order to show that the optimizations do not
 cause malfunctions.</p>
+
 
 <a name="staticanalysis"></a>
 
 <h2>10.0 Static Analysis</h2>
 
 <p>Static analysis means analyzing code at or before compile-time to
-check for correctness.  Static analysis consists mostly of making
-sure SQLite compiles without warnings, even when all warnings are
-enabled.  SQLite is developed primarily using GCC and it does
-compile without warnings on GCC using the -Wall and -Wextra flags.
-There are occasional reports of warnings coming from VC++, however.</p>
+check for correctness.  Static analysis includes looking at compiler
+warning messages and running the code through more in-depth
+analysis engines such as the
+<a href="http://clang-analyzer.llvm.org/">Clang Static Analyzer</a>.
+SQLite compiles without warnings on GCC using the -Wall and -Wextra flags.
+And the Clang Static Analyzer finds nothing wrong with SQLite either.
+VC++ often will generate a number of warnings from SQLite source code,
+but the experience of SQLite developers is that VC++ warnings are of
+lower quality and can be safely ignored.  Users are encouraged not
+to stress over VC++ warnings.</p>
 
-<p>Static analysis has not proven to be helpful in finding
-bugs in SQLite.  We cannot call to mind a single problem in SQLite that
-was detected by static analysis that was not first seen by one
-of the other testing methods described above.  On the other hand,
-we have on occasion introduced new bugs in our efforts to get SQLite
-to compile without warnings.</p>
+<p>Static analysis has not proven to be especially helpful in finding
+bugs in SQLite.  Static analysis has found a few bugs in SQLite, but
+those are the exceptions.  More bugs have been
+introduced into SQLite while trying to get it to compile without 
+warnings than have been found by static analysis.
 
-<p>Our experience, then, is that static analysis is counter-productive
-to quality.  In other words, focusing on static analysis (being
-concerned with compiler warnings) actually reduces the quality of the
-code.  Nevertheless, we developers have capitulated to pressure from
-users and actively work to eliminate compiler warnings.  We are
-willing to do this because the other tests described above do an
-excellent job of finding the bugs that are often introduced when
-removing compiler warnings, so that product quality is probably not
-decreased as a result.</p>
+<p>Our experience, then, is that static analysis is not especially helpful
+to maintaining high code quality and it is therefore deemphasized
+in SQLite development and maintenance.</p>
 
 <a name="summary"></a>
 

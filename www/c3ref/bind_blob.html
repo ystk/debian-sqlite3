@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Binding Values To Prepared Statements</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -156,7 +156,7 @@ The index for named parameters can be looked up using the
 <a href="../c3ref/bind_parameter_index.html">sqlite3_bind_parameter_index()</a> API if desired.  The index
 for "?NNN" parameters is the value of NNN.
 The NNN value must be between 1 and the <a href="../c3ref/limit.html">sqlite3_limit()</a>
-parameter <a href="../c3ref/c_limit_attached.html">SQLITE_LIMIT_VARIABLE_NUMBER</a> (default value: 999).</p>
+parameter <a href="../c3ref/c_limit_attached.html#sqlitelimitvariablenumber">SQLITE_LIMIT_VARIABLE_NUMBER</a> (default value: 999).</p>
 
 <p>The third argument is the value to bind to the parameter.</p>
 
@@ -164,11 +164,21 @@ parameter <a href="../c3ref/c_limit_attached.html">SQLITE_LIMIT_VARIABLE_NUMBER<
 number of bytes in the parameter.  To be clear: the value is the
 number of <u>bytes</u> in the value, not the number of characters.
 If the fourth parameter is negative, the length of the string is
-the number of bytes up to the first zero terminator.</p>
+the number of bytes up to the first zero terminator.
+If a non-negative fourth parameter is provided to sqlite3_bind_text()
+or sqlite3_bind_text16() then that parameter must be the byte offset
+where the NUL terminator would occur assuming the string were NUL
+terminated.  If any NUL characters occur at byte offsets less than
+the value of the fourth parameter then the resulting string value will
+contain embedded NULs.  The result of expressions involving strings
+with embedded NULs is undefined.</p>
 
 <p>The fifth argument to sqlite3_bind_blob(), sqlite3_bind_text(), and
 sqlite3_bind_text16() is a destructor used to dispose of the BLOB or
-string after SQLite has finished with it. If the fifth argument is
+string after SQLite has finished with it.  The destructor is called
+to dispose of the BLOB or string even if the call to sqlite3_bind_blob(),
+sqlite3_bind_text(), or sqlite3_bind_text16() fails.
+If the fifth argument is
 the special value <a href="../c3ref/c_static.html">SQLITE_STATIC</a>, then SQLite assumes that the
 information is in static, unmanaged space and does not need to be freed.
 If the fifth argument has the value <a href="../c3ref/c_static.html">SQLITE_TRANSIENT</a>, then

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Online Backup API.</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -134,11 +134,12 @@ for copying in-memory databases to or from persistent files.</p>
 
 <p>See Also: <a href="../backup.html">Using the SQLite Online Backup API</a></p>
 
-<p>Exclusive access is required to the destination database for the
-duration of the operation. However the source database is only
-read-locked while it is actually being read; it is not locked
-continuously for the entire backup operation. Thus, the backup may be
-performed on a live source database without preventing other users from
+<p>SQLite holds a write transaction open on the destination database file
+for the duration of the backup operation.
+The source database is read-locked only while it is being read;
+it is not locked continuously for the entire backup operation.
+Thus, the backup may be performed on a live source database without
+preventing other database connections from
 reading or writing to the source database while the backup is underway.</p>
 
 <p>To perform a backup operation:
@@ -153,7 +154,8 @@ associated with the backup operation.
 There should be exactly one call to sqlite3_backup_finish() for each
 successful call to sqlite3_backup_init().</p>
 
-<p><b>sqlite3_backup_init()</b></p>
+<p><a name="sqlite3backupinit"></a>
+ <b>sqlite3_backup_init()</b></p>
 
 <p>The D and N arguments to sqlite3_backup_init(D,N,S,M) are the
 <a href="../c3ref/sqlite3.html">database connection</a> associated with the destination database
@@ -165,11 +167,11 @@ The S and M arguments passed to
 sqlite3_backup_init(D,N,S,M) identify the <a href="../c3ref/sqlite3.html">database connection</a>
 and database name of the source database, respectively.
 The source and destination <a href="../c3ref/sqlite3.html">database connections</a> (parameters S and D)
-must be different or else sqlite3_backup_init(D,N,S,M) will file with
+must be different or else sqlite3_backup_init(D,N,S,M) will fail with
 an error.</p>
 
 <p>If an error occurs within sqlite3_backup_init(D,N,S,M), then NULL is
-returned and an error code and error message are store3d in the
+returned and an error code and error message are stored in the
 destination <a href="../c3ref/sqlite3.html">database connection</a> D.
 The error code and message for the failed call to sqlite3_backup_init()
 can be retrieved using the <a href="../c3ref/errcode.html">sqlite3_errcode()</a>, <a href="../c3ref/errcode.html">sqlite3_errmsg()</a>, and/or
@@ -180,27 +182,28 @@ The <a href="../c3ref/backup.html">sqlite3_backup</a> object may be used with th
 sqlite3_backup_finish() functions to perform the specified backup
 operation.</p>
 
-<p><b>sqlite3_backup_step()</b></p>
+<p><a name="sqlite3backupstep"></a>
+ <b>sqlite3_backup_step()</b></p>
 
 <p>Function sqlite3_backup_step(B,N) will copy up to N pages between
 the source and destination databases specified by <a href="../c3ref/backup.html">sqlite3_backup</a> object B.
 If N is negative, all remaining source pages are copied.
 If sqlite3_backup_step(B,N) successfully copies N pages and there
-are still more pages to be copied, then the function resturns <a href="../c3ref/c_abort.html">SQLITE_OK</a>.
+are still more pages to be copied, then the function returns <a href="../c3ref/c_abort.html">SQLITE_OK</a>.
 If sqlite3_backup_step(B,N) successfully finishes copying all pages
 from source to destination, then it returns <a href="../c3ref/c_abort.html">SQLITE_DONE</a>.
 If an error occurs while running sqlite3_backup_step(B,N),
 then an <a href="../c3ref/c_abort.html">error code</a> is returned. As well as <a href="../c3ref/c_abort.html">SQLITE_OK</a> and
 <a href="../c3ref/c_abort.html">SQLITE_DONE</a>, a call to sqlite3_backup_step() may return <a href="../c3ref/c_abort.html">SQLITE_READONLY</a>,
 <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a>, <a href="../c3ref/c_abort.html">SQLITE_BUSY</a>, <a href="../c3ref/c_abort.html">SQLITE_LOCKED</a>, or an
-<a href="../c3ref/c_busy_recovery.html">SQLITE_IOERR_XXX</a> extended error code.</p>
+<a href="../c3ref/c_abort_rollback.html">SQLITE_IOERR_XXX</a> extended error code.</p>
 
 <p>The sqlite3_backup_step() might return <a href="../c3ref/c_abort.html">SQLITE_READONLY</a> if
 <ol>
 <li> the destination database was opened read-only, or
 <li> the destination database is using write-ahead-log journaling
 and the destination and source page sizes differ, or
-<li> The destination database is an in-memory database and the
+<li> the destination database is an in-memory database and the
 destination and source page sizes differ.
 </ol></p>
 
@@ -214,7 +217,7 @@ sqlite3_backup_step() can be retried later. If the source
 is being used to write to the source database when sqlite3_backup_step()
 is called, then <a href="../c3ref/c_abort.html">SQLITE_LOCKED</a> is returned immediately. Again, in this
 case the call to sqlite3_backup_step() can be retried later on. If
-<a href="../c3ref/c_busy_recovery.html">SQLITE_IOERR_XXX</a>, <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a>, or
+<a href="../c3ref/c_abort_rollback.html">SQLITE_IOERR_XXX</a>, <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a>, or
 <a href="../c3ref/c_abort.html">SQLITE_READONLY</a> is returned, then
 there is no point in retrying the call to sqlite3_backup_step(). These
 errors are considered fatal.  The application must accept
@@ -237,7 +240,8 @@ database is modified by the using the same database connection as is used
 by the backup operation, then the backup database is automatically
 updated at the same time.</p>
 
-<p><b>sqlite3_backup_finish()</b></p>
+<p><a name="sqlite3backupfinish"></a>
+ <b>sqlite3_backup_finish()</b></p>
 
 <p>When sqlite3_backup_step() has returned <a href="../c3ref/c_abort.html">SQLITE_DONE</a>, or when the
 application wishes to abandon the backup operation, the application
@@ -260,7 +264,10 @@ sqlite3_backup_finish() returns the corresponding <a href="../c3ref/c_abort.html
 is not a permanent error and does not affect the return value of
 sqlite3_backup_finish().</p>
 
-<p><b>sqlite3_backup_remaining(), sqlite3_backup_pagecount()</b></p>
+<p><a name="sqlite3backupremaining"></a>
+ <a name="sqlite3backuppagecount"></a>
+
+<b>sqlite3_backup_remaining() and sqlite3_backup_pagecount()</b></p>
 
 <p>Each call to sqlite3_backup_step() sets two values inside
 the <a href="../c3ref/backup.html">sqlite3_backup</a> object: the number of pages still to be backed

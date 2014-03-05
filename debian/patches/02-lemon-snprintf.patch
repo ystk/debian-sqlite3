@@ -1,6 +1,6 @@
 --- sqlite3-3.6.10.orig/tool/lemon.c	2010-03-13 17:12:20.004507610 +0000
 +++ sqlite3-3.6.10/tool/lemon.c	2010-03-13 17:25:51.799607483 +0000
-@@ -2357,7 +2357,7 @@
+@@ -2347,7 +2347,7 @@
            for(z=psp->filename, nBack=0; *z; z++){
              if( *z=='\\' ) nBack++;
            }
@@ -9,7 +9,7 @@
            nLine = lemonStrlen(zLine);
            n += nLine + lemonStrlen(psp->filename) + nBack;
          }
-@@ -2927,7 +2927,7 @@
+@@ -2916,7 +2916,7 @@
      while( cfp ){
        char buf[20];
        if( cfp->dot==cfp->rp->nrhs ){
@@ -18,7 +18,7 @@
          fprintf(fp,"    %5s ",buf);
        }else{
          fprintf(fp,"          ");
-@@ -2981,6 +2981,7 @@
+@@ -2970,6 +2970,7 @@
    char *pathbufptr;
    char *pathbuf;
    char *path,*cp;
@@ -26,7 +26,7 @@
    char c;
  
  #ifdef __WIN32__
-@@ -3098,14 +3099,16 @@
+@@ -3087,14 +3121,16 @@
  
    cp = strrchr(lemp->filename,'.');
    if( cp ){
@@ -45,7 +45,7 @@
    }else{
      tpltname = pathsearch(lemp->argv0,templatename,0);
    }
-@@ -3117,7 +3120,7 @@
+@@ -3106,7 +3109,7 @@
    }
    in = fopen(tpltname,"rb");
    if( in==0 ){
@@ -54,7 +54,7 @@
      lemp->errorcnt++;
      return 0;
    }
-@@ -3251,7 +3254,7 @@
+@@ -3240,7 +3243,7 @@
    while( n-- > 0 ){
      c = *(zText++);
      if( c=='%' && n>0 && zText[0]=='d' ){
@@ -63,7 +63,7 @@
        p1 = p2;
        strcpy(&z[used], zInt);
        used += lemonStrlen(&z[used]);
-@@ -3863,7 +3866,7 @@
+@@ -3856,7 +3859,7 @@
    /* Generate a table containing the symbolic name of every symbol
    */
    for(i=0; i<lemp->nsymbol; i++){
@@ -72,7 +72,7 @@
      fprintf(out,"  %-15s",line);
      if( (i&3)==3 ){ fprintf(out,"\n"); lineno++; }
    }
-@@ -4029,7 +4032,7 @@
+@@ -4022,7 +4023,7 @@
    in = file_open(lemp,".h","rb");
    if( in ){
      for(i=1; i<lemp->nterminal && fgets(line,LINESIZE,in); i++){

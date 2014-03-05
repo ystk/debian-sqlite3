@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Release 3.7.0 On 2010 July 22 (3.7.0)</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -117,13 +117,13 @@ a:visited { color: #734559 }
 </td></tr></table>
 <div class=startsearch></div>
   
-<h2>SQLite Release 3.7.0 On 2010 July 22 (3.7.0)</h2><p>Changes associated with this release include the following:</p><p><ul>
+<h2>SQLite Release 3.7.0 On 2010 July 22 (3.7.0)</h2><p><ul>
 <li> Added support for <a href="../wal.html">write-ahead logging</a>.
 <li> Query planner enhancement - automatic transient indices are created
      when doing so reduces the estimated query time.
 <li> Query planner enhancement - the ORDER BY becomes a no-op if the query
      also contains a GROUP BY clause that forces the correct output order.
-<li> Add the <a href="../c3ref/c_dbstatus_cache_used.html">SQLITE_DBSTATUS_CACHE_USED</a> verb for <a href="../c3ref/db_status.html">sqlite3_db_status()</a>.
+<li> Add the <a href="../c3ref/c_dbstatus_options.html#sqlitedbstatuscacheused">SQLITE_DBSTATUS_CACHE_USED</a> verb for <a href="../c3ref/db_status.html">sqlite3_db_status()</a>.
 <li> The logical database size is now stored in the database header so that
      bytes can be appended to the end of the database file without corrupting
      it and so that SQLite will work correctly on systems that lack support

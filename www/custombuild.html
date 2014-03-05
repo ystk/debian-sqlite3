@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Custom Builds Of SQLite</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -232,7 +232,7 @@ not SQLite is configured to be threadsafe, though they will be a little
 bit faster when using versions of SQLite with mutexes disabled.</p>
 
 <p>SQLite mutexes can also be disabled at run-time using the
-the <a href="c3ref/config.html">sqlite3_config()</a> interface.  To completely disable all mutexing,
+<a href="c3ref/config.html">sqlite3_config()</a> interface.  To completely disable all mutexing,
 the application can invoke:</p>
 
 <blockquote><pre>
@@ -258,7 +258,7 @@ sqlite3_config(SQLITE_CONFIG_MEMSTATUS, 0);
 
 <p>There are two separate configuration changes here which can
 be used either togethr or separately. The
-<a href="c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MULTITHREAD</a> setting disables the mutexes that
+<a href="c3ref/c_config_getmalloc.html#sqliteconfigmultithread">SQLITE_CONFIG_MULTITHREAD</a> setting disables the mutexes that
 serialize access to <a href="c3ref/sqlite3.html">database connection</a> objects and 
 <a href="c3ref/stmt.html">prepared statement</a> objects.  With this setting, the application
 is free to use SQLite from multiple threads, but it must make sure
@@ -266,7 +266,7 @@ than no two threads try to access the same <a href="c3ref/sqlite3.html">database
 or any <a href="c3ref/stmt.html">prepared statements</a> associated with the same 
 <a href="c3ref/sqlite3.html">database connection</a> at the same time.  Two threads can use SQLite
 at the same time, but they must use separate <a href="c3ref/sqlite3.html">database connections</a>.
-The second <a href="c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MEMSTATUS</a> setting disables the mechanism
+The second <a href="c3ref/c_config_getmalloc.html#sqliteconfigmemstatus">SQLITE_CONFIG_MEMSTATUS</a> setting disables the mechanism
 in SQLite that tracks the total size of all outstanding memory
 allocation requests.  This omits the need to mutex each call
 to <a href="c3ref/free.html">sqlite3_malloc()</a> and <a href="c3ref/free.html">sqlite3_free()</a>, which saves a huge

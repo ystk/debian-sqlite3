@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Shared-Cache Mode</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -315,4 +315,37 @@ global shared cache mode setting established by <a href="c3ref/enable_shared_cac
 No more than one of the flags should be used; if both SQLITE_OPEN_SHAREDCACHE
 and SQLITE_OPEN_PRIVATECACHE flags are used in the third argument to
 <a href="c3ref/open.html">sqlite3_open_v2()</a> then the behavior is undefined.</p>
+
+<p>When <a href="uri.html">URI filenames</a> are used, the "cache" query parameter can be used
+to specify whether or not the database will use shared cache.  Use
+"cache=shared" to enable shared cache and "cache=private" to disable
+shared cache.   The ability to use URI query parameters to specify the
+cache sharing behavior of a database connection allows cache sharing to
+be controlled in <a href="lang_attach.html">ATTACH</a> statements.  For example:</p>
+
+<blockquote><pre>
+ATTACH 'file:aux.db?cache=shared' AS aux;
+</pre></blockquote>
+
+<a name="inmemsharedcache"></a>
+<h2>6.0 Shared Cache And In-Memory Databases</h2>
+
+<p>
+Beginning with SQLite <a href="releaselog/3_7_13.html">version 3.7.13</a>, shared cache can be used on
+<a href="inmemorydb.html">in-memory databases</a>, provided that the database is created using
+a <a href="uri.html">URI filename</a>.  For backwards compatibility, shared cache is always
+disable for in-memory
+databases if the unadorned name ":memory:" is used to open the database.
+Prior to version 3.7.13, shared cache was always
+disabled for in-memory databases regardless of the database name used,
+current system shared cache setting, or query parameters or flags.
+</p>
+
+<p>
+Enabling shared-cache for an in-mmeory database allows two or more
+database connections in the same process to have access to the same
+in-memory database.  An in-memory database in shared cache is automatically
+deleted and memory is reclaimed when the last connection to that database
+closes.
+</p>
 

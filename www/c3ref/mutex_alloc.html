@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Mutexes</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -135,7 +135,7 @@ implementations are available in the SQLite core:</p>
 
 <p><ul>
 <li>   SQLITE_MUTEX_OS2
-<li>   SQLITE_MUTEX_PTHREAD
+<li>   SQLITE_MUTEX_PTHREADS
 <li>   SQLITE_MUTEX_W32
 <li>   SQLITE_MUTEX_NOOP
 </ul></p>
@@ -143,14 +143,14 @@ implementations are available in the SQLite core:</p>
 <p>The SQLITE_MUTEX_NOOP implementation is a set of routines
 that does no real locking and is appropriate for use in
 a single-threaded application.  The SQLITE_MUTEX_OS2,
-SQLITE_MUTEX_PTHREAD, and SQLITE_MUTEX_W32 implementations
+SQLITE_MUTEX_PTHREADS, and SQLITE_MUTEX_W32 implementations
 are appropriate for use on OS/2, Unix, and Windows.</p>
 
 <p>If SQLite is compiled with the SQLITE_MUTEX_APPDEF preprocessor
 macro defined (with "-DSQLITE_MUTEX_APPDEF=1"), then no mutex
 implementation is included with the library. In this case the
 application must supply a custom mutex implementation using the
-<a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MUTEX</a> option of the sqlite3_config() function
+<a href="../c3ref/c_config_getmalloc.html#sqliteconfigmutex">SQLITE_CONFIG_MUTEX</a> option of the sqlite3_config() function
 before calling sqlite3_initialize() or any other public sqlite3_
 function that calls sqlite3_initialize().</p>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Error Codes And Messages</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -123,12 +123,12 @@ const char *sqlite3_errmsg(sqlite3*);
 const void *sqlite3_errmsg16(sqlite3*);
 </pre></blockquote><p>
 The sqlite3_errcode() interface returns the numeric <a href="../c3ref/c_abort.html">result code</a> or
-<a href="../c3ref/c_busy_recovery.html">extended result code</a> for the most recent failed sqlite3_* API call
+<a href="../c3ref/c_abort_rollback.html">extended result code</a> for the most recent failed sqlite3_* API call
 associated with a <a href="../c3ref/sqlite3.html">database connection</a>. If a prior API call failed
 but the most recent API call succeeded, the return value from
 sqlite3_errcode() is undefined.  The sqlite3_extended_errcode()
 interface is the same except that it always returns the
-<a href="../c3ref/c_busy_recovery.html">extended result code</a> even when extended result codes are
+<a href="../c3ref/c_abort_rollback.html">extended result code</a> even when extended result codes are
 disabled.</p>
 
 <p>The sqlite3_errmsg() and sqlite3_errmsg16() return English-language

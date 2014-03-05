@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Last Insert Rowid</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -128,13 +128,17 @@ is another alias for the rowid.</p>
 
 <p>This routine returns the <a href="../lang_createtable.html#rowid">rowid</a> of the most recent
 successful <a href="../lang_insert.html">INSERT</a> into the database from the <a href="../c3ref/sqlite3.html">database connection</a>
-in the first argument.  If no successful <a href="../lang_insert.html">INSERT</a>s
+in the first argument.  As of SQLite version 3.7.7, this routines
+records the last insert rowid of both ordinary tables and <a href="../vtab.html">virtual tables</a>.
+If no successful <a href="../lang_insert.html">INSERT</a>s
 have ever occurred on that database connection, zero is returned.</p>
 
-<p>If an <a href="../lang_insert.html">INSERT</a> occurs within a trigger, then the <a href="../lang_createtable.html#rowid">rowid</a> of the inserted
-row is returned by this routine as long as the trigger is running.
-But once the trigger terminates, the value returned by this routine
-reverts to the last value inserted before the trigger fired.</p>
+<p>If an <a href="../lang_insert.html">INSERT</a> occurs within a trigger or within a <a href="../vtab.html">virtual table</a>
+method, then this routine will return the <a href="../lang_createtable.html#rowid">rowid</a> of the inserted
+row as long as the trigger or virtual table method is running.
+But once the trigger or virtual table method ends, the value returned
+by this routine reverts to what it was before the trigger or virtual
+table method began.</p>
 
 <p>An <a href="../lang_insert.html">INSERT</a> that fails due to a constraint violation is not a
 successful <a href="../lang_insert.html">INSERT</a> and does not change the value returned by this

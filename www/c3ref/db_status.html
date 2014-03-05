@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Database Connection Status</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -123,9 +123,9 @@ This interface is used to retrieve runtime status information
 about a single <a href="../c3ref/sqlite3.html">database connection</a>.  The first argument is the
 database connection object to be interrogated.  The second argument
 is an integer constant, taken from the set of
-<a href="../c3ref/c_dbstatus_cache_used.html">SQLITE_DBSTATUS_*</a> macros, that
+<a href="../c3ref/c_dbstatus_options.html">SQLITE_DBSTATUS options</a>, that
 determines the parameter to interrogate.  The set of
-<a href="../c3ref/c_dbstatus_cache_used.html">SQLITE_DBSTATUS_*</a> macros is likely
+<a href="../c3ref/c_dbstatus_options.html">SQLITE_DBSTATUS options</a> is likely
 to grow in future releases of SQLite.</p>
 
 <p>The current value of the requested parameter is written into *pCur
