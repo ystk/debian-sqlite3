@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: SELECT</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -371,7 +371,11 @@ detecting duplicate rows, two NULL values are considered to be equal. The
 normal rules for selecting a collation sequence to compare text values with
 apply.
 
-<h3>Compound Select Statements</h3>
+<h3>Compound Select Statements
+<a name="compound"></a>
+
+
+</h3>
 
 <p>Two or more simple SELECT statements may be connected together to form
 a compound SELECT using the UNION, UNION ALL, INTERSECT or EXCEPT operator.
@@ -436,7 +440,7 @@ the alias of one of the output columns, then the expression is considered
 an alias for that column.
 
 <li><p>Otherwise, if the ORDER BY expression is any other expression, it 
-is evaluated and the the returned value used to order the output rows. If
+is evaluated and the returned value used to order the output rows. If
 the SELECT statement is a simple SELECT, then an ORDER BY may contain any
 arbitrary expressions. However, if the SELECT is a compound SELECT, then
 ORDER BY expressions that are not aliases to output columns must be exactly

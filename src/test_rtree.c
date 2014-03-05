@@ -18,6 +18,7 @@
 /* Solely for the UNUSED_PARAMETER() macro. */
 #include "sqliteInt.h"
 
+#ifdef SQLITE_ENABLE_RTREE
 /* 
 ** Type used to cache parameter information for the "circle" r-tree geometry
 ** callback.
@@ -48,7 +49,11 @@ static void circle_del(void *p){
 static int circle_geom(
   sqlite3_rtree_geometry *p,
   int nCoord, 
+#ifdef SQLITE_RTREE_INT_ONLY
+  sqlite3_int64 *aCoord,
+#else
   double *aCoord, 
+#endif
   int *pRes
 ){
   int i;                          /* Iterator variable */
@@ -77,7 +82,7 @@ static int circle_geom(
 
     /* Record the center and radius of the circular region. One way that
     ** tested bounding boxes that intersect the circular region are detected
-    ** is by testing if each corner of the bounding box likes within radius
+    ** is by testing if each corner of the bounding box lies within radius
     ** units of the center of the circle. */
     pCircle->centerx = p->aParam[0];
     pCircle->centery = p->aParam[1];
@@ -187,8 +192,12 @@ static int gHere = 42;
 */
 static int cube_geom(
   sqlite3_rtree_geometry *p,
-  int nCoord, 
+  int nCoord,
+#ifdef SQLITE_RTREE_INT_ONLY
+  sqlite3_int64 *aCoord, 
+#else
   double *aCoord, 
+#endif
   int *piRes
 ){
   Cube *pCube = (Cube *)p->pUser;
@@ -230,6 +239,7 @@ static int cube_geom(
 
   return SQLITE_OK;
 }
+#endif /* SQLITE_ENABLE_RTREE */
 
 static int register_cube_geom(
   void * clientData,
@@ -292,4 +302,3 @@ int Sqlitetestrtree_Init(Tcl_Interp *interp){
   Tcl_CreateObjCommand(interp, "register_circle_geom",register_circle_geom,0,0);
   return TCL_OK;
 }
-

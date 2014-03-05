@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Release 3.6.0 On 2008 July 16 (3.6.0 beta)</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -117,7 +117,7 @@ a:visited { color: #734559 }
 </td></tr></table>
 <div class=startsearch></div>
   
-<h2>SQLite Release 3.6.0 On 2008 July 16 (3.6.0 beta)</h2><p>Changes associated with this release include the following:</p><p><ul>
+<h2>SQLite Release 3.6.0 On 2008 July 16 (3.6.0 beta)</h2><p><ul>
 <li>Modifications to the <a href="../c3ref/vfs.html">virtual file system</a> interface
     to support a wider range of embedded systems.
     See <a href="../35to36.html">35to36.html</a> for additional information.
@@ -129,7 +129,7 @@ a:visited { color: #734559 }
     <font color="red">*** Potentially incompatible change ***</font></li>
 <li>The SQLITE_MUTEX_APPDEF compile-time option is no longer supported.
     Alternative mutex implementations can now be added at run-time using
-    the <a href="../c3ref/config.html">sqlite3_config()</a> interface with the <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MUTEX</a> verb.
+    the <a href="../c3ref/config.html">sqlite3_config()</a> interface with the <a href="../c3ref/c_config_getmalloc.html#sqliteconfigmutex">SQLITE_CONFIG_MUTEX</a> verb.
     <font color="red">*** Potentially incompatible change ***</font></li>
 <li>The handling of IN and NOT IN operators that contain a NULL on their
     right-hand side expression is brought into compliance with the SQL

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Prepared Statement Status</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -120,7 +120,7 @@ a:visited { color: #734559 }
 <a href="intro.html"><h2>SQLite C Interface</h2></a><h2>Prepared Statement Status</h2><blockquote><pre>int sqlite3_stmt_status(sqlite3_stmt*, int op,int resetFlg);
 </pre></blockquote><p>
 Each prepared statement maintains various
-<a href="../c3ref/c_stmtstatus_autoindex.html">counters</a> that measure the number
+<a href="../c3ref/c_stmtstatus_counter.html">SQLITE_STMTSTATUS counters</a> that measure the number
 of times it has performed specific operations.  These counters can
 be used to monitor the performance characteristics of the prepared
 statements.  For example, if the number of table steps greatly exceeds
@@ -131,7 +131,7 @@ an index.</p>
 <p>This interface is used to retrieve and reset counter values from
 a <a href="../c3ref/stmt.html">prepared statement</a>.  The first argument is the prepared statement
 object to be interrogated.  The second argument
-is an integer code for a specific <a href="../c3ref/c_stmtstatus_autoindex.html">counter</a>
+is an integer code for a specific <a href="../c3ref/c_stmtstatus_counter.html">SQLITE_STMTSTATUS counter</a>
 to be interrogated.
 The current value of the requested counter is returned.
 If the resetFlg is true, then the counter is reset to zero after this

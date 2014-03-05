@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Number of columns in a result set</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -124,7 +124,13 @@ current row of the result set of <a href="../c3ref/stmt.html">prepared statement
 If prepared statement P does not have results ready to return
 (via calls to the <a href="../c3ref/column_blob.html">sqlite3_column_*()</a> of
 interfaces) then sqlite3_data_count(P) returns 0.
-The sqlite3_data_count(P) routine also returns 0 if P is a NULL pointer.</p>
+The sqlite3_data_count(P) routine also returns 0 if P is a NULL pointer.
+The sqlite3_data_count(P) routine returns 0 if the previous call to
+<a href="../c3ref/step.html">sqlite3_step</a>(P) returned <a href="../c3ref/c_abort.html">SQLITE_DONE</a>.  The sqlite3_data_count(P)
+will return non-zero if previous call to <a href="../c3ref/step.html">sqlite3_step</a>(P) returned
+<a href="../c3ref/c_abort.html">SQLITE_ROW</a>, except in the case of the <a href="../pragma.html#pragma_incremental_vacuum">PRAGMA incremental_vacuum</a>
+where it always returns zero since each step of that multi-step
+pragma returns 0 columns of data.</p>
 
 <p>See also: <a href="../c3ref/column_count.html">sqlite3_column_count()</a>
 </p><p>See also lists of

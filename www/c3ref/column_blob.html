@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Result Values From A Query</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -186,7 +186,7 @@ of the string.  For clarity: the values returned by
 bytes in the string, not the number of characters.</p>
 
 <p>Strings returned by sqlite3_column_text() and sqlite3_column_text16(),
-even empty strings, are always zero terminated.  The return
+even empty strings, are always zero-terminated.  The return
 value from sqlite3_column_blob() for a zero-length BLOB is a NULL pointer.</p>
 
 <p>The object returned by <a href="../c3ref/column_blob.html">sqlite3_column_value()</a> is an

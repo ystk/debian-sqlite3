@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Write-Ahead Logging</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -143,8 +143,10 @@ a rollback journal.  Advantages include:</p>
 <p>But there are also disadvantages:</p>
 
 <ol>
-<li>WAL is only available when the <a href="c3ref/vfs.html">VFS</a> 
-    supports shared-memory primitives.  The built-in unix and windows VFSes
+<li>WAL normally requires that the <a href="vfs.html">VFS</a> 
+    support shared-memory primitives.
+    (Exception: <a href="wal.html#noshm">WAL without shared memory</a>)
+    The built-in unix and windows VFSes
     support this but third-party extension VFSes for custom operating
     systems might not.
 <li>All processes using a database must be on the same host computer;
@@ -217,7 +219,9 @@ there are now three primitive operations:  reading, writing, and
 checkpointing.</p>
 
 <p>By default, SQLite does a checkpoint automatically when the WAL file
-reaches a threshold size of 1000 pages.  Applications using WAL do
+reaches a threshold size of 1000 pages.  (The
+<a href="compile.html#default_wal_autocheckpoint">SQLITE_DEFAULT_WAL_AUTOCHECKPOINT</a> compile-time option can be used to
+specify a different default.) Applications using WAL do
 not have to do anything in order to for these checkpoints to occur.  
 But if they want to, applications can adjust the automatic checkpoint
 threshold.  Or they can turn off the automatic checkpoints and run 
@@ -365,7 +369,7 @@ PRAGMA journal_mode=WAL;
 
 <p>The journal_mode pragma returns a string which is the new journal mode.
 On success, the pragma will return the string "<tt>wal</tt>".  If 
-the conversion to WAL could not be completed (for example, if the VFS
+the conversion to WAL could not be completed (for example, if the <a href="vfs.html">VFS</a>
 does not support the necessary shared-memory primitives) then the
 journaling mode will be unchanged and the string returned from the
 primitive will be the prior journaling mode (for example "<tt>delete</tt>").
@@ -432,7 +436,7 @@ there exist a hash table in shared memory over the content of the WAL file.
 This hash table is called the <a href="fileformat2.html#walindexformat">wal-index</a>.
 The wal-index is in shared memory, and so technically it does not have 
 to have a name in the host computer filesystem.  Custom
-<a href="c3ref/vfs.html">VFS</a> implementations are free to implement shared 
+<a href="vfs.html">VFS</a> implementations are free to implement shared 
 memory in any way they see fit, but the default unix and windows 
 drivers that come built-in with SQLite implement shared memory
 using <a href="http://en.wikipedia.org/wiki/Mmap">mmapped files</a>
@@ -484,11 +488,49 @@ which often prevents any real disk I/O from ever happening.</p>
 
 <p>Specialized applications for which the default implementation of
 shared memory is unacceptable can devise alternative methods via a
-custom <a href="c3ref/vfs.html">VFS</a>.  
+custom <a href="vfs.html">VFS</a>.  
 For example, if it is known that a particular database
 will only be accessed by threads within a single process, the wal-index
 can be implemented using heap memory instead of true shared memory.</p>
 
+<a name="noshm"></a>
+
+<h2>Use of WAL Without Shared-Memory</h2>
+
+<p>Beginning in SQLite version 3.7.4, WAL databases can be created, read, and
+written even if shared memory is unavailable as long as the
+<a href="pragma.html#pragma_locking_mode">locking_mode</a> is set to EXCLUSIVE before the first attempted access.
+In other words, a process can interact with
+a WAL database without using shared memory if that
+process is guaranteed to be the only process accessing the database.
+This feature allows WAL databases to be created, read, and written
+by legacy <a href="vfs.html">VFSes</a> that lack the "version 2" shared-memory
+methods xShmMap, xShmLock, xShmBarrier, and xShmUnmap on the
+<a href="c3ref/io_methods.html">sqlite3_io_methods</a> object.</p>
+
+<p>If EXCLUSIVE locking mode is set prior to the first WAL-mode 
+database access, then SQLite never attempts to call any of the
+shared-memory methods and hence no shared-memory
+wal-index is ever created.
+In that case, the database connection remains in EXCLUSIVE mode
+as long as the journal mode is WAL; attempts to change the locking
+mode using "<tt>PRAGMA locking_mode=NORMAL;</tt>" are no-ops.
+The only way to change out of EXCLUSIVE locking mode is to first
+change out of WAL journal mode.</p>
+
+<p>If NORMAL locking mode is in effect for the first WAL-mode database
+access, then the shared-memory wal-index is created.  This means that the
+underlying VFS must support the "version 2" shared-memory.
+If the VFS does not support shared-memory methods, then the attempt to
+open a database that is already in WAL mode, or the attempt convert a
+database into WAL mode, will fail.
+As long a connection is using a shared-memory wal-index, the locking
+mode can be changed freely between NORMAL and EXCLUSIVE.  It is only
+when the shared-memory wal-index is omitted, when the locking mode is
+EXCLUSIVE prior to the first WAL-mode database access, that the locking
+mode is stuck in EXCLUSIVE.</p>
+
+<a name="bkwrds"></a>
 
 <h2>Backwards Compatibility</h2>
 

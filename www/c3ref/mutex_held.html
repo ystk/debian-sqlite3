@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Mutex Verification Routines</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -134,14 +134,14 @@ defined and if NDEBUG is not defined.</p>
 <p>These routines should return true if the mutex in their argument
 is held or not held, respectively, by the calling thread.</p>
 
-<p>The implementation is not required to provided versions of these
+<p>The implementation is not required to provide versions of these
 routines that actually work. If the implementation does not provide working
 versions of these routines, it should at least provide stubs that always
 return true so that one does not get spurious assertion failures.</p>
 
 <p>If the argument to sqlite3_mutex_held() is a NULL pointer then
 the routine should return 1.   This seems counter-intuitive since
-clearly the mutex cannot be held if it does not exist.  But the
+clearly the mutex cannot be held if it does not exist.  But
 the reason the mutex does not exist is because the build is not
 using mutexes.  And we do not want the assert() containing the
 call to sqlite3_mutex_held() to fail, so a non-zero return is

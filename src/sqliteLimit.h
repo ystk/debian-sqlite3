@@ -118,7 +118,7 @@
 
 /*
 ** The maximum number of attached databases.  This must be between 0
-** and 30.  The upper bound on 30 is because a 32-bit integer bitmap
+** and 62.  The upper bound on 62 is because a 64-bit integer bitmap
 ** is used internally to track attached databases.
 */
 #ifndef SQLITE_MAX_ATTACHED
@@ -169,7 +169,7 @@
 ** SQLite will choose on its own.
 */
 #ifndef SQLITE_MAX_DEFAULT_PAGE_SIZE
-# define SQLITE_MAX_DEFAULT_PAGE_SIZE 8192
+# define SQLITE_MAX_DEFAULT_PAGE_SIZE 32768
 #endif
 #if SQLITE_MAX_DEFAULT_PAGE_SIZE>SQLITE_MAX_PAGE_SIZE
 # undef SQLITE_MAX_DEFAULT_PAGE_SIZE

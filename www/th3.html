@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite TH3</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -129,28 +129,33 @@ a:visited { color: #734559 }
 TH3 is designed to meet the following objectives:</p>
 
 <ul>
-<li><p> TH3 will work on embedded platforms that lack the support
+<li><p> TH3 runs on embedded platforms that lack the support
      infrastructure of workstations.</p></li>
 
-<li><p> TH3 will test SQLite in an as-deployed configuration, without the
-     need to enable special test hooks in the core SQLite library. </p></li>
+<li><p> TH3 tests SQLite in an as-deployed configuration using only
+     published and documented interfaces.
+     In other words, TH3 tests the compiled object code, not
+     the source code, thus verifying that no problems were introduced
+     by compiler bugs.</p></li>
 
-<li><p> TH3 will test SQLite's response to out-of-memory errors, disk I/O
+<li><p> TH3 checks SQLite's response to out-of-memory errors, disk I/O
      errors, and power loss during transaction commit. </p></li>
 
-<li><p> TH3 will test SQLite in a variety of configurations (UTF8 vs UTF16,
-     different pages sizes, varying journal modes, etc.) </p></li>
+<li><p> TH3 exercises SQLite in a variety of run-time configurations
+     (UTF8 vs UTF16, different pages sizes, varying journal modes, etc.)
+     </p></li>
 
-<li><p> TH3 will achieve 100% branch test coverage. </p></li>
+<li><p> TH3 achieves 100% branch test coverage over SQLite core.
+    (Test coverage of the operating-system specific <a href="vfs.html">VFSes</a> and extensions
+    such as FTS and RTREE is less than 100%). </p></li>
 </ul>
 
-<p>TH3 is intended for validation testing.
-Though it could be used for testing during development and debugging,
-TH3 is not designed for that purpose.
-The original TCL-based test suite for SQLite will continue to serve
-as the primary platform for development and debug testing.
-The reason that TH3 exists is that it meets other objectives that are
-difficult to achieve with the TCL-based tests.</p>
+<p>TH3 was originally written for validation testing only, but has
+subsequently been used for development testing and debugging
+as well, and has proven very helpful in those roles.  A full-coverage
+test run for TH3 takes less than 10 minutes on a workstation and hence
+serves as a fast but effect regression test during day-to-day maintenance
+of the SQLite code base.</p>
 
 <h2>2.0 Operation</h2>
 

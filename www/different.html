@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Distinctive Features Of SQLite</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -213,7 +213,8 @@ database engines.
 <p><b>Compact</b></p>
 <blockquote>
   When optimized for size, the whole SQLite library with everything enabled
-  is less than 275KiB in size (as measured on an ix86 using the "size"
+  is [footprint | less than 350KiB in size]
+  (as measured on an ix86 using the "size"
   utility from the GNU compiler suite.)  Unneeded features can be disabled
   at compile-time to further reduce the size of the library to under
   190KiB if desired.
@@ -223,7 +224,7 @@ database engines.
   jar file - an order of magnitude larger than SQLite even after it is
   compressed!
   Firebird boasts that its client-side library is only 350KiB.  That's
-  50% larger than SQLite and does not even contain the database engine.
+  as big as SQLite and does not even contain the database engine.
   The Berkeley DB library from Oracle is 450KiB and it omits SQL
   support, providing the programmer with only simple key/value pairs.
 </blockquote>

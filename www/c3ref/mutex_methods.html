@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Mutex Methods Object</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -138,10 +138,10 @@ sufficient, however the user has the option of substituting a custom
 implementation for specialized deployments or systems for which SQLite
 does not provide a suitable implementation. In this case, the user
 creates and populates an instance of this structure to pass
-to sqlite3_config() along with the <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MUTEX</a> option.
+to sqlite3_config() along with the <a href="../c3ref/c_config_getmalloc.html#sqliteconfigmutex">SQLITE_CONFIG_MUTEX</a> option.
 Additionally, an instance of this structure can be used as an
 output variable when querying the system for the current mutex
-implementation, using the <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_GETMUTEX</a> option.</p>
+implementation, using the <a href="../c3ref/c_config_getmalloc.html#sqliteconfiggetmutex">SQLITE_CONFIG_GETMUTEX</a> option.</p>
 
 <p>The xMutexInit method defined by this structure is invoked as
 part of system initialization by the sqlite3_initialize() function.

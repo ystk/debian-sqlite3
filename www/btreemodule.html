@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>No Title</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -1116,6 +1116,7 @@ structure within the database.</span></p>
 
 
       <pre class=api>int sqlite3BtreeOpen(
+  sqlite3_vfs *pVfs,       /* VFS to use with this b-tree */
   const char *zFilename,   /* Name of database file to open */
   sqlite3 *db,             /* Associated database connection */
   Btree **ppBtree,         /* Return open Btree* here */
@@ -1150,7 +1151,7 @@ attempt to open a connection to a <a class=defnlink href="#glossary_Persistent_d
       symbols.
 
       <pre class=api>#define BTREE_OMIT_JOURNAL  1  /* Do not create or use a rollback journal */
-#define BTREE_NO_READLOCK   2  /* Omit readlocks on readonly files */</pre>
+</pre>
 
       <p class=req id=H51005><span>If the BTREE_OMIT_JOURNAL bit is set in the flags parameter passed to a 
 successful call to sqlite3BtreeOpen to open a <a class=defnlink href="#glossary_Temporary_database">temporary database</a>, then the
@@ -1239,7 +1240,7 @@ int sqlite3BtreeSetPageSize(Btree *p, int nPagesize, int nReserve, int eFix);</p
 
 
       <pre class=api>int sqlite3BtreeSetCacheSize(Btree*,int);
-int sqlite3BtreeSetSafetyLevel(Btree*,int,int);
+int sqlite3BtreeSetSafetyLevel(Btree*,int,int,int);
 int sqlite3BtreeMaxPageCount(Btree*,int);</pre>
 
     <p>
@@ -1282,11 +1283,8 @@ return a pointer to a buffer to a nul-terminated string zero bytes in length
     <h2 id="section_3_5">3.5 Mutex Functions</h2>
 
 
-      <pre class=api>typedef struct BtreeMutexArray BtreeMutexArray;
-struct BtreeMutexArray {
-  int nMutex;
-  Btree *aBtree}; hd_resolve_one {SQLITE_MAX_ATTACHED+1}; hd_puts {;
-};</pre>
+      <pre class=api>
+</pre>
 
       <pre class=api>void sqlite3BtreeEnter(Btree*);
 void sqlite3BtreeEnterAll(sqlite3*);
@@ -1294,18 +1292,18 @@ void sqlite3BtreeLeave(Btree*);
 void sqlite3BtreeEnterCursor(BtCursor*);
 void sqlite3BtreeLeaveCursor(BtCursor*);
 void sqlite3BtreeLeaveAll(sqlite3*);
-void sqlite3BtreeMutexArrayEnter(BtreeMutexArray*);
-void sqlite3BtreeMutexArrayLeave(BtreeMutexArray*);
-void sqlite3BtreeMutexArrayInsert(BtreeMutexArray*, Btree*);</pre>
+
+
+</pre>
 
     <h2 id="section_3_6">3.6 Transaction and Savepoint API</h2>
 
 
       <pre class=api>int sqlite3BtreeBeginTrans(Btree*,int);
 int sqlite3BtreeCommitPhaseOne(Btree*, const char *zMaster);
-int sqlite3BtreeCommitPhaseTwo(Btree*);
+int sqlite3BtreeCommitPhaseTwo(Btree*, int);
 int sqlite3BtreeCommit(Btree*);
-int sqlite3BtreeRollback(Btree*);</pre>
+int sqlite3BtreeRollback(Btree*,int);</pre>
 
       <pre class=api>int sqlite3BtreeBeginStmt(Btree*,int);
 int sqlite3BtreeSavepoint(Btree *, int, int);</pre>
@@ -1414,7 +1412,7 @@ struct KeyInfo {
 struct UnpackedRecord {
   KeyInfo *pKeyInfo;  /* Collation and sort-order information */
   u16 nField;         /* Number of entries in apMem}; hd_resolve_one {}; hd_puts { */
-  u16 flags;          /* Boolean settings.  UNPACKED_... below */
+  u8 flags;           /* Boolean settings.  UNPACKED_... below */
   i64 rowid;          /* Used by UNPACKED_PREFIX_SEARCH */
   Mem *aMem;          /* Values */
 };</pre>

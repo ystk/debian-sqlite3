@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: UPDATE</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -138,7 +138,7 @@ assignment specifies a column name to the left of the equals sign and a
 scalar expression to the right. For each affected row, the named columns
 are set to the values found by evaluating the corresponding scalar 
 expressions. If a single column-name appears more than once in the list of
-assignment expressions, all but the rightmost occurence is ignored. Columns
+assignment expressions, all but the rightmost occurrence is ignored. Columns
 that do not appear in the list of assignments are left unmodified. The scalar
 expressions may refer to columns of the row being updated. In this case all
 scalar expressions are evaluated before any assignments are made.

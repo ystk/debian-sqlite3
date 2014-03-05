@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Release 3.7.1 On 2010 August 23 (3.7.1)</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -117,15 +117,15 @@ a:visited { color: #734559 }
 </td></tr></table>
 <div class=startsearch></div>
   
-<h2>SQLite Release 3.7.1 On 2010 August 23 (3.7.1)</h2><p>Changes associated with this release include the following:</p><p><ul>
-<li> Added new commands <a href="../c3ref/c_dbstatus_cache_used.html">SQLITE_DBSTATUS_SCHEMA_USED</a> and
-     <a href="../c3ref/c_dbstatus_cache_used.html">SQLITE_DBSTATUS_STMT_USED</a> to the <a href="../c3ref/db_status.html">sqlite3_db_status()</a> interface, in
+<h2>SQLite Release 3.7.1 On 2010 August 23 (3.7.1)</h2><p><ul>
+<li> Added new commands <a href="../c3ref/c_dbstatus_options.html#sqlitedbstatusschemaused">SQLITE_DBSTATUS_SCHEMA_USED</a> and
+     <a href="../c3ref/c_dbstatus_options.html#sqlitedbstatusstmtused">SQLITE_DBSTATUS_STMT_USED</a> to the <a href="../c3ref/db_status.html">sqlite3_db_status()</a> interface, in
      order to report out the amount of memory used to hold the schema and
      prepared statements of a connection.
 <li> Increase the maximum size of a database pages from 32KiB to 64KiB.
 <li> Use the <a href="../optoverview.html#like_opt">LIKE optimization</a> even if the right-hand side string contains
      no wildcards.
-<li> Added the <a href="../c3ref/c_fcntl_chunk_size.html">SQLITE_FCNTL_CHUNK_SIZE</a> verb to the <a href="../c3ref/file_control.html">sqlite3_file_control()</a>
+<li> Added the <a href="../c3ref/c_fcntl_chunk_size.html#sqlitefcntlchunksize">SQLITE_FCNTL_CHUNK_SIZE</a> verb to the <a href="../c3ref/file_control.html">sqlite3_file_control()</a>
      interface for both unix and windows, to cause database files to grow in
      large chunks in order to reduce disk fragmentation.
 <li> Fixed a bug in the query planner that caused performance regressions

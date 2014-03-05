@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Dynamically Typed Value Object</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -131,12 +131,12 @@ Every interface that accepts sqlite3_value arguments specifies
 whether or not it requires a protected sqlite3_value.</p>
 
 <p>The terms "protected" and "unprotected" refer to whether or not
-a mutex is held.  A internal mutex is held for a protected
+a mutex is held.  An internal mutex is held for a protected
 sqlite3_value object but no mutex is held for an unprotected
 sqlite3_value object.  If SQLite is compiled to be single-threaded
 (with <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> and with <a href="../c3ref/threadsafe.html">sqlite3_threadsafe()</a> returning 0)
 or if SQLite is run in one of reduced mutex modes
-<a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_SINGLETHREAD</a> or <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MULTITHREAD</a>
+<a href="../c3ref/c_config_getmalloc.html#sqliteconfigsinglethread">SQLITE_CONFIG_SINGLETHREAD</a> or <a href="../c3ref/c_config_getmalloc.html#sqliteconfigmultithread">SQLITE_CONFIG_MULTITHREAD</a>
 then there is no distinction between protected and unprotected
 sqlite3_value objects and they can be used interchangeably.  However,
 for maximum code portability it is recommended that applications

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: ATTACH DATABASE</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -122,6 +122,19 @@ a:visited { color: #734559 }
 
 <p> The ATTACH DATABASE statement adds another database 
 file to the current <a href="c3ref/sqlite3.html">database connection</a>. 
+The filename for the database to be attached is the value of
+the expression that occurs before the AS keyword.
+The filename of the database follows the same semantics as the
+filename argument to <a href="c3ref/open.html">sqlite3_open()</a> and <a href="c3ref/open.html">sqlite3_open_v2()</a>; the
+special name "<a href="inmemorydb.html">:memory:</a>" results in an <a href="inmemorydb.html">in-memory database</a> and an
+empty string results in a new temporary database.
+The filename argument can be a <a href="uri.html">URI filename</a> if URI filename processing
+is enable on the database connection.  The default behavior is for
+URI filenames to be disabled, however that might change in a future release
+of SQLite, so application developers are advised to plan accordingly.
+
+<p>The name that occurs after the AS keyword is the name of the database
+used internally by SQLite.
 The database-names 'main' and 
 'temp' refer to the main database and the database used for 
 temporary tables.  The main and temp databases cannot be attached or
@@ -148,7 +161,7 @@ might not.
 </p>
 
 <p> There is a limit, set using <a href="c3ref/limit.html">sqlite3_limit()</a> and 
-<a href="c3ref/c_limit_attached.html">SQLITE_LIMIT_ATTACHED</a>, to the number of databases that can be
+<a href="c3ref/c_limit_attached.html#sqlitelimitattached">SQLITE_LIMIT_ATTACHED</a>, to the number of databases that can be
 simultaneously attached to a single database connection.</p>
 
 

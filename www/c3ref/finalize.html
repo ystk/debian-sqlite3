@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Destroy A Prepared Statement Object</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -120,11 +120,11 @@ a:visited { color: #734559 }
 <a href="intro.html"><h2>SQLite C Interface</h2></a><h2>Destroy A Prepared Statement Object</h2><blockquote><pre>int sqlite3_finalize(sqlite3_stmt *pStmt);
 </pre></blockquote><p>
 The sqlite3_finalize() function is called to delete a <a href="../c3ref/stmt.html">prepared statement</a>.
-If the most recent evaluation of the statement encountered no errors or
+If the most recent evaluation of the statement encountered no errors
 or if the statement is never been evaluated, then sqlite3_finalize() returns
 SQLITE_OK.  If the most recent evaluation of statement S failed, then
 sqlite3_finalize(S) returns the appropriate <a href="../c3ref/c_abort.html">error code</a> or
-<a href="../c3ref/c_busy_recovery.html">extended error code</a>.</p>
+<a href="../c3ref/c_abort_rollback.html">extended error code</a>.</p>
 
 <p>The sqlite3_finalize(S) routine can be called at any point during
 the life cycle of <a href="../c3ref/stmt.html">prepared statement</a> S:

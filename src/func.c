@@ -29,6 +29,14 @@ static CollSeq *sqlite3GetFuncCollSeq(sqlite3_context *context){
 }
 
 /*
+** Indicate that the accumulator load should be skipped on this
+** iteration of the aggregate loop.
+*/
+static void sqlite3SkipAccumulatorLoad(sqlite3_context *context){
+  context->skipFlag = 1;
+}
+
+/*
 ** Implementation of the non-aggregate min() and max() functions
 */
 static void minmaxFunc(
@@ -332,16 +340,15 @@ static void upperFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
   if( z2 ){
     z1 = contextMalloc(context, ((i64)n)+1);
     if( z1 ){
-      memcpy(z1, z2, n+1);
-      for(i=0; z1[i]; i++){
-        z1[i] = (char)sqlite3Toupper(z1[i]);
+      for(i=0; i<n; i++){
+        z1[i] = (char)sqlite3Toupper(z2[i]);
       }
-      sqlite3_result_text(context, z1, -1, sqlite3_free);
+      sqlite3_result_text(context, z1, n, sqlite3_free);
     }
   }
 }
 static void lowerFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
-  u8 *z1;
+  char *z1;
   const char *z2;
   int i, n;
   UNUSED_PARAMETER(argc);
@@ -352,11 +359,10 @@ static void lowerFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
   if( z2 ){
     z1 = contextMalloc(context, ((i64)n)+1);
     if( z1 ){
-      memcpy(z1, z2, n+1);
-      for(i=0; z1[i]; i++){
-        z1[i] = sqlite3Tolower(z1[i]);
+      for(i=0; i<n; i++){
+        z1[i] = sqlite3Tolower(z2[i]);
       }
-      sqlite3_result_text(context, (char *)z1, -1, sqlite3_free);
+      sqlite3_result_text(context, z1, n, sqlite3_free);
     }
   }
 }
@@ -410,7 +416,7 @@ static void randomFunc(
     ** 2s complement of that positive value.  The end result can
     ** therefore be no less than -9223372036854775807.
     */
-    r = -(r ^ (((sqlite3_int64)1)<<63));
+    r = -(r & LARGEST_INT64);
   }
   sqlite3_result_int64(context, r);
 }
@@ -506,10 +512,10 @@ struct compareInfo {
 ** whereas only characters less than 0x80 do in ASCII.
 */
 #if defined(SQLITE_EBCDIC)
-# define sqlite3Utf8Read(A,C)    (*(A++))
-# define GlogUpperToLower(A)     A = sqlite3UpperToLower[A]
+# define sqlite3Utf8Read(A,C)  (*(A++))
+# define GlogUpperToLower(A)   A = sqlite3UpperToLower[A]
 #else
-# define GlogUpperToLower(A)     if( A<0x80 ){ A = sqlite3UpperToLower[A]; }
+# define GlogUpperToLower(A)   if( !((A)&~0x7f) ){ A = sqlite3UpperToLower[A]; }
 #endif
 
 static const struct compareInfo globInfo = { '*', '?', '[', 0 };
@@ -552,9 +558,9 @@ static int patternCompare(
   const u8 *zPattern,              /* The glob pattern */
   const u8 *zString,               /* The string to compare against the glob */
   const struct compareInfo *pInfo, /* Information about how to do the compare */
-  const int esc                    /* The escape character */
+  u32 esc                          /* The escape character */
 ){
-  int c, c2;
+  u32 c, c2;
   int invert;
   int seen;
   u8 matchOne = pInfo->matchOne;
@@ -608,7 +614,7 @@ static int patternCompare(
         return 0;
       }
     }else if( c==matchSet ){
-      int prior_c = 0;
+      u32 prior_c = 0;
       assert( esc==0 );    /* This only occurs for GLOB, not LIKE */
       seen = 0;
       invert = 0;
@@ -684,7 +690,7 @@ static void likeFunc(
   sqlite3_value **argv
 ){
   const unsigned char *zA, *zB;
-  int escape = 0;
+  u32 escape = 0;
   int nPat;
   sqlite3 *db = sqlite3_context_db_handle(context);
 
@@ -772,6 +778,21 @@ static void sourceidFunc(
   /* IMP: R-24470-31136 This function is an SQL wrapper around the
   ** sqlite3_sourceid() C interface. */
   sqlite3_result_text(context, sqlite3_sourceid(), -1, SQLITE_STATIC);
+}
+
+/*
+** Implementation of the sqlite_log() function.  This is a wrapper around
+** sqlite3_log().  The return value is NULL.  The function exists purely for
+** its side-effects.
+*/
+static void errlogFunc(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  UNUSED_PARAMETER(argc);
+  UNUSED_PARAMETER(context);
+  sqlite3_log(sqlite3_value_int(argv[0]), "%s", sqlite3_value_text(argv[1]));
 }
 
 /*
@@ -1239,13 +1260,8 @@ static void sumStep(sqlite3_context *context, int argc, sqlite3_value **argv){
     if( type==SQLITE_INTEGER ){
       i64 v = sqlite3_value_int64(argv[0]);
       p->rSum += v;
-      if( (p->approx|p->overflow)==0 ){
-        i64 iNewSum = p->iSum + v;
-        int s1 = (int)(p->iSum >> (sizeof(i64)*8-1));
-        int s2 = (int)(v       >> (sizeof(i64)*8-1));
-        int s3 = (int)(iNewSum >> (sizeof(i64)*8-1));
-        p->overflow = ((s1&s2&~s3) | (~s1&~s2&s3))?1:0;
-        p->iSum = iNewSum;
+      if( (p->approx|p->overflow)==0 && sqlite3AddInt64(&p->iSum, v) ){
+        p->overflow = 1;
       }
     }else{
       p->rSum += sqlite3_value_double(argv[0]);
@@ -1326,11 +1342,12 @@ static void minmaxStep(
   Mem *pBest;
   UNUSED_PARAMETER(NotUsed);
 
-  if( sqlite3_value_type(argv[0])==SQLITE_NULL ) return;
   pBest = (Mem *)sqlite3_aggregate_context(context, sizeof(*pBest));
   if( !pBest ) return;
 
-  if( pBest->flags ){
+  if( sqlite3_value_type(argv[0])==SQLITE_NULL ){
+    if( pBest->flags ) sqlite3SkipAccumulatorLoad(context);
+  }else if( pBest->flags ){
     int max;
     int cmp;
     CollSeq *pColl = sqlite3GetFuncCollSeq(context);
@@ -1346,6 +1363,8 @@ static void minmaxStep(
     cmp = sqlite3MemCompare(pBest, pArg, pColl);
     if( (max && cmp<0) || (!max && cmp>0) ){
       sqlite3VdbeMemCopy(pBest, pArg);
+    }else{
+      sqlite3SkipAccumulatorLoad(context);
     }
   }else{
     sqlite3VdbeMemCopy(pBest, pArg);
@@ -1355,7 +1374,7 @@ static void minMaxFinalize(sqlite3_context *context){
   sqlite3_value *pRes;
   pRes = (sqlite3_value *)sqlite3_aggregate_context(context, 0);
   if( pRes ){
-    if( ALWAYS(pRes->flags) ){
+    if( pRes->flags ){
       sqlite3_result_value(context, pRes);
     }
     sqlite3VdbeMemRelease(pRes);
@@ -1450,9 +1469,9 @@ void sqlite3RegisterLikeFunctions(sqlite3 *db, int caseSensitive){
   }else{
     pInfo = (struct compareInfo*)&likeInfoNorm;
   }
-  sqlite3CreateFunc(db, "like", 2, SQLITE_ANY, pInfo, likeFunc, 0, 0, 0);
-  sqlite3CreateFunc(db, "like", 3, SQLITE_ANY, pInfo, likeFunc, 0, 0, 0);
-  sqlite3CreateFunc(db, "glob", 2, SQLITE_ANY, 
+  sqlite3CreateFunc(db, "like", 2, SQLITE_UTF8, pInfo, likeFunc, 0, 0, 0);
+  sqlite3CreateFunc(db, "like", 3, SQLITE_UTF8, pInfo, likeFunc, 0, 0, 0);
+  sqlite3CreateFunc(db, "glob", 2, SQLITE_UTF8, 
       (struct compareInfo*)&globInfo, likeFunc, 0, 0, 0);
   setLikeOptFlag(db, "glob", SQLITE_FUNC_LIKE | SQLITE_FUNC_CASE);
   setLikeOptFlag(db, "like", 
@@ -1523,8 +1542,8 @@ void sqlite3RegisterGlobalFunctions(void){
     FUNCTION(max,               -1, 1, 1, minmaxFunc       ),
     FUNCTION(max,                0, 1, 1, 0                ),
     AGGREGATE(max,               1, 1, 1, minmaxStep,      minMaxFinalize ),
-    FUNCTION(typeof,             1, 0, 0, typeofFunc       ),
-    FUNCTION(length,             1, 0, 0, lengthFunc       ),
+    FUNCTION2(typeof,            1, 0, 0, typeofFunc,  SQLITE_FUNC_TYPEOF),
+    FUNCTION2(length,            1, 0, 0, lengthFunc,  SQLITE_FUNC_LENGTH),
     FUNCTION(substr,             2, 0, 0, substrFunc       ),
     FUNCTION(substr,             3, 0, 0, substrFunc       ),
     FUNCTION(abs,                1, 0, 0, absFunc          ),
@@ -1536,16 +1555,15 @@ void sqlite3RegisterGlobalFunctions(void){
     FUNCTION(lower,              1, 0, 0, lowerFunc        ),
     FUNCTION(coalesce,           1, 0, 0, 0                ),
     FUNCTION(coalesce,           0, 0, 0, 0                ),
-/*  FUNCTION(coalesce,          -1, 0, 0, ifnullFunc       ), */
-    {-1,SQLITE_UTF8,SQLITE_FUNC_COALESCE,0,0,ifnullFunc,0,0,"coalesce",0,0},
+    FUNCTION2(coalesce,         -1, 0, 0, ifnullFunc,  SQLITE_FUNC_COALESCE),
     FUNCTION(hex,                1, 0, 0, hexFunc          ),
-/*  FUNCTION(ifnull,             2, 0, 0, ifnullFunc       ), */
-    {2,SQLITE_UTF8,SQLITE_FUNC_COALESCE,0,0,ifnullFunc,0,0,"ifnull",0,0},
+    FUNCTION2(ifnull,            2, 0, 0, ifnullFunc,  SQLITE_FUNC_COALESCE),
     FUNCTION(random,             0, 0, 0, randomFunc       ),
     FUNCTION(randomblob,         1, 0, 0, randomBlob       ),
     FUNCTION(nullif,             2, 0, 1, nullifFunc       ),
     FUNCTION(sqlite_version,     0, 0, 0, versionFunc      ),
     FUNCTION(sqlite_source_id,   0, 0, 0, sourceidFunc     ),
+    FUNCTION(sqlite_log,         2, 0, 0, errlogFunc       ),
 #ifndef SQLITE_OMIT_COMPILEOPTION_DIAGS
     FUNCTION(sqlite_compileoption_used,1, 0, 0, compileoptionusedFunc  ),
     FUNCTION(sqlite_compileoption_get, 1, 0, 0, compileoptiongetFunc  ),

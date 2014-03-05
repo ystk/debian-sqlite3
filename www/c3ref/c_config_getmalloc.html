@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Configuration Options</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -130,9 +130,12 @@ a:visited { color: #734559 }
 #define SQLITE_CONFIG_GETMUTEX     11  /* sqlite3_mutex_methods* */
 /* previously SQLITE_CONFIG_CHUNKALLOC 12 which is now unused. */ 
 #define SQLITE_CONFIG_LOOKASIDE    13  /* int int */
-#define SQLITE_CONFIG_PCACHE       14  /* sqlite3_pcache_methods* */
-#define SQLITE_CONFIG_GETPCACHE    15  /* sqlite3_pcache_methods* */
+#define SQLITE_CONFIG_PCACHE       14  /* no-op */
+#define SQLITE_CONFIG_GETPCACHE    15  /* no-op */
 #define SQLITE_CONFIG_LOG          16  /* xFunc, void* */
+#define SQLITE_CONFIG_URI          17  /* int */
+#define SQLITE_CONFIG_PCACHE2      18  /* sqlite3_pcache_methods2* */
+#define SQLITE_CONFIG_GETPCACHE2   19  /* sqlite3_pcache_methods2* */
 </pre></blockquote><p>
 These constants are the available integer configuration options that
 can be passed as the first argument to the <a href="../c3ref/config.html">sqlite3_config()</a> interface.</p>
@@ -145,7 +148,8 @@ non-zero <a href="../c3ref/c_abort.html">error code</a> if a discontinued or uns
 is invoked.</p>
 
 <p><dl>
-<dt>SQLITE_CONFIG_SINGLETHREAD</dt>
+<a name="sqliteconfigsinglethread"></a>
+ <dt>SQLITE_CONFIG_SINGLETHREAD</dt>
 <dd>There are no arguments to this option.  This option sets the
 <a href="../threadsafe.html">threading mode</a> to Single-thread.  In other words, it disables
 all mutexing and puts SQLite into a mode where it can only be used
@@ -156,7 +160,8 @@ value of Single-thread and so <a href="../c3ref/config.html">sqlite3_config()</a
 <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the SQLITE_CONFIG_SINGLETHREAD
 configuration option.</dd></p>
 
-<p><dt>SQLITE_CONFIG_MULTITHREAD</dt>
+<p><a name="sqliteconfigmultithread"></a>
+ <dt>SQLITE_CONFIG_MULTITHREAD</dt>
 <dd>There are no arguments to this option.  This option sets the
 <a href="../threadsafe.html">threading mode</a> to Multi-thread.  In other words, it disables
 mutexing on <a href="../c3ref/sqlite3.html">database connection</a> and <a href="../c3ref/stmt.html">prepared statement</a> objects.
@@ -170,7 +175,8 @@ it is not possible to set the Multi-thread <a href="../threadsafe.html">threadin
 <a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the
 SQLITE_CONFIG_MULTITHREAD configuration option.</dd></p>
 
-<p><dt>SQLITE_CONFIG_SERIALIZED</dt>
+<p><a name="sqliteconfigserialized"></a>
+ <dt>SQLITE_CONFIG_SERIALIZED</dt>
 <dd>There are no arguments to this option.  This option sets the
 <a href="../threadsafe.html">threading mode</a> to Serialized. In other words, this option enables
 all mutexes including the recursive
@@ -186,7 +192,8 @@ it is not possible to set the Serialized <a href="../threadsafe.html">threading 
 <a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the
 SQLITE_CONFIG_SERIALIZED configuration option.</dd></p>
 
-<p><dt>SQLITE_CONFIG_MALLOC</dt>
+<p><a name="sqliteconfigmalloc"></a>
+ <dt>SQLITE_CONFIG_MALLOC</dt>
 <dd> This option takes a single argument which is a pointer to an
 instance of the <a href="../c3ref/mem_methods.html">sqlite3_mem_methods</a> structure.  The argument specifies
 alternative low-level memory allocation routines to be used in place of
@@ -194,7 +201,8 @@ the memory allocation routines built into SQLite. SQLite makes
 its own private copy of the content of the <a href="../c3ref/mem_methods.html">sqlite3_mem_methods</a> structure
 before the <a href="../c3ref/config.html">sqlite3_config()</a> call returns.</dd></p>
 
-<p><dt>SQLITE_CONFIG_GETMALLOC</dt>
+<p><a name="sqliteconfiggetmalloc"></a>
+ <dt>SQLITE_CONFIG_GETMALLOC</dt>
 <dd> This option takes a single argument which is a pointer to an
 instance of the <a href="../c3ref/mem_methods.html">sqlite3_mem_methods</a> structure.  The <a href="../c3ref/mem_methods.html">sqlite3_mem_methods</a>
 structure is filled with the currently defined memory allocation routines.
@@ -202,7 +210,8 @@ This option can be used to overload the default memory allocation
 routines with a wrapper that simulations memory allocation failure or
 tracks memory usage, for example. </dd></p>
 
-<p><dt>SQLITE_CONFIG_MEMSTATUS</dt>
+<p><a name="sqliteconfigmemstatus"></a>
+ <dt>SQLITE_CONFIG_MEMSTATUS</dt>
 <dd> This option takes single argument of type int, interpreted as a
 boolean, which enables or disables the collection of memory allocation
 statistics. When memory allocation statistics are disabled, the
@@ -218,10 +227,11 @@ compiled with <a href="../compile.html#default_memstatus">SQLITE_DEFAULT_MEMSTAT
 allocation statistics are disabled by default.
 </dd></p>
 
-<p><dt>SQLITE_CONFIG_SCRATCH</dt>
+<p><a name="sqliteconfigscratch"></a>
+ <dt>SQLITE_CONFIG_SCRATCH</dt>
 <dd> This option specifies a static memory buffer that SQLite can use for
 scratch memory.  There are three arguments:  A pointer an 8-byte
-aligned memory buffer from which the scrach allocations will be
+aligned memory buffer from which the scratch allocations will be
 drawn, the size of each scratch allocation (sz),
 and the maximum number of scratch allocations (N).  The sz
 argument must be a multiple of 16.
@@ -234,11 +244,12 @@ times the database page size. If SQLite needs needs additional
 scratch memory beyond what is provided by this configuration option, then
 <a href="../c3ref/free.html">sqlite3_malloc()</a> will be used to obtain the memory needed.</dd></p>
 
-<p><dt>SQLITE_CONFIG_PAGECACHE</dt>
+<p><a name="sqliteconfigpagecache"></a>
+ <dt>SQLITE_CONFIG_PAGECACHE</dt>
 <dd> This option specifies a static memory buffer that SQLite can use for
-the database page cache with the default page cache implemenation.
+the database page cache with the default page cache implementation.
 This configuration should not be used if an application-define page
-cache implementation is loaded using the SQLITE_CONFIG_PCACHE option.
+cache implementation is loaded using the SQLITE_CONFIG_PCACHE2 option.
 There are three arguments to this option: A pointer to 8-byte aligned
 memory, the size of each page buffer (sz), and the number of pages (N).
 The sz argument should be the size of the largest database page
@@ -255,22 +266,26 @@ The pointer in the first argument must
 be aligned to an 8-byte boundary or subsequent behavior of SQLite
 will be undefined.</dd></p>
 
-<p><dt>SQLITE_CONFIG_HEAP</dt>
+<p><a name="sqliteconfigheap"></a>
+ <dt>SQLITE_CONFIG_HEAP</dt>
 <dd> This option specifies a static memory buffer that SQLite will use
 for all of its dynamic memory allocation needs beyond those provided
-for by <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_SCRATCH</a> and <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_PAGECACHE</a>.
+for by <a href="../c3ref/c_config_getmalloc.html#sqliteconfigscratch">SQLITE_CONFIG_SCRATCH</a> and <a href="../c3ref/c_config_getmalloc.html#sqliteconfigpagecache">SQLITE_CONFIG_PAGECACHE</a>.
 There are three arguments: An 8-byte aligned pointer to the memory,
 the number of bytes in the memory buffer, and the minimum allocation size.
 If the first pointer (the memory pointer) is NULL, then SQLite reverts
 to using its default memory allocator (the system malloc() implementation),
-undoing any prior invocation of <a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MALLOC</a>.  If the
+undoing any prior invocation of <a href="../c3ref/c_config_getmalloc.html#sqliteconfigmalloc">SQLITE_CONFIG_MALLOC</a>.  If the
 memory pointer is not NULL and either <a href="../compile.html#enable_memsys3">SQLITE_ENABLE_MEMSYS3</a> or
 <a href="../compile.html#enable_memsys5">SQLITE_ENABLE_MEMSYS5</a> are defined, then the alternative memory
 allocator is engaged to handle all of SQLites memory allocation needs.
 The first pointer (the memory pointer) must be aligned to an 8-byte
-boundary or subsequent behavior of SQLite will be undefined.</dd></p>
+boundary or subsequent behavior of SQLite will be undefined.
+The minimum allocation size is capped at 2**12. Reasonable values
+for the minimum allocation size are 2**5 through 2**8.</dd></p>
 
-<p><dt>SQLITE_CONFIG_MUTEX</dt>
+<p><a name="sqliteconfigmutex"></a>
+ <dt>SQLITE_CONFIG_MUTEX</dt>
 <dd> This option takes a single argument which is a pointer to an
 instance of the <a href="../c3ref/mutex_methods.html">sqlite3_mutex_methods</a> structure.  The argument specifies
 alternative low-level mutex routines to be used in place
@@ -282,7 +297,8 @@ the entire mutexing subsystem is omitted from the build and hence calls to
 <a href="../c3ref/config.html">sqlite3_config()</a> with the SQLITE_CONFIG_MUTEX configuration option will
 return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>.</dd></p>
 
-<p><dt>SQLITE_CONFIG_GETMUTEX</dt>
+<p><a name="sqliteconfiggetmutex"></a>
+ <dt>SQLITE_CONFIG_GETMUTEX</dt>
 <dd> This option takes a single argument which is a pointer to an
 instance of the <a href="../c3ref/mutex_methods.html">sqlite3_mutex_methods</a> structure.  The
 <a href="../c3ref/mutex_methods.html">sqlite3_mutex_methods</a>
@@ -295,28 +311,32 @@ the entire mutexing subsystem is omitted from the build and hence calls to
 <a href="../c3ref/config.html">sqlite3_config()</a> with the SQLITE_CONFIG_GETMUTEX configuration option will
 return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>.</dd></p>
 
-<p><dt>SQLITE_CONFIG_LOOKASIDE</dt>
+<p><a name="sqliteconfiglookaside"></a>
+ <dt>SQLITE_CONFIG_LOOKASIDE</dt>
 <dd> This option takes two arguments that determine the default
 memory allocation for the lookaside memory allocator on each
 <a href="../c3ref/sqlite3.html">database connection</a>.  The first argument is the
 size of each lookaside buffer slot and the second is the number of
 slots allocated to each database connection.  This option sets the
-<i>default</i> lookaside size. The <a href="../c3ref/c_dbconfig_lookaside.html">SQLITE_DBCONFIG_LOOKASIDE</a>
+<i>default</i> lookaside size. The <a href="../c3ref/c_dbconfig_enable_fkey.html">SQLITE_DBCONFIG_LOOKASIDE</a>
 verb to <a href="../c3ref/db_config.html">sqlite3_db_config()</a> can be used to change the lookaside
 configuration on individual connections. </dd></p>
 
-<p><dt>SQLITE_CONFIG_PCACHE</dt>
+<p><a name="sqliteconfigpcache2"></a>
+ <dt>SQLITE_CONFIG_PCACHE2</dt>
 <dd> This option takes a single argument which is a pointer to
-an <a href="../c3ref/pcache_methods.html">sqlite3_pcache_methods</a> object.  This object specifies the interface
+an <a href="../c3ref/pcache_methods2.html">sqlite3_pcache_methods2</a> object.  This object specifies the interface
 to a custom page cache implementation.  SQLite makes a copy of the
 object and uses it for page cache memory allocations.</dd></p>
 
-<p><dt>SQLITE_CONFIG_GETPCACHE</dt>
+<p><a name="sqliteconfiggetpcache2"></a>
+ <dt>SQLITE_CONFIG_GETPCACHE2</dt>
 <dd> This option takes a single argument which is a pointer to an
-<a href="../c3ref/pcache_methods.html">sqlite3_pcache_methods</a> object.  SQLite copies of the current
+<a href="../c3ref/pcache_methods2.html">sqlite3_pcache_methods2</a> object.  SQLite copies of the current
 page cache implementation into that object. </dd></p>
 
-<p><dt>SQLITE_CONFIG_LOG</dt>
+<p><a name="sqliteconfiglog"></a>
+ <dt>SQLITE_CONFIG_LOG</dt>
 <dd> The SQLITE_CONFIG_LOG option takes two arguments: a pointer to a
 function with a call signature of void(*)(void*,int,const char*),
 and a pointer to void. If the function pointer is not NULL, it is
@@ -327,14 +347,34 @@ passed through as the first parameter to the application-defined logger
 function whenever that function is invoked.  The second parameter to
 the logger function is a copy of the first parameter to the corresponding
 <a href="../c3ref/log.html">sqlite3_log()</a> call and is intended to be a <a href="../c3ref/c_abort.html">result code</a> or an
-<a href="../c3ref/c_busy_recovery.html">extended result code</a>.  The third parameter passed to the logger is
+<a href="../c3ref/c_abort_rollback.html">extended result code</a>.  The third parameter passed to the logger is
 log message after formatting via <a href="../c3ref/mprintf.html">sqlite3_snprintf()</a>.
 The SQLite logging interface is not reentrant; the logger function
 supplied by the application must not invoke any SQLite interface.
 In a multi-threaded application, the application-defined logger
 function must be threadsafe. </dd></p>
 
-<p></dl>
+<p><a name="sqliteconfiguri"></a>
+ <dt>SQLITE_CONFIG_URI
+<dd> This option takes a single argument of type int. If non-zero, then
+URI handling is globally enabled. If the parameter is zero, then URI handling
+is globally disabled. If URI handling is globally enabled, all filenames
+passed to <a href="../c3ref/open.html">sqlite3_open()</a>, <a href="../c3ref/open.html">sqlite3_open_v2()</a>, <a href="../c3ref/open.html">sqlite3_open16()</a> or
+specified as part of <a href="../lang_attach.html">ATTACH</a> commands are interpreted as URIs, regardless
+of whether or not the <a href="../c3ref/c_open_autoproxy.html">SQLITE_OPEN_URI</a> flag is set when the database
+connection is opened. If it is globally disabled, filenames are
+only interpreted as URIs if the SQLITE_OPEN_URI flag is set when the
+database connection is opened. By default, URI handling is globally
+disabled. The default value may be changed by compiling with the
+<a href="../compile.html#use_uri">SQLITE_USE_URI</a> symbol defined.</p>
+
+<p><a name="sqliteconfigpcache"></a>
+ <a name="sqliteconfiggetpcache"></a>
+
+<dt>SQLITE_CONFIG_PCACHE and SQLITE_CONFIG_GETPCACHE
+<dd> These options are obsolete and should not be used by new code.
+They are retained for backwards compatibility but are now no-ops.
+</dl>
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,
   <a href="constlist.html">Constants</a>, and

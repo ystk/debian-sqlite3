@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Unlock-Notify API</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -144,9 +144,9 @@ a:visited { color: #734559 }
 <span style="color:blue;font-style:italic">*/</span>
 typedef struct UnlockNotification UnlockNotification;
 struct UnlockNotification {
-  int fired;                           <span style="color:blue;font-style:italic">/* True after unlock event has occured */</span>
-  pthread_cond_t cond;                 <span style="color:blue;font-style:italic">/* Condition variable to wait on */</span>
-  pthread_mutex_t mutex;               <span style="color:blue;font-style:italic">/* Mutex to protect structure */</span>
+  int fired;                         <span style="color:blue;font-style:italic">/* True after unlock event has occurred */</span>
+  pthread_cond_t cond;               <span style="color:blue;font-style:italic">/* Condition variable to wait on */</span>
+  pthread_mutex_t mutex;             <span style="color:blue;font-style:italic">/* Mutex to protect structure */</span>
 };
 
 <span style="color:blue;font-style:italic">/*</span>
@@ -481,7 +481,7 @@ int sqlite3_blocking_prepare_v2(
 
   <p>
     The caller could distinguish between this special "DROP TABLE|INDEX" 
-    case and other cases by using <a href="c3ref/c_busy_recovery.html">extended error codes</a>. When it is appropriate
+    case and other cases by using <a href="c3ref/c_abort_rollback.html">extended error codes</a>. When it is appropriate
     to call <a href="c3ref/unlock_notify.html">sqlite3_unlock_notify()</a>, the extended error code is
     SQLITE_LOCKED_SHAREDCACHE. Otherwise, in the "DROP TABLE|INDEX" case,
     it is just plain SQLITE_LOCKED. Another solution might be to limit

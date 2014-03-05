@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Is Self-Contained</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -156,9 +156,8 @@ be also be omitted from the build using compile-time options.
 
 <p>
 Communications between SQLite and the operating system and disk are
-mediated through an interchangeable 
-<a href="c3ref/vfs.html">Virtual File System (VFS)</a> layer.
-VFS modules for Unix (Linux and Mac OS X), OS/2, and Windows (Win32 and WinCE)
+mediated through an interchangeable <a href="vfs.html">VFS</a> layer.
+VFS modules for Unix and Windows
 are provided in the source tree.  It is a simple matter to devise an
 alternative VFS for embedded devices.
 </p>
@@ -168,7 +167,7 @@ For safe operation in multi-threaded environments, SQLite requires
 the use of mutexes.  Appropriate mutex libraries are linked automatically
 for Win32 and POSIX platforms.  For other systems, mutex primitives
 can be added at start-time using the 
-<a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MUTEX</a>,...) interface.
+<a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_getmalloc.html#sqliteconfigmutex">SQLITE_CONFIG_MUTEX</a>,...) interface.
 Mutexes are only required if SQLite is
 used by more than one thread at a time.
 </p>

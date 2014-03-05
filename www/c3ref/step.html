@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Evaluate An SQL Statement</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -134,12 +134,12 @@ interface will continue to be supported.</p>
 <p>In the legacy interface, the return value will be either <a href="../c3ref/c_abort.html">SQLITE_BUSY</a>,
 <a href="../c3ref/c_abort.html">SQLITE_DONE</a>, <a href="../c3ref/c_abort.html">SQLITE_ROW</a>, <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>, or <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a>.
 With the "v2" interface, any of the other <a href="../c3ref/c_abort.html">result codes</a> or
-<a href="../c3ref/c_busy_recovery.html">extended result codes</a> might be returned as well.</p>
+<a href="../c3ref/c_abort_rollback.html">extended result codes</a> might be returned as well.</p>
 
 <p><a href="../c3ref/c_abort.html">SQLITE_BUSY</a> means that the database engine was unable to acquire the
 database locks it needs to do its job.  If the statement is a <a href="../lang_transaction.html">COMMIT</a>
 or occurs outside of an explicit transaction, then you can retry the
-statement.  If the statement is not a <a href="../lang_transaction.html">COMMIT</a> and occurs within a
+statement.  If the statement is not a <a href="../lang_transaction.html">COMMIT</a> and occurs within an
 explicit transaction then you should rollback the transaction before
 continuing.</p>
 
@@ -169,13 +169,17 @@ previously returned <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> or <a href=
 be the case that the same database connection is being used by two or
 more threads at the same moment in time.</p>
 
-<p>For all versions of SQLite up to and including 3.6.23.1, it was required
-after sqlite3_step() returned anything other than <a href="../c3ref/c_abort.html">SQLITE_ROW</a> that
-<a href="../c3ref/reset.html">sqlite3_reset()</a> be called before any subsequent invocation of
-sqlite3_step().  Failure to invoke <a href="../c3ref/reset.html">sqlite3_reset()</a> in this way would
-result in an <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a> return from sqlite3_step().  But after
-version 3.6.23.1, sqlite3_step() began calling <a href="../c3ref/reset.html">sqlite3_reset()</a>
-automatically in this circumstance rather than returning <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a>.</p>
+<p>For all versions of SQLite up to and including 3.6.23.1, a call to
+<a href="../c3ref/reset.html">sqlite3_reset()</a> was required after sqlite3_step() returned anything
+other than <a href="../c3ref/c_abort.html">SQLITE_ROW</a> before any subsequent invocation of
+sqlite3_step().  Failure to reset the prepared statement using
+<a href="../c3ref/reset.html">sqlite3_reset()</a> would result in an <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a> return from
+sqlite3_step().  But after version 3.6.23.1, sqlite3_step() began
+calling <a href="../c3ref/reset.html">sqlite3_reset()</a> automatically in this circumstance rather
+than returning <a href="../c3ref/c_abort.html">SQLITE_MISUSE</a>.  This is not considered a compatibility
+break because any application that ever receives an SQLITE_MISUSE error
+is broken by definition.  The <a href="../compile.html#omit_autoreset">SQLITE_OMIT_AUTORESET</a> compile-time option
+can be used to restore the legacy behavior.</p>
 
 <p><b>Goofy Interface Alert:</b> In the legacy interface, the sqlite3_step()
 API always returns a generic error code, <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>, following any

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: CREATE TABLE</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -254,7 +254,7 @@ the new row are determined by their default values, as follows:
     used in the new row.
 
   <li><p>If the default value of a column is CURRENT_TIME, CURRENT_DATE or
-    CURRENT_DATETIME, then the value used in the new row is a text
+    CURRENT_TIMESTAMP, then the value used in the new row is a text
     representation of the current UTC date and/or time. For CURRENT_TIME, the
     format of the value is "HH:MM:SS". For CURRENT_DATE, "YYYY-MM-DD". The
     format for CURRENT_TIMESTAMP is "YYYY-MM-DD HH:MM:SS".
@@ -273,6 +273,8 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
 
 <h3>SQL Data Constraints</h3>
 
+<a name="primkeyconst"></a>
+
 <p>Each table in SQLite may have at most one <b>PRIMARY KEY</b>. If the
   keywords PRIMARY KEY are added to a column definition, then the primary key
   for the table consists of that single column. Or, if a PRIMARY KEY clause 
@@ -283,7 +285,7 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
 
 <p>If a table has a single column primary key, and the declared type of that
   column is "INTEGER", then the column is known as an <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>.
-  See below for a description of the special properties and behaviours
+  See below for a description of the special properties and behaviors
   associated with an <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>.
 
 <p>Each row in a table with a primary key must feature a unique combination
@@ -303,6 +305,8 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
   aware, however, that we may change SQLite to conform to the SQL standard in
   future and should design new programs accordingly.
 
+<a name="uniqueconst"></a>
+
 <p>A <b>UNIQUE</b> constraint is similar to a PRIMARY KEY constraint, except
   that a single table may have any number of UNIQUE constraints. For each
   UNIQUE constraint on the table, each row must feature a unique combination
@@ -321,6 +325,8 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
   in creating an index on a set of columns that are already collectively
   subject to a UNIQUE or PRIMARY KEY constraint.
 
+<a name="ckconst"></a>
+
 <p>A <b>CHECK</b> constraint may be attached to a column definition or
   specified as a table constraint. In practice it makes no difference. Each
   time a new row is inserted into the table or an existing row is updated,
@@ -329,15 +335,18 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
   result is zero (integer value 0 or real value 0.0), then a constraint
   violation has occurred. If the CHECK expression evaluates to NULL, or
   any other non-zero value, it is not a constraint violation.
+  The expression of a CHECK constraint may not contain a subquery.
 
 <p>CHECK constraints have been supported since <a href="releaselog/3_3_0.html">version 3.3.0</a>. Prior to
   version 3.3.0, CHECK constraints were parsed but not enforced.
 
-<p>A <b>NOT NULL</b> constraint may only be attached to a single column.
-  Not surprisingly, a NOT NULL constraint dictates that the associated column
-  may not contain a NULL value. Attempting to set the column value to NULL
-  when inserting a new row or updating an existing one causes a constraint
-  violation.
+<a name="notnullconst"></a>
+
+<p>A <b>NOT NULL</b> constraint may only be attached to a column definition,
+  not specified as a table constraint.  Not surprisingly, a NOT NULL
+  constraint dictates that the associated column may not contain a NULL value.
+  Attempting to set the column value to NULL when inserting a new row or
+  updating an existing one causes a constraint violation.
 
 <p>Exactly how a constraint violation is dealt with is determined by the
   <a href="lang_conflict.html">constraint conflict resolution algorithm</a>. Each 
@@ -355,49 +364,39 @@ runtime using the <a href="c3ref/limit.html">sqlite3_limit()</a> C/C++ interface
 <h3>ROWIDs and the INTEGER PRIMARY KEY</h3>
 
 <p>Every row of every SQLite table has a 64-bit signed integer key 
-that is unique within the same table.
-This integer is usually called the "rowid".  The rowid is the actual key used
-in the B-Tree that implements an SQLite table.  Rows are stored in
-rowid order. The
-rowid value can be accessed using one of the special names
-"<b>ROWID</b>", "<b>OID</b>", or "<b>_ROWID_</b>" assuming those names
-are no used by other conventional table columns.</p>
+that uniquely identifies the row within its table. This integer is usually
+called the "rowid". The rowid value can be accessed using one of the special
+case-independent names "rowid", "oid", or "_rowid_" in place of a column name.
+If a table contains a user defined column named "rowid", "oid" or "_rowid_",
+then that name always refers the explicitly declared column and cannot be used
+to retrieve the integer rowid value.
 
-<p>
-If a column is declared to be an INTEGER PRIMARY KEY, then that column is not
-a "real" database column but instead becomes
-an alias for the rowid.  Unlike normal SQLite columns, the rowid
-must be a non-NULL integer value.  The rowid is not able to hold
-floating point values, strings, BLOBs, or NULLs.</p>
+<p>The data for each table in SQLite is stored as a B-Tree structure containing
+an entry for each table row, using the rowid value as the key. This means that
+retrieving or sorting records by rowid is fast. Searching for a record with a
+specific rowid, or for all records with rowids within a specified range is
+around twice as fast as a similar search made by specifying any other PRIMARY
+KEY or indexed value.
 
-<blockquote><i>
-An INTEGER PRIMARY KEY column is an alias for the 64-bit signed integer rowid.
-</i></blockquote>
+<p> With one exception, if a table has a primary key that consists of a single
+column, and the declared type of that column is "INTEGER" in any mixture of
+upper and lower case, then the column becomes an alias for the rowid. Such a
+column is usually referred to as an "integer primary key". A PRIMARY KEY column
+only becomes an integer primary key if the declared type name is exactly
+"INTEGER".  Other integer type names like "INT" or "BIGINT" or "SHORT INTEGER"
+or "UNSIGNED INTEGER" causes the primary key column to behave as an ordinary
+table column with integer <a href="datatype3.html#affinity">affinity</a> and a unique index, not as an alias for
+the rowid.
 
-<p>An INTEGER PRIMARY KEY column can also include the
-keyword <a href="autoinc.html">AUTOINCREMENT</a>.  The <a href="autoinc.html">AUTOINCREMENT</a> keyword modified the way
-that B-Tree keys are automatically generated.  Additional detail
-on automatic B-Tree key generation is available
-<a href="autoinc.html">separately</a>.</p>
-
-<p>The special behavior of INTEGER PRIMARY KEY
-is only available if the type name is exactly "INTEGER" in any mixture
-of upper and lower case.  Other integer type names
-like "INT" or "BIGINT" or "SHORT INTEGER" or "UNSIGNED INTEGER"
-causes the primary key column to behave as an ordinary table column with
-integer <a href="datatype3.html#affinity">affinity</a> and a unique index, not as an alias for the rowid.
-The special behavior of INTEGER PRIMARY KEY is only available if the
-primary key is a single column.  Multi-column primary keys do not become
-aliases for the rowid.
-The AUTOINCREMENT keyword only works on a column that is an alias
-for the rowid.</p>
-
-<p>Note that searches against a rowid are generally about twice as
-fast as searches against any other PRIMARY KEY or indexed value.
-</p>
-
-<p><b>Goofy behavior alert:</b>  The following three declarations all cause
-the column "x" be an alias for the rowid:</p>
+<p> The exception mentioned above is that if the declaration of a column with
+declared type "INTEGER" includes an "PRIMARY KEY DESC" clause, it does not
+become an alias for the rowid and is not classified as an integer primary key.
+This quirk is not by design. It is due to a bug in early versions of SQLite.
+But fixing the bug could result in very serious backwards incompatibilities.
+The SQLite developers feel that goofy behavior in a corner case is far better
+than a compatibility break, so the original behavior is retained. This means
+that the following three table declarations all cause the column "x" to be an
+alias for the rowid (an integer primary key):
 
 <ul>
 <li><tt>CREATE TABLE t(x INTEGER PRIMARY KEY ASC, y, z);</tt>
@@ -405,17 +404,34 @@ the column "x" be an alias for the rowid:</p>
 <li><tt>CREATE TABLE t(x INTEGER, y, z, PRIMARY KEY(x DESC));</tt>
 </ul>
 
-<p>But, in contrast, the following declaration does <u>not</u> result in
-"x" being an alias for the rowid:</p>
-
+<p>But the following declaration does not result in "x" being an alias for
+the rowid:
 <ul>
 <li><tt>CREATE TABLE t(x INTEGER PRIMARY KEY DESC, y, z);</tt>
 </ul>
 
-<p>This asymmetrical behavior is unfortunate and is really due to a bug
-in the parser in early versions of SQLite.  But fixing the bug would
-result in very serious backwards incompatibilities.  The SQLite developers
-feel that goofy behavior in an corner case is far better than
-a compatibility break, so the original behavior is retained.</p>
+<p>Rowid values may be modified using an UPDATE statement in the same
+way as any other column value can, either using one of the built-in aliases
+("rowid", "oid" or "_rowid_") or by using an alias created by an integer
+primary key. Similarly, an INSERT statement may provide a value to use as the
+rowid for each row inserted. Unlike normal SQLite columns, an integer primary
+key or rowid column must contain integer values. Integer primary key or rowid
+columns are not able to hold floating point values, strings, BLOBs, or NULLs.
+
+<p>If an UPDATE statement attempts to set an integer primary key or rowid column
+to a NULL or blob value, or to a string or real value that cannot be losslessly
+converted to an integer, a "datatype mismatch" error occurs and the statement
+is aborted. If an INSERT statement attempts to insert a blob value, or a string
+or real value that cannot be losslessly converted to an integer into an
+integer primary key or rowid column, a "datatype mismatch" error occurs and the
+statement is aborted.
+
+<p>If an INSERT statement attempts to insert a NULL value into a rowid or
+integer primary key column, the system chooses an integer value to use as the
+rowid automatically. A detailed description of how this is done is provided
+<a href="autoinc.html">separately</a>.</p>
+
+<p>The <a href="foreignkeys.html#parentchild">parent key</a> of a <a href="foreignkeys.html">foreign key constraint</a> is not allowed to
+use the rowid.  The parent key must used named columns only.</p>
 
 

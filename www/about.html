@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>About SQLite</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -147,7 +147,6 @@ a:visited { color: #734559 }
 <li> <a href="tclsqlite.html">The TCL Interface Spec</a>
 <li> <a href="http://www.sqlite.org/src/timeline">Development Timeline</a> </li>
 <li> <a href="http://www.sqlite.org/src/wiki?name=Bug+Reports">Report a Bug</a> </li>
-<li> <a href="http://www.sqlite.org/cvstrac/wiki">Wiki</a> </li>
 </ul></p>
 </table>
 
@@ -179,11 +178,12 @@ Think of SQLite not as a replacement for
 as a replacement for <a href="http://man.he.net/man3/fopen">fopen()</a></p>
 
 <p>SQLite is a compact library.
-With all features enabled, the library size can be less than 300KiB,
-depending on compiler optimization settings.  (Some compiler optimizations
+With all features enabled, the <a href="footprint.html">library size</a> can be less than 350KiB,
+depending on the target platform and compiler optimization settings.
+(64-bit code is larger.  And some compiler optimizations
 such as aggressive function inlining and loop unrolling can cause the
 object code to be much larger.)  If optional features are omitted, the
-size of the SQLite library can be reduced below 180KiB.  SQLite can also
+size of the SQLite library can be reduced below 200KiB.  SQLite can also
 be made to run in minimal stack space (4KiB) and
 very little heap (100KiB), making SQLite a popular database engine 
 choice on memory constrained gadgets such as cellphones, PDAs, and MP3 players.

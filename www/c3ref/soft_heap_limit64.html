@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Impose A Limit On Heap Size</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -130,7 +130,8 @@ an <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a> error.  In other words, the 
 is advisory only.</p>
 
 <p>The return value from sqlite3_soft_heap_limit64() is the size of
-the soft heap limit prior to the call.  If the argument N is negative
+the soft heap limit prior to the call, or negative in the case of an
+error.  If the argument N is negative
 then no change is made to the soft heap limit.  Hence, the current
 size of the soft heap limit can be determined by invoking
 sqlite3_soft_heap_limit64() with a negative argument.</p>
@@ -143,12 +144,12 @@ if one or more of following conditions are true:</p>
 <p><ul>
 <li> The soft heap limit is set to zero.
 <li> Memory accounting is disabled using a combination of the
-<a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_MEMSTATUS</a>,...) start-time option and
+<a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html#sqliteconfigmemstatus">SQLITE_CONFIG_MEMSTATUS</a>,...) start-time option and
 the <a href="../compile.html#default_memstatus">SQLITE_DEFAULT_MEMSTATUS</a> compile-time option.
-<li> An alternative page cache implementation is specifed using
-<a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_PCACHE</a>,...).
+<li> An alternative page cache implementation is specified using
+<a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html#sqliteconfigpcache2">SQLITE_CONFIG_PCACHE2</a>,...).
 <li> The page cache allocates from its own memory pool supplied
-by <a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html">SQLITE_CONFIG_PAGECACHE</a>,...) rather than
+by <a href="../c3ref/config.html">sqlite3_config</a>(<a href="../c3ref/c_config_getmalloc.html#sqliteconfigpagecache">SQLITE_CONFIG_PAGECACHE</a>,...) rather than
 from the heap.
 </ul></p>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Query Language: DELETE</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -186,7 +186,7 @@ would be deleted in the absence of the LIMIT clause are assembled in an
 arbitrary order before applying the LIMIT and OFFSET clauses to determine 
 the subset that are actually deleted.
 
-<p>The ORDER BY clause on an DELETE statement is used only to determine which
+<p>The ORDER BY clause on a DELETE statement is used only to determine which
 rows fall within the LIMIT. The order in which rows are deleted is arbitrary
 and is not influenced by the ORDER BY clause.
 

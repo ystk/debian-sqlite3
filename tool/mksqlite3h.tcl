@@ -53,7 +53,7 @@ set in [open $TOP/manifest]
 set zDate {}
 while {![eof $in]} {
   set line [gets $in]
-  if {[regexp {^D (2.*[0-9])} $line all date]} {
+  if {[regexp {^D (2[-0-9T:]+)} $line all date]} {
     set zDate [string map {T { }} $date]
     break
   }
@@ -64,6 +64,9 @@ close $in
 #
 set varpattern {^[a-zA-Z][a-zA-Z_0-9 *]+sqlite3_[_a-zA-Z0-9]+(\[|;| =)}
 set declpattern {^ *[a-zA-Z][a-zA-Z_0-9 ]+ \**sqlite3_[_a-zA-Z0-9]+\(}
+
+# Force the output to use unix line endings, even on Windows.
+fconfigure stdout -translation lf
 
 # Process the src/sqlite.h.in ext/rtree/sqlite3rtree.h files.
 #

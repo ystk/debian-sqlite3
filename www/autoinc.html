@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>SQLite Autoincrement</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -196,9 +196,10 @@ SQLITE_FULL error.
 
 <p>
 SQLite keeps track of the largest ROWID that a table has ever held using
-the special SQLITE_SEQUENCE table.  The SQLITE_SEQUENCE table is created
+an <a href="fileformat2.html#intschema">internal table</a> named "<a href="fileformat2.html#seqtab">sqlite_sequence</a>".
+The sqlite_sequence table is created
 and initialized automatically whenever a normal table that contains an
-AUTOINCREMENT column is created.  The content of the SQLITE_SEQUENCE table
+AUTOINCREMENT column is created.  The content of the sqlite_sequence table
 can be modified using ordinary UPDATE, INSERT, and DELETE statements.
 But making modifications to this table will likely perturb the AUTOINCREMENT
 key generation algorithm.  Make sure you know what you are doing before

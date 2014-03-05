@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Query Planning</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -149,6 +149,8 @@ what is going on behind the scenes with SQLite, which in turn should make
 it easier for programmers to create the indices that will help the SQLite
 query planner to pick the best plans.
 </p>
+
+<a name="searching"></a>
 
 <h2>1.0 Searching</h2>
 
@@ -377,7 +379,7 @@ Figure 7: Indexed Lookup Of California Oranges
 One approach to this query is to use the fruit='Orange' term of the WHERE
 clause to find all rows dealing with oranges, then filter those rows
 by rejecting any that are from states other than California.  This
-process is shows by <a href="#fig7">figure 7</a> above.  This is a perfectly
+process is shown by <a href="#fig7">figure 7</a> above.  This is a perfectly
 reasonable approach in most cases.  Yes, the database engine did have
 to do an extra binary search for the Florida orange row that was
 later rejected, so it was not as efficient as we might hope, though
@@ -569,6 +571,8 @@ And for most queries, the difference between 1 microsecond and
 2 microseconds is unlikely to be noticed.
 </p>
 
+<a name="or_in_where"></a>
+
 <h3>1.8 OR-Connected Terms In The WHERE Clause</h3>
 
 <p>
@@ -623,7 +627,7 @@ binary searches.
 
 <p>
 One can see how the OR-by-UNION technique could also be leveraged to
-use multiple indices on query where the WHERE clause has terms connected
+use multiple indices on queries where the WHERE clause has terms connected
 by AND, by using an intersect operator in place of union.  Many SQL
 database engines will do just that.  But the performance gain over using
 just a single index is slight and so SQLite does not implement that technique
@@ -759,13 +763,13 @@ time, and so this case could go either way depending on the table size and
 what WHERE clause constraints were available, and so forth.  But generally
 speaking, the indexed sort would probably be chosen, if for no other
 reason, because it does not need to accumulate the entire result set in
-temporary before sorting and thus uses much less temporary storage.
+temporary storage before sorting and thus uses much less temporary storage.
 </p>
 
 <h3>2.3 Sorting By Covering Index</h3>
 
 <p>
-If a covering index can be used for a query, then the multiple rowid looks
+If a covering index can be used for a query, then the multiple rowid lookups
 can be avoided and the cost of the query drops dramatically.
 </p>
 
@@ -859,7 +863,7 @@ bottom to get the desired results.
 The rows that satisfy the WHERE clause are guaranteed to be adjacent
 since the WHERE clause is an equality constraint on the left-most
 column of the index.  And by scanning the matching index rows from
-top to bottom, the output is guaranteed to be order by state since the
+top to bottom, the output is guaranteed to be ordered by state since the
 state column is the very next column to the right of the fruit column.
 And so the resulting query is very efficient.
 </p>

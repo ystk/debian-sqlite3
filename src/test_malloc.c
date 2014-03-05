@@ -713,14 +713,14 @@ static int test_memdebug_settitle(
   int objc,
   Tcl_Obj *CONST objv[]
 ){
-  const char *zTitle;
   if( objc!=2 ){
     Tcl_WrongNumArgs(interp, 1, objv, "TITLE");
     return TCL_ERROR;
   }
-  zTitle = Tcl_GetString(objv[1]);
 #ifdef SQLITE_MEMDEBUG
   {
+    const char *zTitle;
+    zTitle = Tcl_GetString(objv[1]);
     extern int sqlite3MemdebugSettitle(const char*);
     sqlite3MemdebugSettitle(zTitle);
   }
@@ -1033,7 +1033,6 @@ static int test_config_lookaside(
   int objc,
   Tcl_Obj *CONST objv[]
 ){
-  int rc;
   int sz, cnt;
   Tcl_Obj *pRet;
   if( objc!=3 ){
@@ -1049,7 +1048,7 @@ static int test_config_lookaside(
   Tcl_ListObjAppendElement(
       interp, pRet, Tcl_NewIntObj(sqlite3GlobalConfig.nLookaside)
   );
-  rc = sqlite3_config(SQLITE_CONFIG_LOOKASIDE, sz, cnt);
+  sqlite3_config(SQLITE_CONFIG_LOOKASIDE, sz, cnt);
   Tcl_SetObjResult(interp, pRet);
   return TCL_OK;
 }
@@ -1106,7 +1105,6 @@ static int test_config_heap(
   Tcl_Obj *CONST objv[]
 ){
   static char *zBuf; /* Use this memory */
-  static int szBuf;  /* Bytes allocated for zBuf */
   int nByte;         /* Size of buffer to pass to sqlite3_config() */
   int nMinAlloc;     /* Size of minimum allocation */
   int rc;            /* Return code of sqlite3_config() */
@@ -1124,11 +1122,9 @@ static int test_config_heap(
   if( nByte==0 ){
     free( zBuf );
     zBuf = 0;
-    szBuf = 0;
     rc = sqlite3_config(SQLITE_CONFIG_HEAP, (void*)0, 0, 0);
   }else{
     zBuf = realloc(zBuf, nByte);
-    szBuf = nByte;
     rc = sqlite3_config(SQLITE_CONFIG_HEAP, zBuf, nByte, nMinAlloc);
   }
 
@@ -1175,6 +1171,35 @@ static int test_config_error(
 }
 
 /*
+** tclcmd:     sqlite3_config_uri  BOOLEAN
+**
+** Invoke sqlite3_config() or sqlite3_db_config() with invalid
+** opcodes and verify that they return errors.
+*/
+static int test_config_uri(
+  void * clientData, 
+  Tcl_Interp *interp,
+  int objc,
+  Tcl_Obj *CONST objv[]
+){
+  int rc;
+  int bOpenUri;
+
+  if( objc!=2 ){
+    Tcl_WrongNumArgs(interp, 1, objv, "BOOL");
+    return TCL_ERROR;
+  }
+  if( Tcl_GetBooleanFromObj(interp, objv[1], &bOpenUri) ){
+    return TCL_ERROR;
+  }
+
+  rc = sqlite3_config(SQLITE_CONFIG_URI, bOpenUri);
+  Tcl_SetResult(interp, (char *)sqlite3TestErrorName(rc), TCL_VOLATILE);
+
+  return TCL_OK;
+}
+
+/*
 ** Usage:    
 **
 **   sqlite3_dump_memsys3  FILENAME
@@ -1193,7 +1218,7 @@ static int test_dump_memsys3(
     return TCL_ERROR;
   }
 
-  switch( (int)clientData ){
+  switch( SQLITE_PTR_TO_INT(clientData) ){
     case 3: {
 #ifdef SQLITE_ENABLE_MEMSYS3
       extern void sqlite3Memsys3Dump(const char*);
@@ -1290,18 +1315,26 @@ static int test_db_status(
     const char *zName;
     int op;
   } aOp[] = {
-    { "SQLITE_DBSTATUS_LOOKASIDE_USED",    SQLITE_DBSTATUS_LOOKASIDE_USED   },
-    { "SQLITE_DBSTATUS_CACHE_USED",        SQLITE_DBSTATUS_CACHE_USED       },
-    { "SQLITE_DBSTATUS_SCHEMA_USED",       SQLITE_DBSTATUS_SCHEMA_USED      },
-    { "SQLITE_DBSTATUS_STMT_USED",         SQLITE_DBSTATUS_STMT_USED        }
+    { "LOOKASIDE_USED",      SQLITE_DBSTATUS_LOOKASIDE_USED      },
+    { "CACHE_USED",          SQLITE_DBSTATUS_CACHE_USED          },
+    { "SCHEMA_USED",         SQLITE_DBSTATUS_SCHEMA_USED         },
+    { "STMT_USED",           SQLITE_DBSTATUS_STMT_USED           },
+    { "LOOKASIDE_HIT",       SQLITE_DBSTATUS_LOOKASIDE_HIT       },
+    { "LOOKASIDE_MISS_SIZE", SQLITE_DBSTATUS_LOOKASIDE_MISS_SIZE },
+    { "LOOKASIDE_MISS_FULL", SQLITE_DBSTATUS_LOOKASIDE_MISS_FULL },
+    { "CACHE_HIT",           SQLITE_DBSTATUS_CACHE_HIT           },
+    { "CACHE_MISS",          SQLITE_DBSTATUS_CACHE_MISS          },
+    { "CACHE_WRITE",         SQLITE_DBSTATUS_CACHE_WRITE         }
   };
   Tcl_Obj *pResult;
   if( objc!=4 ){
-    Tcl_WrongNumArgs(interp, 1, objv, "PARAMETER RESETFLAG");
+    Tcl_WrongNumArgs(interp, 1, objv, "DB PARAMETER RESETFLAG");
     return TCL_ERROR;
   }
   if( getDbPointer(interp, Tcl_GetString(objv[1]), &db) ) return TCL_ERROR;
   zOpName = Tcl_GetString(objv[2]);
+  if( memcmp(zOpName, "SQLITE_", 7)==0 ) zOpName += 7;
+  if( memcmp(zOpName, "DBSTATUS_", 9)==0 ) zOpName += 9;
   for(i=0; i<ArraySize(aOp); i++){
     if( strcmp(aOp[i].zName, zOpName)==0 ){
       op = aOp[i].op;
@@ -1417,6 +1450,7 @@ int Sqlitetest_malloc_Init(Tcl_Interp *interp){
      { "sqlite3_config_memstatus",   test_config_memstatus         ,0 },
      { "sqlite3_config_lookaside",   test_config_lookaside         ,0 },
      { "sqlite3_config_error",       test_config_error             ,0 },
+     { "sqlite3_config_uri",         test_config_uri               ,0 },
      { "sqlite3_db_config_lookaside",test_db_config_lookaside      ,0 },
      { "sqlite3_dump_memsys3",       test_dump_memsys3             ,3 },
      { "sqlite3_dump_memsys5",       test_dump_memsys3             ,5 },
@@ -1425,7 +1459,7 @@ int Sqlitetest_malloc_Init(Tcl_Interp *interp){
   };
   int i;
   for(i=0; i<sizeof(aObjCmd)/sizeof(aObjCmd[0]); i++){
-    ClientData c = (ClientData)aObjCmd[i].clientData;
+    ClientData c = (ClientData)SQLITE_INT_TO_PTR(aObjCmd[i].clientData);
     Tcl_CreateObjCommand(interp, aObjCmd[i].zName, aObjCmd[i].xProc, c, 0);
   }
   return TCL_OK;

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>The Virtual Table Mechanism Of SQLite</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -334,6 +334,11 @@ the behavior of a virtual table.  The module structure looks like this:
                        void (**pxFunc)(sqlite3_context*,int,sqlite3_value**),
                        void **ppArg);
     int (*Rename)(sqlite3_vtab *pVtab, const char *zNew);
+    /* The methods above are in version 1 of the sqlite_module object. Those 
+    ** below are for version 2 and greater. */
+    int (*xSavepoint)(sqlite3_vtab *pVTab, int);
+    int (*xRelease)(sqlite3_vtab *pVTab, int);
+    int (*xRollbackTo)(sqlite3_vtab *pVTab, int);
   };
 </pre></blockquote>
 
@@ -441,6 +446,28 @@ held in persistent memory.  The string can be
 deallocated and/or reused as soon as the <a href="c3ref/declare_vtab.html">sqlite3_declare_vtab()</a>
 routine returns.
 
+<p>The xCreate method need not initialize the pModule, nRef, and zErrMsg
+fields of the <a href="c3ref/vtab.html">sqlite3_vtab</a> object.  The SQLite core will take care of 
+that chore.
+
+<p>The xCreate must should return <a href="c3ref/c_abort.html">SQLITE_OK</a> if it is successful in 
+creating the new virtual table, or <a href="c3ref/c_abort.html">SQLITE_ERROR</a> if it is not successful.
+If not successful, the <a href="c3ref/vtab.html">sqlite3_vtab</a> structure must not be allocated. 
+An error message may optionally be returned in *pzErr if unsuccessful.
+Space to hold the error message string must be allocated using
+an SQLite memory allocation function like 
+<a href="c3ref/free.html">sqlite3_malloc()</a> or <a href="c3ref/mprintf.html">sqlite3_mprintf()</a> as the SQLite core will
+attempt to free the space using <a href="c3ref/free.html">sqlite3_free()</a> after the error has
+been reported up to the application.
+
+<p>The xCreate method is required for every virtual table implementation, 
+though the xCreate and <a href="vtab.html#xconnect">xConnect</a> pointers of the <a href="c3ref/module.html">sqlite3_module</a> object
+may point to the same function the virtual table does not need to initialize
+backing store.
+
+<a name="hiddencol"></a>
+
+<h4>2.1.1 Hidden columns in virtual tables</h4>
 <p>If a column datatype contains the special keyword "HIDDEN"
 (in any combination of upper and lower case letters) then that keyword
 it is omitted from the column datatype name and the column is marked 
@@ -466,24 +493,11 @@ A hidden column differs from a normal column in three respects:
 <p>Then the virtual table would be created with two hidden columns,
 and with datatypes of "VARCHAR(12)" and "INTEGER".
 
-<p>The xCreate method need not initialize the pModule, nRef, and zErrMsg
-fields of the <a href="c3ref/vtab.html">sqlite3_vtab</a> object.  The SQLite core will take care of 
-that chore.
+<p>An example use of hidden columns can be seen in the <a href="fts3.html">FTS3</a> virtual 
+table implementation, where every FTS virtual table
+contains an <a href="fts3.html#hiddencol">FTS hidden column</a> that is used to pass information from the
+virtual table into <a href="fts3.html#snippet">FTS auxiliary functions</a> and to the <a href="fts3.html#section_3">FTS MATCH</a> operator.
 
-<p>The xCreate must should return <a href="c3ref/c_abort.html">SQLITE_OK</a> if it is successful in 
-creating the new virtual table, or <a href="c3ref/c_abort.html">SQLITE_ERROR</a> if it is not successful.
-If not successful, the <a href="c3ref/vtab.html">sqlite3_vtab</a> structure must not be allocated. 
-An error message may optionally be returned in *pzErr if unsuccessful.
-Space to hold the error message string must be allocated using
-an SQLite memory allocation function like 
-<a href="c3ref/free.html">sqlite3_malloc()</a> or <a href="c3ref/mprintf.html">sqlite3_mprintf()</a> as the SQLite core will
-attempt to free the space using <a href="c3ref/free.html">sqlite3_free()</a> after the error has
-been reported up to the application.
-
-<p>The xCreate method is required for every virtual table implementation, 
-though the xCreate and <a href="vtab.html#xconnect">xConnect</a> pointers of the <a href="c3ref/module.html">sqlite3_module</a> object
-may point to the same function the virtual table does not need to initialize
-backing store.
 
 <a name="xconnect"></a>
 
@@ -694,7 +708,7 @@ Hidden columns are counted when determining the column index.
 that apply to the virtual table. But some of the constraints might
 not be usable because of the way tables are ordered in a join. 
 The xBestIndex method must therefore only consider constraints 
-that have a aConstraint[].usable flag which is true.
+that have an aConstraint[].usable flag which is true.
 
 <p>In addition to WHERE clause constraints, the SQLite core also 
 tells the xBestIndex method about the ORDER BY clause. 
@@ -1198,4 +1212,39 @@ If this method returns <a href="c3ref/c_abort.html">SQLITE_OK</a> then SQLite re
 If this method returns an <a href="c3ref/c_abort.html">error code</a> then the renaming is prevented.
 
 <p>The xRename method is required for every virtual table implementation.
+
+<a name="xsavepoint"></a>
+
+<h3>2.20 The xSavepoint, xRelease, and xRollbackTo Methods</h3>
+
+<blockquote><pre>
+  int (*xSavepoint)(sqlite3_vtab *pVtab, int);
+  int (*xRelease)(sqlite3_vtab *pVtab, int);
+  int (*xRollbackTo)(sqlite3_vtab *pVtab, int);
+</pre></blockquote>
+
+<p>
+These methods provide the virtual table implementation an opportunity to
+implement nested transactions.  They are always optional and will only be
+called in SQLite <a href="releaselog/3_7_7.html">version 3.7.7</a> and later.
+</p>
+
+<p>
+When xSavepoint(X,N) is invoked, that is a signal to the virtual table X
+that it should save its current state as savepoint N.  
+A subsequent call
+to xRollbackTo(X,R) means that the state of the virtual table should return
+to what it was when xSavepoint(X,R) was last called.  
+The call
+to xRollbackTo(X,R) will invalidate all savepoints with N>R; none of the
+invalided savepoints will be rolled back or released without first
+being reinitialized by a call to xSavepoint().  
+A call to xRelease(X,M) invalidates all savepoints where N>=M.
+</p>
+
+<p>
+None of the xSavepoint(), xRelease(), or xRollbackTo() methods will ever
+be called except in between calls to xBegin() and 
+either xCommit() or xRollback().
+</p>
 

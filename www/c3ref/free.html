@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Memory Allocation Subsystem</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -171,12 +171,12 @@ the SQLITE_OMIT_MEMORY_ALLOCATION which would cause the built-in
 implementation of these routines to be omitted.  That capability
 is no longer provided.  Only built-in memory allocators can be used.</p>
 
-<p>The Windows OS interface layer calls
+<p>Prior to SQLite version 3.7.10, the Windows OS interface layer called
 the system malloc() and free() directly when converting
 filenames between the UTF-8 encoding used by SQLite
 and whatever filename encoding is used by the particular Windows
-installation.  Memory allocation errors are detected, but
-they are reported back as <a href="../c3ref/c_abort.html">SQLITE_CANTOPEN</a> or
+installation.  Memory allocation errors were detected, but
+they were reported back as <a href="../c3ref/c_abort.html">SQLITE_CANTOPEN</a> or
 <a href="../c3ref/c_abort.html">SQLITE_IOERR</a> rather than <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a>.</p>
 
 <p>The pointer arguments to <a href="../c3ref/free.html">sqlite3_free()</a> and <a href="../c3ref/free.html">sqlite3_realloc()</a>

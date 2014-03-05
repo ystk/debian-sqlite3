@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>The Tcl interface to the SQLite library</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -281,6 +281,8 @@ a=2 b=goodbye<br>
 a=3 b=howdy!</b>
 </blockquote>
 
+<a name="varsubst"></a>
+
 <p>
 Tcl variable names can appear in the SQL statement of the second argument
 in any position where it is legal to put a string or number literal.  The
@@ -313,7 +315,22 @@ db1 eval {INSERT INTO t1 VALUES(5,@bigstring)}
 
 <p>
 If the variable does not have a bytearray representation, then "@" works
-just like "$".
+just like "$".  Note that ":" works like "$" in all cases so the following
+is another way to express the same statement:
+</p>
+
+<blockquote><b>
+db1 eval {INSERT INTO t1 VALUES(5,:bigstring)}
+</b></blockquote>
+
+<p>The use of ":" instead of "$" before the name of a variable can 
+sometimes be useful if the SQL text is enclosed in "..." instead of
+{...}.  When the SQL is contained within "..." then TCL will do
+the substitution of $-variables, which can lead to SQL injection if
+extreme care is not used.  But TCL will never substitute a :-variable
+regardless of whether "..." or {...} are used to enclose the SQL, so
+the use of :-variables adds an extra measure of defense against SQL
+injection.
 </p>
 
 <a name="close"></a>
@@ -788,7 +805,7 @@ use <b>temp</b>.  To overwrite an auxiliary database added to the connection
 using the <a href="lang_attach.html">ATTACH</a> command, use the name of that database as it was assigned
 in the <a href="lang_attach.html">ATTACH</a> command.</p>
 
-<p>The <i>source-filename</i> is the name of a existing well-formed SQLite
+<p>The <i>source-filename</i> is the name of an existing well-formed SQLite
 database file from which the content is extracted.</p>
 <a name="version"></a>
 <h3>The "version" method</h3>

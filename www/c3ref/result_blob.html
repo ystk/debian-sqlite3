@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Setting The Result Of An SQL Function</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -207,7 +207,12 @@ through the first zero character.
 If the 3rd parameter to the sqlite3_result_text* interfaces
 is non-negative, then as many bytes (not characters) of the text
 pointed to by the 2nd parameter are taken as the application-defined
-function result.
+function result.  If the 3rd parameter is non-negative, then it
+must be the byte offset into the string where the NUL terminator would
+appear if the string where NUL terminated.  If any NUL characters occur
+in the string at a byte offset that is less than the value of the 3rd
+parameter, then the resulting string will contain embedded NULs and the
+result of expressions operating on strings with embedded NULs is undefined.
 If the 4th parameter to the sqlite3_result_text* interfaces
 or sqlite3_result_blob is a non-NULL pointer, then SQLite calls that
 function as the destructor on the text or BLOB result when it has

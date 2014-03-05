@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Set A Busy Timeout</title>
 <style type="text/css">
 body {
@@ -62,7 +63,6 @@ a:visited { color: #734559 }
 /* End of "fancyformat" specific rules. */
 
 </style>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   
 </head>
 <body>
@@ -124,7 +124,7 @@ for a specified amount of time when a table is locked.  The handler
 will sleep multiple times until at least "ms" milliseconds of sleeping
 have accumulated.  After at least "ms" milliseconds of sleeping,
 the handler returns 0 which causes <a href="../c3ref/step.html">sqlite3_step()</a> to return
-<a href="../c3ref/c_abort.html">SQLITE_BUSY</a> or <a href="../c3ref/c_busy_recovery.html">SQLITE_IOERR_BLOCKED</a>.</p>
+<a href="../c3ref/c_abort.html">SQLITE_BUSY</a> or <a href="../c3ref/c_abort_rollback.html">SQLITE_IOERR_BLOCKED</a>.</p>
 
 <p>Calling this routine with an argument less than or equal to zero
 turns off all busy handlers.</p>
