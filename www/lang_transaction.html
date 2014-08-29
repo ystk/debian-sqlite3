@@ -22,6 +22,14 @@ a:visited { color: #734559 }
   margin-top:58px;
 }
 
+.menubar {
+  clear: both;
+  border-radius: 8px;
+  background: #044a64;
+  padding: 0px;
+  margin: 0px;
+  cell-spacing: 0px;
+}    
 .toolbar {
   text-align: center;
   line-height: 1.6em;
@@ -36,12 +44,6 @@ a:visited { color: #734559 }
 .content dt { font-weight:bold; }
 .content dd { margin-bottom: 25px; margin-left:20%; }
 .content ul { padding:0px; padding-left: 15px; margin:0px; }
-
-/* rounded corners */
-.se  { background: url(images/se.gif) 100% 100% no-repeat #044a64}
-.sw  { background: url(images/sw.gif) 0% 100% no-repeat }
-.ne  { background: url(images/ne.gif) 100% 0% no-repeat }
-.nw  { background: url(images/nw.gif) 0% 0% no-repeat }
 
 /* Things for "fancyformat" documents start here. */
 .fancy img+p {font-style:italic}
@@ -74,9 +76,7 @@ a:visited { color: #734559 }
 <div><!-- IE hack to prevent disappearing logo--></div>
 <div class="tagline">Small. Fast. Reliable.<br>Choose any three.</div>
 
-<table width=100% style="clear:both"><tr><td>
-  <div class="se"><div class="sw"><div class="ne"><div class="nw">
-  <table width=100% style="padding:0;margin:0;cell-spacing:0"><tr>
+<table width=100% class="menubar"><tr>
   <td width=100%>
   <div class="toolbar">
     <a href="about.html">About</a>
@@ -103,6 +103,18 @@ a:visited { color: #734559 }
       q.style.fontStyle = "italic"
     }
   }
+  function hideorshow(btn,obj){
+    var x = document.getElementById(obj);
+    var b = document.getElementById(btn);
+    if( x.style.display!='none' ){
+      x.style.display = 'none';
+      b.innerHTML='show';
+    }else{
+      x.style.display = '';
+      b.innerHTML='hide';
+    }
+    return false;
+  }
 </script>
 <td>
     <div style="padding:0 1em 0px 0;white-space:nowrap">
@@ -113,13 +125,24 @@ a:visited { color: #734559 }
     </form>
     </div>
   </table>
-</div></div></div></div>
-</td></tr></table>
+
 <div class=startsearch></div>
   
-<h1 align="center">SQL As Understood By SQLite</h1><p><a href="lang.html">[Top]</a></p><h2>BEGIN TRANSACTION</h2><h4><a href="syntaxdiagrams.html#begin-stmt">begin-stmt:</a></h4><blockquote> <img alt="syntax diagram begin-stmt" src="images/syntax/begin-stmt.gif"></img> </blockquote>
-<h4><a href="syntaxdiagrams.html#commit-stmt">commit-stmt:</a></h4><blockquote> <img alt="syntax diagram commit-stmt" src="images/syntax/commit-stmt.gif"></img> </blockquote>
-<h4><a href="syntaxdiagrams.html#rollback-stmt">rollback-stmt:</a></h4><blockquote> <img alt="syntax diagram rollback-stmt" src="images/syntax/rollback-stmt.gif"></img> </blockquote>
+<h1 align="center">SQL As Understood By SQLite</h1><p><a href="lang.html">[Top]</a></p><h2>BEGIN TRANSACTION</h2><p><b><a href="syntaxdiagrams.html#begin-stmt">begin-stmt:</a></b>
+<button id='x809' onclick='hideorshow("x809","x810")'>hide</button></p>
+ <blockquote id='x810'>
+ <img alt="syntax diagram begin-stmt" src="images/syntax/begin-stmt.gif" />
+</blockquote>
+<p><b><a href="syntaxdiagrams.html#commit-stmt">commit-stmt:</a></b>
+<button id='x811' onclick='hideorshow("x811","x812")'>hide</button></p>
+ <blockquote id='x812'>
+ <img alt="syntax diagram commit-stmt" src="images/syntax/commit-stmt.gif" />
+</blockquote>
+<p><b><a href="syntaxdiagrams.html#rollback-stmt">rollback-stmt:</a></b>
+<button id='x813' onclick='hideorshow("x813","x814")'>hide</button></p>
+ <blockquote id='x814'>
+ <img alt="syntax diagram rollback-stmt" src="images/syntax/rollback-stmt.gif" />
+</blockquote>
 
 
 <p>
@@ -155,6 +178,8 @@ the transaction was started by <a href="lang_savepoint.html">SAVEPOINT</a> or a 
 The COMMIT command and the ROLLBACK command without the TO clause
 work the same on <a href="lang_savepoint.html">SAVEPOINT</a> transactions as they do with transactions
 started by BEGIN.</p>
+
+<a name="immediate"></a>
 
 <p>
 Transactions can be deferred, immediate, or exclusive.  
@@ -226,7 +251,7 @@ file) then the behavior of the ROLLBACK command is undefined.
 
 <p> If certain kinds of errors occur within a transaction, the
 transaction may or may not be rolled back automatically.  The
-errors that cause the behavior include:</p>
+errors that can cause an automatic rollback include:</p>
 
 <ul>
 <li> <a href="c3ref/c_abort.html">SQLITE_FULL</a>: database or disk full

@@ -22,6 +22,14 @@ a:visited { color: #734559 }
   margin-top:58px;
 }
 
+.menubar {
+  clear: both;
+  border-radius: 8px;
+  background: #044a64;
+  padding: 0px;
+  margin: 0px;
+  cell-spacing: 0px;
+}    
 .toolbar {
   text-align: center;
   line-height: 1.6em;
@@ -36,12 +44,6 @@ a:visited { color: #734559 }
 .content dt { font-weight:bold; }
 .content dd { margin-bottom: 25px; margin-left:20%; }
 .content ul { padding:0px; padding-left: 15px; margin:0px; }
-
-/* rounded corners */
-.se  { background: url(images/se.gif) 100% 100% no-repeat #044a64}
-.sw  { background: url(images/sw.gif) 0% 100% no-repeat }
-.ne  { background: url(images/ne.gif) 100% 0% no-repeat }
-.nw  { background: url(images/nw.gif) 0% 0% no-repeat }
 
 /* Things for "fancyformat" documents start here. */
 .fancy img+p {font-style:italic}
@@ -74,9 +76,7 @@ a:visited { color: #734559 }
 <div><!-- IE hack to prevent disappearing logo--></div>
 <div class="tagline">Small. Fast. Reliable.<br>Choose any three.</div>
 
-<table width=100% style="clear:both"><tr><td>
-  <div class="se"><div class="sw"><div class="ne"><div class="nw">
-  <table width=100% style="padding:0;margin:0;cell-spacing:0"><tr>
+<table width=100% class="menubar"><tr>
   <td width=100%>
   <div class="toolbar">
     <a href="about.html">About</a>
@@ -103,6 +103,18 @@ a:visited { color: #734559 }
       q.style.fontStyle = "italic"
     }
   }
+  function hideorshow(btn,obj){
+    var x = document.getElementById(obj);
+    var b = document.getElementById(btn);
+    if( x.style.display!='none' ){
+      x.style.display = 'none';
+      b.innerHTML='show';
+    }else{
+      x.style.display = '';
+      b.innerHTML='hide';
+    }
+    return false;
+  }
 </script>
 <td>
     <div style="padding:0 1em 0px 0;white-space:nowrap">
@@ -113,8 +125,7 @@ a:visited { color: #734559 }
     </form>
     </div>
   </table>
-</div></div></div></div>
-</td></tr></table>
+
 <div class=startsearch></div>
   
           
@@ -179,7 +190,7 @@ amalgamation source file be used as an intermediate step.</p>
 
 <h2>Compiling The Command-Line Interface</h2>
 
-<p>A build of the <a href="sqlite.html">command-line interface</a> requires three source
+<p>A build of the <a href="cli.html">command-line interface</a> requires three source
 files:</p>
 
 <ul>
@@ -196,9 +207,14 @@ and passes that input into the SQLite database engine for processing.
 <a href="download.html">amalgamation tarball</a> available on the <a href="download.html">download page</a>.</p>
 
 <p>To build the CLI, simply put these three files in the same directory
-and compile them together.  The command to compile C programs varies from
-one machine to the next but on unix systems typically looks 
-something like this:</p>
+and compile them together.  Using MSVC:
+
+<blockquote><pre>
+cl shell.c sqlite3.c -Fesqlite3.exe
+</pre></blockquote>
+
+<p>On unix systems (or on Windows using cygwin or mingw+msys)
+the command typically looks something like this:</p>
 
 <blockquote><pre>
 gcc shell.c sqlite3.c -lpthread -ldl
@@ -315,9 +331,8 @@ be known by the code generators includes:</p>
 </ul>
 
 <p>To build a custom amalgamation, first download the original individual
-source files onto a unix or unix-like development platform.  (Any Linux or
-Mac OS X machine will suffice.  Windows will work if loaded with
-<a href="http://www.cygwin.com/">Cygwin</a>.)  Be sure to get the original source
+source files onto a unix or unix-like development platform.  
+Be sure to get the original source
 files not the "preprocessed source files".  One can obtain the complete
 set of original source files either from the <a href="download.html">download page</a> or directly
 from the <a href="http://www.sqlite.org/src">configuration management system</a>.</p>
@@ -334,10 +349,74 @@ Finally run:</p>
 make sqlite3.c
 </pre></blockquote>
 
+<p>Or on Windows with MSVC:
+
+<blockquote><pre>
+nmake /f Makefile.msc sqlite3.c
+</pre></blockquote>
+
 <p>The "sqlite3.c" make target will automatically construct the regular
 "<b>sqlite3.c</b>" amalgamation source file, its header file
 "<b>sqlite3.h</b>", and the "<b>tclsqlite3.c</b>" amalgamation source
 file that includes the TCL interface.
 Afterwards, the needed files can be copied into project directories and
 compiled according to the procedures outlined above.</p>
+
+<a name="dll"></a>
+
+<h2>Building A Windows DLL</h2>
+
+<p>To build a DLL of SQLite for use in Windows, first acquire the
+appropriate amalgamated source code files, sqlite3.c and sqlite3.h.  
+These can either
+be downloaded from the <a href="http://www.sqlite.org/download.html">SQLite website</a>
+or custom generated from sources as shown above.</p>
+
+<p>With source code files in the working directory, a DLL
+can be generated using MSVC with the following command:
+
+<blockquote><pre>
+cl sqlite3.c -link -dll -out:sqlite3.dll
+</pre></blockquote>
+
+<p>The above command should be run from the MSVC Native Tools Command
+Prompt.  If you have MSVC installed on your machine, you probably
+have multiple versions of this Command Prompt, for native builds
+for x86 and x64, and possibly also for cross-compiling to ARM.
+Use the appropriate Command Prompt depending on the desired DLL.</p>
+
+<p>If using the MinGW compiler, the command-line is this:
+
+<blockquote><pre>
+gcc -shared sqlite3.c -o sqlite3.dll
+</pre></blockquote>
+
+<p>Note that MinGW generates 32-bit DLLs only.  There is a separate
+MinGW64 project that can be used to generate 64-bit DLLs.  Presumably
+the command-line syntax is similar.
+Also note that recent versions of MSVC generate DLLs that will not work
+on WinXP and earlier versions of Windows.  So for maximum compatibility
+of your generated DLL, MinGW is recommended.  A good rule-of-thumb
+is to generate 32-bit DLLs using MinGW and 64-bit DLLs using MSVC.
+
+<p>In most cases, you will want to supplement the basic commands above with
+<a href="compile.html">compile-time options</a> appropriate for your application.  Commonly used
+compile-time options include:
+
+<ul>
+<li><p><b>-Os</b> - Optimize for size. 
+Make the DLL as small as possible.</p>
+
+<li><p><b>-O2</b> - Optimize for speed.  This will make the DLL larger by
+unrolling loops and inlining functions.</p>
+
+<li><p><b>-DSQLITE_ENABLE_FTS4</b> -
+Include the <a href="fts3.html">full-text search</a> engine code in SQLite.
+
+<li><p><b>-DSQLITE_ENABLE_RTREE</b> - Include the <a href="rtree.html">R-Tree extension</a>.
+
+<li><p><b>-DSQLITE_ENABLE_COLUMN_METADATA</b> -
+This enables some extra APIs that are required by some common systems,
+including Ruby-on-Rails.
+</ul>
 

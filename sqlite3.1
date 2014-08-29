@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SQLITE3 1 "Sat Nov  5 15:57:18 CET 2011"
+.TH SQLITE3 1 "Mon Jan 31 11:14:00 2014"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -49,7 +49,7 @@ a table named "memos" and insert a couple of records into that table:
 $ 
 .B sqlite3 mydata.db
 .br
-SQLite version 3.7.9
+SQLite version 3.8.3
 .br
 Enter ".help" for instructions
 .br
@@ -135,9 +135,11 @@ sqlite>
                          list     Values delimited by .separator string
                          tabs     Tab-separated values
                          tcl      TCL list elements
-.nullvalue STRING      Print STRING in place of NULL values
+.nullvalue STRING      Use STRING in place of NULL values
+.open ?FILENAME?       Close existing database and reopen FILENAME
 .output FILENAME       Send output to FILENAME
 .output stdout         Send output to the screen
+.print STRING...       Print literal STRING
 .prompt MAIN CONTINUE  Replace the standard prompts
 .quit                  Exit this program
 .read FILENAME         Execute SQL in FILENAME
@@ -152,6 +154,8 @@ sqlite>
                          If TABLE specified, only list tables matching
                          LIKE pattern TABLE.
 .timeout MS            Try opening locked tables for MS milliseconds
+.trace FILE|off        Output each SQL statement as it is run
+.vfsname ?AUX?         Print the name of the VFS stack
 .width NUM1 NUM2 ...   Set column widths for "column" mode
 .timer ON|OFF          Turn the CPU timer measurement on or off
 sqlite>
@@ -162,34 +166,44 @@ sqlite>
 .B sqlite3
 has the following options:
 .TP
-.BI \-init\  file
-Read and execute commands from file , which can contain a mix of SQL statements and meta-commands.
-.TP
-.B \-echo
-Print commands before execution.
-.TP
-.B \-[no]header
-Turn headers on or off.
-.TP
 .B \-bail
 Stop after hitting an error.
 .TP
-.B \-interactive
-Force interactive I/O .
-.TP
 .B \-batch
-Force batch I/O .
+Force batch I/O.
 .TP
 .B \-column
 Query results will be displayed in a table like form, using
 whitespace characters to separate the columns and align the
 output.
 .TP
+.BI \-cmd\  command
+run
+.I command
+before reading stdin
+.TP
 .B \-csv
 Set output mode to CSV (comma separated values).
 .TP
+.B \-echo
+Print commands before execution.
+.TP
+.BI \-init\  file
+Read and execute commands from
+.I file
+, which can contain a mix of SQL statements and meta-commands.
+.TP
+.B \-[no]header
+Turn headers on or off.
+.TP
+.B \-help
+Show help on options and exit.
+.TP
 .B \-html
 Query results will be output as simple HTML tables.
+.TP
+.B \-interactive
+Force interactive I/O.
 .TP
 .B \-line
 Query results will be displayed with one value per line, rows
@@ -200,24 +214,28 @@ scripts or other programs
 Query results will be displayed with the separator (|, by default)
 character between each field value.  The default.
 .TP
+.BI \-mmap\  N
+Set default mmap size to
+.I N
+\.
+.TP
+.BI \-nullvalue\  string
+Set string used to represent NULL values.  Default is ''
+(empty string).
+.TP
 .BI \-separator\  separator
 Set output field separator.  Default is '|'.
 .TP
 .B \-stats
 Print memory stats before each finalize.
 .TP
-.BI \-nullvalue\  string
-Set string used to represent NULL values.  Default is ''
-(empty string).
-.TP
 .B \-version
 Show SQLite version.
 .TP
 .BI \-vfs\  name
-Use name as the default VFS .
-.TP
-.B \-help
-Show help on options and exit.
+Use
+.I name
+as the default VFS.
 
 
 .SH INIT FILE

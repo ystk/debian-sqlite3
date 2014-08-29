@@ -22,6 +22,14 @@ a:visited { color: #734559 }
   margin-top:58px;
 }
 
+.menubar {
+  clear: both;
+  border-radius: 8px;
+  background: #044a64;
+  padding: 0px;
+  margin: 0px;
+  cell-spacing: 0px;
+}    
 .toolbar {
   text-align: center;
   line-height: 1.6em;
@@ -36,12 +44,6 @@ a:visited { color: #734559 }
 .content dt { font-weight:bold; }
 .content dd { margin-bottom: 25px; margin-left:20%; }
 .content ul { padding:0px; padding-left: 15px; margin:0px; }
-
-/* rounded corners */
-.se  { background: url(images/se.gif) 100% 100% no-repeat #044a64}
-.sw  { background: url(images/sw.gif) 0% 100% no-repeat }
-.ne  { background: url(images/ne.gif) 100% 0% no-repeat }
-.nw  { background: url(images/nw.gif) 0% 0% no-repeat }
 
 /* Things for "fancyformat" documents start here. */
 .fancy img+p {font-style:italic}
@@ -74,9 +76,7 @@ a:visited { color: #734559 }
 <div><!-- IE hack to prevent disappearing logo--></div>
 <div class="tagline">Small. Fast. Reliable.<br>Choose any three.</div>
 
-<table width=100% style="clear:both"><tr><td>
-  <div class="se"><div class="sw"><div class="ne"><div class="nw">
-  <table width=100% style="padding:0;margin:0;cell-spacing:0"><tr>
+<table width=100% class="menubar"><tr>
   <td width=100%>
   <div class="toolbar">
     <a href="about.html">About</a>
@@ -103,6 +103,18 @@ a:visited { color: #734559 }
       q.style.fontStyle = "italic"
     }
   }
+  function hideorshow(btn,obj){
+    var x = document.getElementById(obj);
+    var b = document.getElementById(btn);
+    if( x.style.display!='none' ){
+      x.style.display = 'none';
+      b.innerHTML='show';
+    }else{
+      x.style.display = '';
+      b.innerHTML='hide';
+    }
+    return false;
+  }
 </script>
 <td>
     <div style="padding:0 1em 0px 0;white-space:nowrap">
@@ -113,8 +125,7 @@ a:visited { color: #734559 }
     </form>
     </div>
   </table>
-</div></div></div></div>
-</td></tr></table>
+
 <div class=startsearch></div>
   
 
@@ -124,7 +135,7 @@ a:visited { color: #734559 }
   application access a single database file at the same time?</a></li><li><a href="#q6">Is SQLite threadsafe?</a></li><li><a href="#q7">How do I list all tables/indices contained in an SQLite database</a></li><li><a href="#q8">Are there any known size limits to SQLite databases?</a></li><li><a href="#q9">What is the maximum size of a VARCHAR in SQLite?</a></li><li><a href="#q10">Does SQLite support a BLOB type?</a></li><li><a href="#q11">How do I add or delete columns from an existing table in SQLite.</a></li><li><a href="#q12">I deleted a lot of data but the database file did not get any
   smaller.  Is this a bug?</a></li><li><a href="#q13">Can I use SQLite in my commercial product without paying royalties?</a></li><li><a href="#q14">How do I use a string literal that contains an embedded single-quote (')
   character?</a></li><li><a href="#q15">What is an SQLITE_SCHEMA error, and why am I getting one?</a></li><li><a href="#q16">Why does ROUND(9.95,1)  return 9.9 instead of 10.0?
-  Shouldn't 9.95 round up?</a></li><li><a href="#q17">I get hundreds of compiler warnings when I compile SQLite.
+  Shouldn't 9.95 round up?</a></li><li><a href="#q17">I get some compiler warnings when I compile SQLite.
   Isn't this a problem?  Doesn't it indicate poor code quality?</a></li><li><a href="#q18">Case-insensitive matching of Unicode characters does not work.</a></li><li><a href="#q19">INSERT is really slow - I can only do few dozen INSERTs per second</a></li><li><a href="#q20">I accidentally deleted some important information from my SQLite database.
   How can I recover it?</a></li><li><a href="#q21">What is an SQLITE_CORRUPT error?  What does it mean for the database
   to be "malformed"? Why am I getting this error?</a></li><li><a href="#q22">Does SQLite support foreign keys?</a></li><li><a href="#q23">I get a compiler error if I use the SQLITE_OMIT_... 
@@ -133,19 +144,19 @@ a:visited { color: #734559 }
   where column1 has the value "column1".</a></li><li><a href="#q25">How are the syntax diagrams (a.k.a. "railroad" diagrams) for
   SQLite generated?</a></li><li><a href="#q26">The SQL standard requires that a UNIQUE constraint be enforced even if
   one or more of the columns in the constraint are NULL, but SQLite does
-  not do this.  Isn't that a bug?</a></li><li><a href="#q27">What is the Export Control Classification Number (ECCN) for SQLite?</a></li></ol><a name="q1"></a>
+  not do this.  Isn't that a bug?</a></li><li><a href="#q27">What is the Export Control Classification Number (ECCN) for SQLite?</a></li><li><a href="#q28">My query does not return the column name that I expect.  Is this a bug?</a></li></ol><a name="q1"></a>
 <p><b>(1) How do I create an AUTOINCREMENT field.</b></p>
 <blockquote><p>Short answer: A column declared <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a> will
   autoincrement.</p>
 
-  <p>Here is the long answer:
+  <p>Longer answer:
   If you declare a column of a table to be <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>, then
   whenever you insert a NULL
   into that column of the table, the NULL is automatically converted
   into an integer which is one greater than the largest value of that
   column over all other rows in the table, or 1 if the table is empty.
-  (If the largest possible integer key, 9223372036854775807, then an
-  unused key value is chosen at random.)
+  Or, if the largest existing integer key 9223372036854775807 is in use then an
+  unused key value is chosen at random.
   For example, suppose you have a table like this:
 <blockquote><pre>
 CREATE TABLE t1(
@@ -172,7 +183,7 @@ INSERT INTO t1 VALUES((SELECT max(a) FROM t1)+1,123);
   overlap with keys that have been previously deleted from the
   table.  To create keys that are unique over the lifetime of the
   table, add the <a href="autoinc.html">AUTOINCREMENT</a> keyword to the <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>
-  declaration.  Then the key chosen will be one more than than the
+  declaration.  Then the key chosen will be one more than the
   largest key that has ever existed in that table.  If the largest
   possible key has previously existed in that table, then the <a href="lang_insert.html">INSERT</a>
   will fail with an <a href="c3ref/c_abort.html">SQLITE_FULL</a> error code.</p></blockquote></li>
@@ -183,10 +194,10 @@ INSERT INTO t1 VALUES((SELECT max(a) FROM t1)+1,123);
 <a name="q3"></a>
 <p><b>(3) SQLite lets me insert a string into a database column of type integer!</b></p>
 <blockquote><p>This is a feature, not a bug.  SQLite uses <a href="datatype3.html">dynamic typing</a>. 
-  It does not enforce data type  constraints.  Any data can be
-  inserted into any column.  You can put arbitrary length strings into
-  integer columns, floating point numbers in boolean columns, or dates
-  in character columns.  The <a href="datatype3.html">datatype</a> you assign to a column in the
+  It does not enforce data type  constraints.  Data of any type can
+  (usually) be inserted into any column.  You can put arbitrary length
+  strings into integer columns, floating point numbers in boolean columns,
+  or dates in character columns.  The <a href="datatype3.html">datatype</a> you assign to a column in the
   CREATE TABLE command does not restrict what data can be put into
   that column.  Every column is able to hold
   an arbitrary length string.  (There is one exception: Columns of
@@ -275,29 +286,15 @@ INSERT INTO t1 VALUES((SELECT max(a) FROM t1)+1,123);
   interface to find out.
   </p>
 
-  <p>Prior to <a href="releaselog/3_3_1.html">version 3.3.1</a>,
-  an <b>sqlite3</b> structure could only be used in the same thread
-  that called <a href="c3ref/open.html">sqlite3_open()</a> to create it.
-  You could not open a
-  database in one thread then pass the handle off to another thread for
-  it to use.  This was due to limitations (bugs?) in many common threading
-  implementations such as on RedHat9.  Specifically, an fcntl() lock
-  created by one thread cannot be removed or modified by a different
-  thread on the troublesome systems.  And since SQLite uses fcntl()
-  locks heavily for concurrency control, serious problems arose if you 
-  start moving database connections across threads.</p>
-
-  <p>The restriction on moving database connections across threads
-  was relaxed somewhat in <a href="releaselog/3_3_1.html">version 3.3.1</a>.  With that and subsequent
-  versions, it is safe to move a connection handle across threads
-  as long as the connection is not holding any fcntl() locks.  You
-  can safely assume that no locks are being held if no
-  transaction is pending and all 
-  <a href="c3ref/stmt.html">statements</a> have been <a href="c3ref/finalize.html">finalized</a>.</p>
+  <p>SQLite is threadsafe because it uses mutexes to serialize
+  access to common data structures.  However, the work of acquiring and
+  releasing these mutexes will slow SQLite down slightly.  Hence, if you
+  do not need SQLite to be threadsafe, you should disable the mutexes
+  for maximum performance.  See the <a href="threadsafe.html">threading mode</a> documentation for
+  additional information.</p>
 
   <p>Under Unix, you should not carry an open SQLite database across
-  a fork() system call into the child process.  Problems will result
-  if you do.</p></blockquote></li>
+  a fork() system call into the child process.</p></blockquote></li>
 <a name="q7"></a>
 <p><b>(7) How do I list all tables/indices contained in an SQLite database</b></p>
 <blockquote><p>If you are running the <b>sqlite3</b> command-line access program
@@ -360,13 +357,17 @@ ORDER BY name
 <a name="q9"></a>
 <p><b>(9) What is the maximum size of a VARCHAR in SQLite?</b></p>
 <blockquote><p>SQLite does not enforce the length of a VARCHAR.  You can declare
-  a VARCHAR(10) and SQLite will be happy to let you put 500 characters
-  in it.  And it will keep all 500 characters intact - it never truncates.
+  a VARCHAR(10) and SQLite will be happy to store a 500-million character
+  string there.  And it will keep all 500-million characters intact.
+  Your content is never truncated.  SQLite understands the column type
+  of "VARCHAR(<i>N</i>)" to be the same as "TEXT", regardless of the value
+  of <i>N</i>.
   </p></blockquote></li>
 <a name="q10"></a>
 <p><b>(10) Does SQLite support a BLOB type?</b></p>
-<blockquote><p>SQLite versions 3.0 and later allow you to store BLOB data in any 
-  column, even columns that are declared to hold some other type.</p></blockquote></li>
+<blockquote><p>SQLite allows you to store BLOB data in any 
+  column, even columns that are declared to hold some other type.
+  BLOBs can even be used as PRIMARY KEYs.</p></blockquote></li>
 <a name="q11"></a>
 <p><b>(11) How do I add or delete columns from an existing table in SQLite.</b></p>
 <blockquote><p>SQLite has limited 
@@ -407,12 +408,11 @@ COMMIT;
   VACUUM will reconstruct
   the database from scratch.  This will leave the database with an empty
   free-list and a file that is minimal in size.  Note, however, that the
-  VACUUM can take some time to run (around a half second per megabyte
-  on the Linux box where SQLite is developed) and it can use up to twice
+  VACUUM can take some time to run and it can use up to twice
   as much temporary disk space as the original file while it is running.
   </p>
 
-  <p>As of SQLite version 3.1, an alternative to using the VACUUM command
+  <p>An alternative to using the VACUUM command
   is auto-vacuum mode, enabled using the 
   <a href="pragma.html#pragma_auto_vacuum">auto_vacuum pragma</a>.</p></blockquote></li>
 <a name="q13"></a>
@@ -425,7 +425,7 @@ COMMIT;
   character?</b></p>
 <blockquote><p>The SQL standard specifies that single-quotes in strings are escaped
   by putting two single quotes in a row.  SQL works like the Pascal programming
-  language in the regard.  SQLite follows this standard.  Example:
+  language in this regard. Example:
   </p>
 
   <blockquote><pre>
@@ -440,7 +440,7 @@ COMMIT;
   An SQLITE_SCHEMA error can only occur when using the <a href="c3ref/prepare.html">sqlite3_prepare()</a>,
   and <a href="c3ref/step.html">sqlite3_step()</a> interfaces to run SQL.
   You will never receive an <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> error from
-  <a href="c3ref/exec.html">sqlite3_exec()</a>.  Nor will you receive a the error if you
+  <a href="c3ref/exec.html">sqlite3_exec()</a>.  Nor will you receive an error if you
   prepare statements using <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a> instead of
   <a href="c3ref/prepare.html">sqlite3_prepare()</a>.</p>
 
@@ -470,7 +470,7 @@ COMMIT;
   and in some cases can cause your results to be a little different
   from what you might expect.</p></blockquote></li>
 <a name="q17"></a>
-<p><b>(17) I get hundreds of compiler warnings when I compile SQLite.
+<p><b>(17) I get some compiler warnings when I compile SQLite.
   Isn't this a problem?  Doesn't it indicate poor code quality?</b></p>
 <blockquote><p>Quality assurance in SQLite is done using 
   <a href="testing.html#coverage">full-coverage testing</a>,
@@ -504,10 +504,11 @@ COMMIT;
   <p>Some people say that we should eliminate all warnings because
   benign warnings mask real warnings that might arise in future changes.
   This is true enough.  But in reply, the developers observe that all
-  warnings have already been fixed in the
-  compilers used for SQLite development (various versions of GCC).
-  Compiler warnings only arise from compilers that the developers do
-  not use on a daily basis (Ex: MSVC).</p></blockquote></li>
+  warnings have already been fixed in the builds
+  used for SQLite development (various versions of GCC, MSVC,
+  and clang).
+  Compiler warnings usually only arise from compilers or compile-time 
+  options that the SQLite developers to not use themselves.</p></blockquote></li>
 <a name="q18"></a>
 <p><b>(18) Case-insensitive matching of Unicode characters does not work.</b></p>
 <blockquote>The default configuration of SQLite only supports case-insensitive
@@ -588,14 +589,12 @@ COMMIT;
   update, your database is safe.  The database is safe even if your OS
   crashes or takes a power loss.  The crash-resistance of SQLite has
   been extensively studied and tested and is attested by years of real-world 
-  experience by millions of users."</p>
+  experience by billions of users.</p>
 
   <p>That said, there are a number of things that external programs or bugs
-  in your hardware or OS can do to corrupt a database file.  Details
-  can be found in the discussions on the 
-  <a href="atomiccommit.html">atomic commit</a> and 
-  <a href="lockingv3.html">locking</a> support in SQLite
-  as well as in the mailing list archives.</p>
+  in your hardware or OS can do to corrupt a database file.  See
+  <a href="howtocorrupt.html">How To Corrupt An SQLite Database File</a> for
+  further information.
 
   <p>Your can use <a href="pragma.html#pragma_integrity_check">PRAGMA integrity_check</a> 
   to do a thorough but time intensive test of the database integrity.</p>
@@ -610,20 +609,16 @@ COMMIT;
 <a name="q22"></a>
 <p><b>(22) Does SQLite support foreign keys?</b></p>
 <blockquote><p>
-    As of version 3.6.19, SQLite supports <a href="foreignkeys.html">foreign key constraints</a>.
-
-  <p>
-    Prior versions of SQLite parsed foreign key constraints, but did not
-    enforce them. The equivalent functionality could be implemented using
-    <a href="lang_createtrigger.html">SQL triggers</a>. Versions 3.6.12 and later of the SQLite
-    shell tool provided the ".genfkey" command to generate such triggers
-    automatically. The <a href="http://www.sqlite.org/cvstrac/fileview?f=sqlite/tool/genfkey.README">
-    readme</a> for the genfkey utility contains more information.</blockquote></li>
+  As of version 3.6.19, SQLite supports <a href="foreignkeys.html">foreign key constraints</a>.  But enforcement
+  of foreign key constraints is turned off by default (for backwards compatibility).
+  To enable foreign key constraint enforcement, run 
+  <a href="pragma.html#pragma_foreign_keys">PRAGMA foreign_keys=ON</a> or compile with
+  <a href="compile.html#default_foreign_keys">-DSQLITE_DEFAULT_FOREIGN_KEYS=1</a>.</blockquote></li>
 <a name="q23"></a>
 <p><b>(23) I get a compiler error if I use the SQLITE_OMIT_... 
   compile-time options when building SQLite.</b></p>
 <blockquote>The <a href="compile.html#omitfeatures">SQLITE_OMIT_...</a> compile-time options only work
-  when building from canonically source files.  They do <u>not</u> work
+  when building from canonical source files.  They do <u>not</u> work
   when you build from the SQLite <a href="amalgamation.html">amalgamation</a> or from the pre-processed
   source files.
 
@@ -636,7 +631,7 @@ COMMIT;
   where column1 has the value "column1".</b></p>
 <blockquote>Use single-quotes, not double-quotes, around string literals in SQL.
   This is what the SQL standard requires.  Your WHERE clause expression
-  should read: <tt>column1='column2'</tt>
+  should read: <tt>column1='column1'</tt>
 
   <p>SQL uses double-quotes around identifiers (column or table names) that
   contains special characters or which are keywords.  So double-quotes are
@@ -683,5 +678,12 @@ COMMIT;
   <p>The above is true for the core public-domain SQLite.  If you extend
   SQLite by adding new code, or if you statically link SQLite with your
   application, that might change the ECCN in your particular case.</blockquote></li>
+<a name="q28"></a>
+<p><b>(28) My query does not return the column name that I expect.  Is this a bug?</b></p>
+<blockquote>If the columns of your result set are named by AS clauses, then SQLite
+  is guaranteed to use the identifier to the right of the AS keyword as the
+  column name.  If the result set does not use an AS clause, then SQLite
+  is free to name the column anything it wants.
+  See the <a href="c3ref/column_name.html">sqlite3_column_name()</a> documentation for further information.</blockquote></li>
 </ol>
 
