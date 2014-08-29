@@ -1,13 +1,30 @@
-This package was adopted by Tomas Fasth <tomfa@debian.org> on
-Mon, 01 Aug 2005 14:48:55 +0000
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: sqlite3
+Source: http://www.sqlite.org/cgi/src/dir?ci=trunk
 
-This package was debianized by Andreas Rottmann <rotty@debian.org> on
-Wed, 26 Sep 2001 17:00:18 +0200.
+Files: *
+Copyright: D. Richard Hipp <drh@hwaci.com>
+License: public-domain
+ The files listed have been put on the public domain by the sqlite3
+ contributors.
 
-It was downloaded from http://www.sqlite.org.
-
-Upstream Author: D. Richard Hipp <drh@hwaci.com>
-
-Copyright:
-
-The author disclaims all copyright. The library is in the public domain.
+Files: debian/*
+Copyright: 2006- Laszlo Boszormenyi (GCS) <gcs@debian.org>,
+ 2005-2006 Tomas Fasth <tomfa@debian.org>,
+ 2001-2005 Andreas Rottmann <rotty@debian.org>
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License version 2 as published
+ by the Free Software Foundation.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ for more details.
+ .
+ You should have received a copy of the GNU General Public License along
+ with this package; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public License
+ version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.

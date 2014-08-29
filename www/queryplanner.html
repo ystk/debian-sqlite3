@@ -22,6 +22,14 @@ a:visited { color: #734559 }
   margin-top:58px;
 }
 
+.menubar {
+  clear: both;
+  border-radius: 8px;
+  background: #044a64;
+  padding: 0px;
+  margin: 0px;
+  cell-spacing: 0px;
+}    
 .toolbar {
   text-align: center;
   line-height: 1.6em;
@@ -36,12 +44,6 @@ a:visited { color: #734559 }
 .content dt { font-weight:bold; }
 .content dd { margin-bottom: 25px; margin-left:20%; }
 .content ul { padding:0px; padding-left: 15px; margin:0px; }
-
-/* rounded corners */
-.se  { background: url(images/se.gif) 100% 100% no-repeat #044a64}
-.sw  { background: url(images/sw.gif) 0% 100% no-repeat }
-.ne  { background: url(images/ne.gif) 100% 0% no-repeat }
-.nw  { background: url(images/nw.gif) 0% 0% no-repeat }
 
 /* Things for "fancyformat" documents start here. */
 .fancy img+p {font-style:italic}
@@ -74,9 +76,7 @@ a:visited { color: #734559 }
 <div><!-- IE hack to prevent disappearing logo--></div>
 <div class="tagline">Small. Fast. Reliable.<br>Choose any three.</div>
 
-<table width=100% style="clear:both"><tr><td>
-  <div class="se"><div class="sw"><div class="ne"><div class="nw">
-  <table width=100% style="padding:0;margin:0;cell-spacing:0"><tr>
+<table width=100% class="menubar"><tr>
   <td width=100%>
   <div class="toolbar">
     <a href="about.html">About</a>
@@ -103,6 +103,18 @@ a:visited { color: #734559 }
       q.style.fontStyle = "italic"
     }
   }
+  function hideorshow(btn,obj){
+    var x = document.getElementById(obj);
+    var b = document.getElementById(btn);
+    if( x.style.display!='none' ){
+      x.style.display = 'none';
+      b.innerHTML='show';
+    }else{
+      x.style.display = '';
+      b.innerHTML='hide';
+    }
+    return false;
+  }
 </script>
 <td>
     <div style="padding:0 1em 0px 0;white-space:nowrap">
@@ -113,8 +125,7 @@ a:visited { color: #734559 }
     </form>
     </div>
   </table>
-</div></div></div></div>
-</td></tr></table>
+
 <div class=startsearch></div>
   
 
@@ -354,7 +365,7 @@ the current row.  In fact, the cost of advancing to the next row is so
 cheap in comparison to a binary search that we usually ignore it.  So
 our estimate for the total cost of this query is 3 binary searches.
 If the number of rows of output is K and the number of rows in the table
-is N, then in general the cost of doing the query proportional
+is N, then in general the cost of doing the query is proportional
 to (K+1)*logN.
 </p>
 
@@ -436,9 +447,9 @@ The last two queries take the same amount of time, in our example.
 So which index, Idx1 or Idx2, will SQLite choose?  If the
 <a href="lang_analyze.html">ANALYZE</a> command has been run on the database, so that SQLite has
 had an opportunity to gather statistics about the available indices,
-then SQLite will know that the Idx1 table usually narrows the search
+then SQLite will know that the Idx1 index usually narrows the search
 down to a single item (our example of fruit='Orange' is the exception
-to this rule) where as the Idx table will normally only narrow the 
+to this rule) whereas the Idx2 index will normally only narrow the 
 search down to two rows.  So, if all else is equal, SQLite will
 choose Idx1 with the hope of narrowing the search to as small
 a number of rows as possible.  This choice is only possible because
@@ -470,8 +481,8 @@ the indexed columns are added in front of the rowid.  The only difference
 is that now multiple columns are added.  The left-most column is the
 primary key used for ordering the rows in the index.  The second column is
 used to break ties in the left-most column.  If there were a third column,
-it would be used to break ties for the first to columns.  And so forth for
-as many columns as their are in the index.  Because rowid is guaranteed
+it would be used to break ties for the first two columns.  And so forth for
+all columns in the index.  Because rowid is guaranteed
 to be unique, every row of the index will be unique even if all of the
 content columns for two rows are the same.  That case does not happen
 in our sample data, but there is one case (fruit='Orange') where there
@@ -657,7 +668,7 @@ SELECT * FROM fruitsforsale ORDER BY fruit;
 
 
 <p>
-SQLite processes this by gather all the output of query and then
+SQLite processes this by gathering all the output of query and then
 running that output through a sorter.
 </p>
 
@@ -883,17 +894,55 @@ of the index are scanned from bottom to top instead of from top to bottom,
 so that the states will appear in descending order.
 </p>
 
-<h2>To Be Continued...</h2>
+<a name="partialsort"></a>
 
-<p>Further topics:</p>
+<h3>3.2 Partial Sorting Using An Index</h3>
 
-<p><ul>
-<li>How to construct a good index
-<li>Joins and join-order
-<li>Automatic transient indices
-<li>How to determine what query plan SQLite is using
-<li>Automatic detection of inefficient query plans
-<li>Techniques for influencing what query plan SQLite chooses
-</ul>
+<p>
+Sometimes only part of an ORDER BY clause can be satisfied using indexes.
+Consider, for example, the following query:
 </p>
+
+<center><table><tr><td><pre>
+SELECT * FROM fruitforsale ORDER BY fruit, price
+</pre></table></center>
+
+
+<p>
+If the covering index is used for the scan, the "fruit" column will appear
+naturally in the correct order, but when there are two or more rows with
+the same fruit, the price might be out of order.  When this occurs, SQLite
+does many small sorts, one sort for each distinct value of fruit, rather
+than one large sort.  Figure 22 below illustrates the concept.
+</p>
+
+<p><center>
+<img src="images/qp/partial-sort.gif" alt="figure 22"><br>
+Figure 22: Partial Sort By Index
+</center></p>
+
+
+<p>
+In the example, instead of a single sort of 7 elements, there
+are 5 sorts of one-element each and 1 sort of 2 elements for the
+case of fruit=='Orange'.
+
+<p>
+The advantages of doing many smaller sorts instead of a single large sort
+are:
+<ol>
+<li>Multiple small sorts collectively use fewer CPU cycles than a single
+    large sort.
+<li>Each small sort is run independently, meaning that much less information
+    needs to be kept in temporary storage at any one time.
+<li>Those columns of the ORDER BY that are already in the correct order
+    due to indexes can be omitted from the sort key, further reducing
+    storage requirements and CPU time.
+<li>Output rows can be returned to the application as each small sort
+    completes, and well before the table scan is complete.
+<li>If a LIMIT clause is present, it might be possible to avoid scanning
+    the entire table.
+</ol>
+Because of these advantages, SQLite always tries to do a partial sort using an
+index even if a complete sort by index is not possible.</p>
 

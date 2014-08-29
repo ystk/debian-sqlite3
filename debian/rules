@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 #-*- makefile -*-
 
+# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
@@ -20,27 +21,27 @@ export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-  confflags += --build $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/tcl8.5
+  confflags += --build $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/$(DEB_HOST_MULTIARCH)/tcl8.6
   export CROSS_BUILDING=no
 else
-  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/$(DEB_HOST_GNU_TYPE)/lib/tcl8.5 LDFLAGS=-L/usr/$(DEB_HOST_GNU_TYPE)/lib
+  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/$(DEB_HOST_GNU_TYPE)/tcl8.6 LDFLAGS=-L/usr/lib/$(DEB_HOST_GNU_TYPE)
   export CROSS_BUILDING=yes
 endif
 
-
-#export DEB_CFLAGS_MAINT_APPEND = -O2 -fno-strict-aliasing
 export CFLAGS += -O2 -fno-strict-aliasing \
 	-DSQLITE_SECURE_DELETE -DSQLITE_ENABLE_COLUMN_METADATA \
 	-DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE=1 -DSQLITE_SOUNDEX=1 \
 	-DSQLITE_ENABLE_UNLOCK_NOTIFY \
 	-DSQLITE_OMIT_LOOKASIDE=1 \
 	-DSQLITE_ENABLE_UPDATE_DELETE_LIMIT=1 \
-	-DSQLITE_MAX_SCHEMA_RETRY=25
+	-DSQLITE_MAX_SCHEMA_RETRY=25 \
+	-DSQLITE_MAX_VARIABLE_NUMBER=250000
 
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	autoconf
+	dh_autoreconf
+	dh_autotools-dev_updateconfig
 	./configure --prefix=/usr --mandir="/usr/share/man" \
 	  $(confflags) --enable-threadsafe \
 	  --enable-load-extension \
@@ -75,6 +76,8 @@ clean:
 	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -f config.h
 	rm -f debian/libsqlite3-0.install debian/libsqlite3-dev.install
+	dh_autotools-dev_restoreconfig
+	dh_autoreconf_clean
 	dh_clean
 
 install: build
@@ -94,12 +97,16 @@ install: build
 
 	# Create the pkgIndex.tcl file for the Tcl module. This generated file
 	# actually turns out to be relocatable.
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	echo "pkg_mkIndex -verbose $(DESTDIR)/usr/lib/tcltk/sqlite3" | \
 		LD_LIBRARY_PATH=$(DESTDIR)/usr/lib/$(DEB_HOST_MULTIARCH) \
-		tclsh8.5
+		tclsh8.6
 	grep -q 'package ifneeded sqlite3' \
 		$(DESTDIR)/usr/lib/tcltk/sqlite3/pkgIndex.tcl || \
 		(echo "pkgIndex.tcl seems to be wrong" && exit 1)
+else
+	echo "" > $(DESTDIR)/usr/lib/tcltk/sqlite3/pkgIndex.tcl
+endif
 
 binary-indep: build install
 	dh_testdir

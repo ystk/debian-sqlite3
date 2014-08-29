@@ -3,7 +3,7 @@ Description: increase the maximum possible value of the page size
  because the maximum it allows by default is 8k (through the
  SQLITE_MAX_DEFAULT_PAGE_SIZE define). This patch increases this limit.
  .
-Author: Laszlo Boszormenyi (GCS) <gcs@debian.hu>
+Author: Laszlo Boszormenyi (GCS) <gcs@debian.org>
 Bug-Debian: http://bugs.debian.org/672573
 
 ---

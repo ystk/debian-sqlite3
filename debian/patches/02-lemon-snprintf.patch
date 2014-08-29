@@ -72,12 +72,12 @@
      fprintf(out,"  %-15s",line);
      if( (i&3)==3 ){ fprintf(out,"\n"); lineno++; }
    }
-@@ -4022,7 +4023,7 @@
-   in = file_open(lemp,".h","rb");
+@@ -4023,7 +4023,7 @@
    if( in ){
+     int nextChar;
      for(i=1; i<lemp->nterminal && fgets(line,LINESIZE,in); i++){
 -      sprintf(pattern,"#define %s%-30s %2d\n",prefix,lemp->symbols[i]->name,i);
 +      snprintf(pattern,sizeof pattern,"#define %s%-30s %2d\n",prefix,lemp->symbols[i]->name,i);
        if( strcmp(line,pattern) ) break;
      }
-     fclose(in);
+     nextChar = fgetc(in);

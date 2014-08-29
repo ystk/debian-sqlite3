@@ -2,7 +2,7 @@ Index: sqlite3-3.7.4/Makefile.in
 ===================================================================
 --- sqlite3-3.7.4.orig/Makefile.in
 +++ sqlite3-3.7.4/Makefile.in
-@@ -537,10 +537,20 @@
+@@ -562,10 +562,20 @@
  
  # Rules to build the LEMON compiler generator
  #
@@ -24,7 +24,7 @@ Index: sqlite3-3.7.4/Makefile.in
  # Rules to build individual *.o files from generated *.c files. This
  # applies to:
  #
-@@ -793,10 +803,10 @@
+@@ -812,10 +812,10 @@
  #
  parse.h:	parse.c
  
@@ -37,7 +37,7 @@ Index: sqlite3-3.7.4/Makefile.in
  	mv parse.h parse.h.temp
  	$(NAWK) -f $(TOP)/addopcodes.awk parse.h.temp >parse.h
  
-@@ -939,7 +949,10 @@
+@@ -974,7 +984,10 @@
  	rm -f *.lo *.la *.o sqlite3$(TEXE) libsqlite3.la
  	rm -f sqlite3.h opcodes.*
  	rm -rf .libs .deps
@@ -47,5 +47,5 @@ Index: sqlite3-3.7.4/Makefile.in
 +	rm -f lemon$(TEXE)
 +endif
  	rm -f mkkeywordhash$(BEXE) keywordhash.h
- 	rm -f $(PUBLISH)
  	rm -f *.da *.bb *.bbg gmon.out
+ 	rm -rf quota2a quota2b quota2c

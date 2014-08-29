@@ -13,6 +13,13 @@
 */
 #include "sqliteInt.h"
 
+#if SQLITE_OS_WIN
+/*
+** Include the header file for the Windows VFS.
+*/
+#include "os_win.h"
+#endif
+
 /*
 ** The code in this file is only used if we are compiling multithreaded
 ** on a win32 system.
@@ -69,7 +76,7 @@ struct sqlite3_mutex {
     }
     return osType==2;
   }
-#endif /* SQLITE_OS_WINCE */
+#endif /* SQLITE_OS_WINCE || SQLITE_OS_WINRT */
 #endif
 
 #ifdef SQLITE_DEBUG
@@ -107,9 +114,9 @@ static int winMutex_isInit = 0;
 ** processing, the "interlocked" magic is probably not
 ** strictly necessary.
 */
-static long winMutex_lock = 0;
+static LONG winMutex_lock = 0;
 
-extern void sqlite3_win32_sleep(DWORD milliseconds); /* os_win.c */
+void sqlite3_win32_sleep(DWORD milliseconds); /* os_win.c */
 
 static int winMutexInit(void){ 
   /* The first to increment to 1 does actual initialization */

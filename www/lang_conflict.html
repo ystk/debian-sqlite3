@@ -22,6 +22,14 @@ a:visited { color: #734559 }
   margin-top:58px;
 }
 
+.menubar {
+  clear: both;
+  border-radius: 8px;
+  background: #044a64;
+  padding: 0px;
+  margin: 0px;
+  cell-spacing: 0px;
+}    
 .toolbar {
   text-align: center;
   line-height: 1.6em;
@@ -36,12 +44,6 @@ a:visited { color: #734559 }
 .content dt { font-weight:bold; }
 .content dd { margin-bottom: 25px; margin-left:20%; }
 .content ul { padding:0px; padding-left: 15px; margin:0px; }
-
-/* rounded corners */
-.se  { background: url(images/se.gif) 100% 100% no-repeat #044a64}
-.sw  { background: url(images/sw.gif) 0% 100% no-repeat }
-.ne  { background: url(images/ne.gif) 100% 0% no-repeat }
-.nw  { background: url(images/nw.gif) 0% 0% no-repeat }
 
 /* Things for "fancyformat" documents start here. */
 .fancy img+p {font-style:italic}
@@ -74,9 +76,7 @@ a:visited { color: #734559 }
 <div><!-- IE hack to prevent disappearing logo--></div>
 <div class="tagline">Small. Fast. Reliable.<br>Choose any three.</div>
 
-<table width=100% style="clear:both"><tr><td>
-  <div class="se"><div class="sw"><div class="ne"><div class="nw">
-  <table width=100% style="padding:0;margin:0;cell-spacing:0"><tr>
+<table width=100% class="menubar"><tr>
   <td width=100%>
   <div class="toolbar">
     <a href="about.html">About</a>
@@ -103,6 +103,18 @@ a:visited { color: #734559 }
       q.style.fontStyle = "italic"
     }
   }
+  function hideorshow(btn,obj){
+    var x = document.getElementById(obj);
+    var b = document.getElementById(btn);
+    if( x.style.display!='none' ){
+      x.style.display = 'none';
+      b.innerHTML='show';
+    }else{
+      x.style.display = '';
+      b.innerHTML='hide';
+    }
+    return false;
+  }
 </script>
 <td>
     <div style="padding:0 1em 0px 0;white-space:nowrap">
@@ -113,11 +125,14 @@ a:visited { color: #734559 }
     </form>
     </div>
   </table>
-</div></div></div></div>
-</td></tr></table>
+
 <div class=startsearch></div>
   
-<h1 align="center">SQL As Understood By SQLite</h1><p><a href="lang.html">[Top]</a></p><h2>ON CONFLICT clause</h2><h4><a href="syntaxdiagrams.html#conflict-clause">conflict-clause:</a></h4><blockquote> <img alt="syntax diagram conflict-clause" src="images/syntax/conflict-clause.gif"></img> </blockquote>
+<h1 align="center">SQL As Understood By SQLite</h1><p><a href="lang.html">[Top]</a></p><h2>ON CONFLICT clause</h2><p><b><a href="syntaxdiagrams.html#conflict-clause">conflict-clause:</a></b>
+<button id='x1133' onclick='hideorshow("x1133","x1134")'>hide</button></p>
+ <blockquote id='x1134'>
+ <img alt="syntax diagram conflict-clause" src="images/syntax/conflict-clause.gif" />
+</blockquote>
 
 
 <p>The ON CONFLICT clause is not a separate SQL command.  It is a
@@ -156,11 +171,11 @@ ABORT algorithm.</p></dd>
 <dt><b>ABORT</b></dt>
 <dd><p> When an applicable constraint violation occurs, the ABORT
 resolution algorithm aborts the current SQL statement
-with an SQLITE_CONSTRAIT error and backs out any changes
+with an SQLITE_CONSTRAINT error and backs out any changes
 made by the current SQL statement; but changes caused
 by prior SQL statements within the same transaction are preserved and the
 transaction remains active.
-This is the default behavior and the behavior proscribed the SQL
+This is the default behavior and the behavior specified by the SQL
 standard.</p></dd>
 
 <dt><b>FAIL</b></dt>
@@ -191,7 +206,7 @@ prior to inserting or updating the current row and the command continues
 executing normally.
 If a NOT NULL constraint violation occurs, the REPLACE conflict
 resolution replaces the NULL value with
-he default value for that column, or if the column has no default
+the default value for that column, or if the column has no default
 value, then the ABORT algorithm is used.
 If a CHECK constraint violation occurs, the REPLACE conflict resolution
 algorithm always works like ABORT.</p>
