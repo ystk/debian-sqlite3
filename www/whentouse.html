@@ -133,53 +133,27 @@ a:visited { color: #734559 }
 <h2>Appropriate Uses For SQLite</h2>
 
 <p>
-SQLite is different from most other SQL database engines in that its
-primary design goal is to be simple:
-</p>
-
-<ul>
-<li>Simple to administer</li>
-<li>Simple to operate</li>
-<li>Simple to embed in a larger program</li>
-<li>Simple to maintain and customize</li>
-</ul>
-
-<p>
-Many people like SQLite because it is small and fast.  But those
-qualities are just happy accidents.
-Users also find that SQLite is very reliable.  Reliability is
-a consequence of simplicity.  With less complication, there is
-less to go wrong.  So, yes, SQLite is small, fast, and reliable,
-but first and foremost, SQLite strives to be simple.
+SQLite is not directly comparable to other SQL database engines such
+as Oracle, PostgreSQL, MySQL, or SQL Server since SQLite is trying to
+solve a very different problem.
 </p>
 
 <p>
-Simplicity in a database engine can be either a strength or a
-weakness, depending on what you are trying to do.  In order to
-achieve simplicity, SQLite has had to sacrifice other characteristics
-that some people find useful, such as high concurrency, fine-grained
-access control, a rich set of built-in functions, stored procedures,
-esoteric SQL language features, XML and/or Java extensions,
-tera- or peta-byte scalability, and so forth.  If you need some of these
-features and do not mind the added complexity that they
-bring, then SQLite is probably not the database for you.
-SQLite is not intended to be an enterprise database engine.  It is
-not designed to compete with Oracle or PostgreSQL.
+Other SQL database engines strive to implement a shared repository
+of enterprise data.  They emphasis scalability, concurrency, centralization,
+and control.
 </p>
 
 <p>
-The basic rule of thumb for when it is appropriate to use SQLite is
-this:  Use SQLite in situations where simplicity of administration,
-implementation, and maintenance are more important than the countless
-complex features that enterprise database engines provide.
-As it turns out, situations where simplicity is the better choice
-are more common than many people realize.
+SQLite, on the other hand, strives to provide local data storage for
+individual applications and devices.  SQLite emphasizes economy,
+efficiency, reliability, independence, and simplicity.
 </p>
 
 <p>
-Another way to look at SQLite is this:  SQLite is not designed
-to replace <a href="http://www.oracle.com/database/index.html">Oracle</a>.
-It is designed to replace <a href="http://man.he.net/man3/fopen">fopen()</a>.
+SQLite is not designed to compete with
+<a href="http://www.oracle.com/database/index.html">Oracle</a>.
+SQLite is designed to compete with <a href="http://man.he.net/man3/fopen">fopen()</a>.
 </p>
 
 <h2>Situations Where SQLite Works Well</h2>

@@ -133,15 +133,15 @@ int sqlite3_close_v2(sqlite3*);
 </pre></blockquote><p>
 The sqlite3_close() and sqlite3_close_v2() routines are destructors
 for the <a href="../c3ref/sqlite3.html">sqlite3</a> object.
-Calls to sqlite3_close() and sqlite3_close_v2() return SQLITE_OK if
+Calls to sqlite3_close() and sqlite3_close_v2() return <a href="../rescode.html#ok">SQLITE_OK</a> if
 the <a href="../c3ref/sqlite3.html">sqlite3</a> object is successfully destroyed and all associated
 resources are deallocated.</p>
 
 <p>If the database connection is associated with unfinalized prepared
 statements or unfinished sqlite3_backup objects then sqlite3_close()
-will leave the database connection open and return <a href="../c3ref/c_abort.html">SQLITE_BUSY</a>.
+will leave the database connection open and return <a href="../rescode.html#busy">SQLITE_BUSY</a>.
 If sqlite3_close_v2() is called with unfinalized prepared statements
-and unfinished sqlite3_backups, then the database connection becomes
+and/or unfinished sqlite3_backups, then the database connection becomes
 an unusable "zombie" which will automatically be deallocated when the
 last prepared statement is finalized or the last sqlite3_backup is
 finished.  The sqlite3_close_v2() interface is intended for use with
@@ -154,7 +154,7 @@ destructors are called is arbitrary.</p>
 with the <a href="../c3ref/sqlite3.html">sqlite3</a> object prior to attempting to close the object.  If
 sqlite3_close_v2() is called on a <a href="../c3ref/sqlite3.html">database connection</a> that still has
 outstanding <a href="../c3ref/stmt.html">prepared statements</a>, <a href="../c3ref/blob.html">BLOB handles</a>, and/or
-<a href="../c3ref/backup.html">sqlite3_backup</a> objects then it returns SQLITE_OK but the deallocation
+<a href="../c3ref/backup.html">sqlite3_backup</a> objects then it returns <a href="../rescode.html#ok">SQLITE_OK</a> and the deallocation
 of resources is deferred until all <a href="../c3ref/stmt.html">prepared statements</a>, <a href="../c3ref/blob.html">BLOB handles</a>,
 and <a href="../c3ref/backup.html">sqlite3_backup</a> objects are also destroyed.</p>
 

@@ -134,7 +134,11 @@ The <a href="../c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint(D,X)</a> inter
 on <a href="../c3ref/sqlite3.html">database connection</a> D to be <a href="../wal.html#ckpt">checkpointed</a>.  If X is NULL or an
 empty string, then a checkpoint is run on all databases of
 connection D.  If the database connection D is not in
-<a href="../wal.html">write-ahead log mode</a> then this interface is a harmless no-op.</p>
+<a href="../wal.html">write-ahead log mode</a> then this interface is a harmless no-op.
+The <a href="../c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint(D,X)</a> interface initiates a
+<a href="../c3ref/wal_checkpoint_v2.html">PASSIVE</a> checkpoint.
+Use the <a href="../c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> interface to get a FULL
+or RESET checkpoint.</p>
 
 <p>The <a href="../pragma.html#pragma_wal_checkpoint">wal_checkpoint pragma</a> can be used to invoke this interface
 from SQL.  The <a href="../c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> interface and the

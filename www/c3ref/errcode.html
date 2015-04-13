@@ -134,13 +134,13 @@ const char *sqlite3_errmsg(sqlite3*);
 const void *sqlite3_errmsg16(sqlite3*);
 const char *sqlite3_errstr(int);
 </pre></blockquote><p>
-The sqlite3_errcode() interface returns the numeric <a href="../c3ref/c_abort.html">result code</a> or
-<a href="../c3ref/c_abort_rollback.html">extended result code</a> for the most recent failed sqlite3_* API call
+The sqlite3_errcode() interface returns the numeric <a href="../rescode.html">result code</a> or
+<a href="../rescode.html#extrc">extended result code</a> for the most recent failed sqlite3_* API call
 associated with a <a href="../c3ref/sqlite3.html">database connection</a>. If a prior API call failed
 but the most recent API call succeeded, the return value from
 sqlite3_errcode() is undefined.  The sqlite3_extended_errcode()
 interface is the same except that it always returns the
-<a href="../c3ref/c_abort_rollback.html">extended result code</a> even when extended result codes are
+<a href="../rescode.html#extrc">extended result code</a> even when extended result codes are
 disabled.</p>
 
 <p>The sqlite3_errmsg() and sqlite3_errmsg16() return English-language
@@ -151,7 +151,7 @@ However, the error string might be overwritten or deallocated by
 subsequent calls to other SQLite interface functions.</p>
 
 <p>The sqlite3_errstr() interface returns the English-language text
-that describes the <a href="../c3ref/c_abort.html">result code</a>, as UTF-8.
+that describes the <a href="../rescode.html">result code</a>, as UTF-8.
 Memory to hold the error message string is managed internally
 and must not be freed by the application.</p>
 

@@ -155,11 +155,11 @@ a:visited { color: #734559 }
 
       <ol type="a">
       <li><p>The signature of the xAccess method has been modified to
-      return an <a href="c3ref/c_abort.html">error code</a> and to store its output into an integer pointed
+      return an <a href="rescode.html">error code</a> and to store its output into an integer pointed
       to by a parameter, rather than returning the output directly.
       This change allows the xAccess() method to report failures.
       In association with this signature change, a new 
-      extended error code <a href="c3ref/c_abort_rollback.html">SQLITE_IOERR_ACCESS</a> has been added.
+      extended error code <a href="rescode.html#ioerr_access">SQLITE_IOERR_ACCESS</a> has been added.
       </p></li>
 
       <li><p>The xGetTempname method has been removed from <a href="c3ref/vfs.html">sqlite3_vfs</a>.
@@ -173,10 +173,10 @@ a:visited { color: #734559 }
   </li>
 
   <li><p>The signature of the xCheckReservedLock method on <a href="c3ref/io_methods.html">sqlite3_io_methods</a>
-      has been modified so that it returns an <a href="c3ref/c_abort.html">error code</a> and stores its
+      has been modified so that it returns an <a href="rescode.html">error code</a> and stores its
       boolean result into an integer pointed to by a parameter.  In
       association with this change, a new extended error code
-      <a href="c3ref/c_abort_rollback.html">SQLITE_IOERR_CHECKRESERVEDLOCK</a> has been added.</p></li>
+      <a href="rescode.html#ioerr_checkreservedlock">SQLITE_IOERR_CHECKRESERVEDLOCK</a> has been added.</p></li>
 
   <li><p>When SQLite is ported to new operation systems (operating systems 
       other than Unix, Windows, and OS/2 for which ports are provided together

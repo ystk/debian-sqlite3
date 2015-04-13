@@ -180,24 +180,19 @@ a:visited { color: #734559 }
 #define SQLITE_NOTICE_RECOVER_WAL      (SQLITE_NOTICE | (1&lt;&lt;8))
 #define SQLITE_NOTICE_RECOVER_ROLLBACK (SQLITE_NOTICE | (2&lt;&lt;8))
 #define SQLITE_WARNING_AUTOINDEX       (SQLITE_WARNING | (1&lt;&lt;8))
+#define SQLITE_AUTH_USER               (SQLITE_AUTH | (1&lt;&lt;8))
 </pre></blockquote><p>
-In its default configuration, SQLite API routines return one of 26 integer
-<a href="../c3ref/c_abort.html">result codes</a>.  However, experience has shown that many of
+In its default configuration, SQLite API routines return one of 30 integer
+<a href="../rescode.html">result codes</a>.  However, experience has shown that many of
 these result codes are too coarse-grained.  They do not provide as
 much information about problems as programmers might like.  In an effort to
 address this, newer versions of SQLite (version 3.3.8 and later) include
 support for additional result codes that provide more detailed information
-about errors. The extended result codes are enabled or disabled
+about errors. These <a href="../rescode.html#extrc">extended result codes</a> are enabled or disabled
 on a per database connection basis using the
-<a href="../c3ref/extended_result_codes.html">sqlite3_extended_result_codes()</a> API.</p>
-
-<p>Some of the available extended result codes are listed here.
-One may expect the number of extended result codes will increase
-over time.  Software that uses extended result codes should expect
-to see new result codes in future releases of SQLite.</p>
-
-<p>The SQLITE_OK result code will never be extended.  It will always
-be exactly zero.
+<a href="../c3ref/extended_result_codes.html">sqlite3_extended_result_codes()</a> API.  Or, the extended code for
+the most recent error can be obtained using
+<a href="../c3ref/errcode.html">sqlite3_extended_errcode()</a>.
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,
   <a href="constlist.html">Constants</a>, and

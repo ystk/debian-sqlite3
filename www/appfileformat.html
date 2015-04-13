@@ -184,7 +184,7 @@ Here are just a few examples:
 <p>We make a distinction between a "file format" and an "application format".
 A file format is used to store a single object.  So, for example, a GIF or
 JPEG file stores a single image, and an XHTML file stores text,
-so those are "file formats" and not "application formats".  A EPUB file, 
+so those are "file formats" and not "application formats".  An EPUB file, 
 in contrast, stores both text and images (as contained XHTML and GIF/JPEG
 files) and so it is considered a "application format".  This article is
 about "application formats".
@@ -275,7 +275,7 @@ like this:
 CREATE TABLE files(filename TEXT PRIMARY KEY, content BLOB);
 </pre></blockquote>
 If the content is compressed, then such an SQLite database is only
-slightly larger (less than 2% larger)
+slightly larger, and <a href="affcase1.html#smaller">sometimes smaller</a> 
 than an equivalent ZIP archive, and it has the advantage
 of being able to update individual "files" without rewrite
 the entire document.
@@ -295,7 +295,8 @@ by the SQL schema.
 pile-of-files or wrapped pile-of-files format can do, plus much more,
 and with greater lucidity.
 An SQLite database is a more versatile container than key/value
-filesystem or a ZIP archive.
+filesystem or a ZIP archive.  (For a detailed example, see the
+<a href="affcase1.html">OpenOffice case study</a> essay.)
 
 <p>The power of an SQLite database could, in theory, be achieved using
 a custom file format.  But any custom file format that is as expressive
@@ -337,7 +338,7 @@ to help identify the file as "belonging" to the application.
 SQLite database files contain a 4-byte <a href="fileformat2.html#appid">Application ID</a> in
 their headers that can be set to an application-defined value
 and then used to identify the "type" of the document for utility
-programs such as <a href="http://linux.die.net/man/1/file">file(1)</a>, futher
+programs such as <a href="http://linux.die.net/man/1/file">file(1)</a>, further
 enhancing the document metaphor.
 
 
@@ -369,7 +370,7 @@ not required to read or write content in an SQLite database.
 An SQLite database file is not an opaque blob.  It is true
 that command-line tools such as text editors or "grep" or "awk" are
 not useful on an SQLite database, but the SQL query language is a much
-more powerful and convenient way for examining the the content, so the
+more powerful and convenient way for examining the content, so the
 inability to use "grep" and "awk" and the like is not seen as a loss.
 
 <p>An SQLite database is a <a href="fileformat2.html">well-defined and well-documented</a>
@@ -401,7 +402,7 @@ to go out at the same instant that a change was being written to disk.
 
 <p>SQLite is transactional, meaning that multiple changes can be grouped
 together such that either all or none of them occur, and so that the
-changes can be rolled back if a problem is found prior to to commit.
+changes can be rolled back if a problem is found prior to commit.
 This allows an application to make a change incrementally, then run
 various sanity and consistency checks on the resulting data prior to
 committing the changes to disk.  The
@@ -469,7 +470,7 @@ those problems can often be resolved by adding one or two <a href="lang_createin
 statements to the schema or perhaps running <a href="lang_analyze.html">ANALYZE</a> one time
 and without having to touch a single line of
 application code.  But if a performance problem comes up in a custom or 
-pile-of-files format, the the fix will often require extensive changes
+pile-of-files format, the fix will often require extensive changes
 to application code to add and maintain new indices or to extract 
 information using different algorithms.
 

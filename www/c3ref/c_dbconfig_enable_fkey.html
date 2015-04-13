@@ -139,7 +139,7 @@ can be passed as the second argument to the <a href="../c3ref/db_config.html">sq
 Existing configuration options might be discontinued.  Applications
 should check the return code from <a href="../c3ref/db_config.html">sqlite3_db_config()</a> to make sure that
 the call worked.  The <a href="../c3ref/db_config.html">sqlite3_db_config()</a> interface will return a
-non-zero <a href="../c3ref/c_abort.html">error code</a> if a discontinued or unsupported configuration option
+non-zero <a href="../rescode.html">error code</a> if a discontinued or unsupported configuration option
 is invoked.</p>
 
 <p><dl>
@@ -163,7 +163,7 @@ when the "current value" returned by
 <a href="../c3ref/db_status.html">sqlite3_db_status</a>(D,<a href="../c3ref/c_config_covering_index_scan.html#sqliteconfiglookaside">SQLITE_CONFIG_LOOKASIDE</a>,...) is zero.
 Any attempt to change the lookaside memory configuration when lookaside
 memory is in use leaves the configuration unchanged and returns
-<a href="../c3ref/c_abort.html">SQLITE_BUSY</a>.</dd></p>
+<a href="../rescode.html#busy">SQLITE_BUSY</a>.</dd></p>
 
 <p><dt>SQLITE_DBCONFIG_ENABLE_FKEY</dt>
 <dd> This option is used to enable or disable the enforcement of

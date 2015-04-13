@@ -166,15 +166,15 @@ built-in PRAGMA statements.</p>
 
 <hr /><a name="syntax"></a>
 <h2>PRAGMA command syntax</h2>
-<p><b><a href="syntaxdiagrams.html#pragma-stmt">pragma-stmt:</a></b>
+<p><b><a href="syntax/pragma-stmt.html">pragma-stmt:</a></b>
 <button id='x1467' onclick='hideorshow("x1467","x1468")'>hide</button></p>
  <blockquote id='x1468'>
  <img alt="syntax diagram pragma-stmt" src="images/syntax/pragma-stmt.gif" />
-<p><b><a href="syntaxdiagrams.html#pragma-value">pragma-value:</a></b>
+<p><b><a href="syntax/pragma-value.html">pragma-value:</a></b>
 <button id='x1469' onclick='hideorshow("x1469","x1470")'>hide</button></p>
  <blockquote id='x1470'>
  <img alt="syntax diagram pragma-value" src="images/syntax/pragma-value.gif" />
-<p><b><a href="syntaxdiagrams.html#signed-number">signed-number:</a></b>
+<p><b><a href="syntax/signed-number.html">signed-number:</a></b>
 <button id='x1471' onclick='hideorshow("x1471","x1472")'>show</button></p>
  <blockquote id='x1472' style='display:none;'>
  <img alt="syntax diagram signed-number" src="images/syntax/signed-number.gif" />
@@ -235,8 +235,8 @@ name is meaningless and is simply ignored.</p>
 <li><a href="#pragma_foreign_key_check">foreign_key_check</a>
 <li><a href="#pragma_foreign_key_list">foreign_key_list</a>
 <li><a href="#pragma_foreign_keys">foreign_keys</a>
-</ul></td><td valign="top" align="left"><ul>
 <li><a href="#pragma_freelist_count">freelist_count</a>
+</ul></td><td valign="top" align="left"><ul>
 <li><a href="#pragma_full_column_names"><s>full_column_names</s></a>&sup1;
 <li><a href="#pragma_fullfsync">fullfsync</a>
 <li><a href="#pragma_ignore_check_constraints">ignore_check_constraints</a>
@@ -256,9 +256,9 @@ name is meaningless and is simply ignored.</p>
 <li><a href="#pragma_query_only">query_only</a>
 <li><a href="#pragma_quick_check">quick_check</a>
 <li><a href="#pragma_read_uncommitted">read_uncommitted</a>
-</ul></td><td valign="top" align="left"><ul>
 <li><a href="#pragma_recursive_triggers">recursive_triggers</a>
 <li><a href="#pragma_reverse_unordered_selects">reverse_unordered_selects</a>
+</ul></td><td valign="top" align="left"><ul>
 <li><a href="#pragma_schema_version">schema_version</a>
 <li><a href="#pragma_secure_delete">secure_delete</a>
 <li><a href="#pragma_short_column_names"><s>short_column_names</s></a>&sup1;
@@ -269,6 +269,7 @@ name is meaningless and is simply ignored.</p>
 <li><a href="#pragma_table_info">table_info</a>
 <li><a href="#pragma_temp_store">temp_store</a>
 <li><a href="#pragma_temp_store_directory"><s>temp_store_directory</s></a>&sup1;
+<li><a href="#pragma_threads">threads</a>
 <li><a href="#pragma_schema_version">user_version</a>
 <li><a href="#pragma_vdbe_addoptrace"><i>vdbe_addoptrace</i></a>&sup2;
 <li><a href="#pragma_vdbe_debug"><i>vdbe_debug</i></a>&sup2;
@@ -377,6 +378,10 @@ for use in application programs.</ol></p>
     This pragma is an alternative to the <a href="c3ref/busy_timeout.html">sqlite3_busy_timeout()</a> C-language
     interface which is made available as a pragma for use with language
     bindings that do not provide direct access to <a href="c3ref/busy_timeout.html">sqlite3_busy_timeout()</a>.
+
+    <p>Each database connection can only have a single
+    <a href="c3ref/busy_handler.html">busy handler</a>.  This PRAGMA sets the busy handler
+    for the process, possibly overwriting any previously set busy handler.
 <a name="pragma_cache_size"></a>
 <hr>
     <p><b>PRAGMA cache_size;
@@ -666,7 +671,7 @@ for use in application programs.</ol></p>
        all statements prepared
        using the database connection, including those prepared before the
        setting was changed. Any existing statements prepared using the legacy 
-       <a href="c3ref/prepare.html">sqlite3_prepare()</a> interface may fail with an <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> error
+       <a href="c3ref/prepare.html">sqlite3_prepare()</a> interface may fail with an <a href="rescode.html#schema">SQLITE_SCHEMA</a> error
        after the foreign_keys setting is changed.
 
     <p>As of SQLite <a href="releaselog/3_6_19.html">version 3.6.19</a>, the default setting for foreign
@@ -764,14 +769,22 @@ for use in application programs.</ol></p>
     <br>PRAGMA integrity_check(</b><i>N</i><b>)</b></p>
     <p>This pragma does an integrity check of the entire database.  The
     integrity_check pragma
-    looks for out-of-order records, missing pages, malformed records, and
-    corrupt indices.
+    looks for out-of-order records, missing pages, malformed records, missing
+    index entries, and UNIQUE and NOT NULL constraint errors.
     If the integrity_check pragma finds problems, strings are returned
     (as multiple rows with a single column per row) which describe
     the problems.  Pragma integrity_check will return at most <i>N</i>
-    errors will be reported before the analysis quits, with N defaulting
-    to 100.  If pragma integrity_check finds no errors are found, a
+    errors before the analysis quits, with N defaulting
+    to 100.  If pragma integrity_check finds no errors, a
     single row with the value 'ok' is returned.</p>
+
+    <p>PRAGMA integrity_check does not find
+    <a href="foreignkeys.html">FOREIGN KEY</a> errors.  
+    Use the <a href="pragma.html#pragma_foreign_key_check">PRAGMA foreign_key_check</a> command for to find errors in
+    FOREIGN KEY constraints.</p>
+
+    <p>See also the <a href="pragma.html#pragma_quick_check">PRAGMA quick_check</a> command which does most of the
+    checking of PRAGMA integrity_check but runs much faster.</p>
 <a name="pragma_journal_mode"></a>
 <hr>
     <p><b>PRAGMA journal_mode;
@@ -1076,7 +1089,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     
     <p style='background-color: #f0e0ff;'>
     This pragma is intended for use when debugging SQLite itself.  It
-    is only contained in the build when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
+    is only available when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
     is used.</p>
   
 <a name="pragma_query_only"></a>
@@ -1091,8 +1104,9 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     <p><b>PRAGMA quick_check;
     <br>PRAGMA quick_check(</b><i>N</i><b>)</b></p>
     <p>The pragma is like <a href="pragma.html#pragma_integrity_check">integrity_check</a> except that it does not verify
-    that index content matches table content.  By skipping the verification
-    of index content, quick_check is able to run much faster than
+    UNIQUE and NOT NULL constraints and does not verify
+    that index content matches table content.  By skipping UNIQUE and NOT NULL
+    and index consistency checks, quick_check is able to run much faster than
     integrity_check.  Otherwise the two pragmas are the same.
     </p>
 <a name="pragma_read_uncommitted"></a>
@@ -1118,7 +1132,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
        all statements prepared
        using the database connection, including those prepared before the
        setting was changed. Any existing statements prepared using the legacy 
-       <a href="c3ref/prepare.html">sqlite3_prepare()</a> interface may fail with an <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> error
+       <a href="c3ref/prepare.html">sqlite3_prepare()</a> interface may fail with an <a href="rescode.html#schema">SQLITE_SCHEMA</a> error
        after the recursive_triggers setting is changed.
 
     <p>Prior to SQLite version 3.6.18, recursive triggers were not
@@ -1312,6 +1326,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     for columns that are not part of the primary key, and is the index of
     the column in the primary key for columns that are part of the primary
     key.</p>
+    <p>The table named in the table_info pragma can also be a view.</p>
 <a name="pragma_temp_store"></a>
 <hr>
     <p><b>PRAGMA temp_store;
@@ -1412,6 +1427,22 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     from the build when SQLite is compiled using <a href="compile.html#omit_deprecated">SQLITE_OMIT_DEPRECATED</a>.
     </p>
   
+<a name="pragma_threads"></a>
+<hr>
+    <p><b>PRAGMA threads;
+       <br>PRAGMA threads = </b><i>N</i><b>;</b></p>
+    <p>Query or change the value of the 
+    <a href="c3ref/limit.html">sqlite3_limit</a>(db,<a href="c3ref/c_limit_attached.html#sqlitelimitworkerthreads">SQLITE_LIMIT_WORKER_THREADS</a>,...) limit for
+    the current database connection.  This limit sets an upper bound
+    on the number of auxiliary threads that a <a href="c3ref/stmt.html">prepared statement</a> is
+    allowed to launch to assist with a query.  The default limit is 0
+    unless it is changed using the <a href="compile.html#default_worker_threads">SQLITE_DEFAULT_WORKER_THREADS</a>
+    compile-time option.  When the limit is zero, that means no
+    auxiliary threads will be launched.</p>
+
+    <p>This pragma is a thin wrapper around the
+    <a href="c3ref/limit.html">sqlite3_limit</a>(db,<a href="c3ref/c_limit_attached.html#sqlitelimitworkerthreads">SQLITE_LIMIT_WORKER_THREADS</a>,...) interface.
+    </p>
 <a name="pragma_vdbe_addoptrace"></a>
 <hr>
     <p><b>PRAGMA vdbe_addoptrace = </b><i>boolean</i><b>;</b></p>
@@ -1426,7 +1457,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     
     <p style='background-color: #f0e0ff;'>
     This pragma is intended for use when debugging SQLite itself.  It
-    is only contained in the build when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
+    is only available when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
     is used.</p>
   
 <a name="pragma_vdbe_debug"></a>
@@ -1443,7 +1474,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     
     <p style='background-color: #f0e0ff;'>
     This pragma is intended for use when debugging SQLite itself.  It
-    is only contained in the build when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
+    is only available when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
     is used.</p>
   
 <a name="pragma_vdbe_listing"></a>
@@ -1464,7 +1495,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     
     <p style='background-color: #f0e0ff;'>
     This pragma is intended for use when debugging SQLite itself.  It
-    is only contained in the build when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
+    is only available when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
     is used.</p>
   
 <a name="pragma_vdbe_trace"></a>
@@ -1481,7 +1512,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     
     <p style='background-color: #f0e0ff;'>
     This pragma is intended for use when debugging SQLite itself.  It
-    is only contained in the build when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
+    is only available when the <a href="compile.html#debug">SQLITE_DEBUG</a> compile-time option
     is used.</p>
   
 <a name="pragma_wal_autocheckpoint"></a>
@@ -1498,7 +1529,8 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     turns auto-checkpointing off.</p>
     
     <p>This pragma is a wrapper around the
-    <a href="c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> C interface.</p>
+    <a href="c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> C interface.
+    All automatic checkpoints are <a href="c3ref/wal_checkpoint_v2.html">PASSIVE</a>.</p>
 
     <p>Autocheckpointing is enabled by default with an interval
     of 1000 or <a href="compile.html#default_wal_autocheckpoint">SQLITE_DEFAULT_WAL_AUTOCHECKPOINT</a>.</p>
@@ -1517,12 +1549,41 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     is omitted.  If <a href="wal.html">write-ahead log</a> mode is disabled, this pragma is a
     harmless no-op.</p>
 
-    <p>Invoking this pragma is equivalent to calling the
-    <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> C interface with a 
-    <a href="c3ref/c_checkpoint_full.html">3rd parameter</a>
-    corresponding to the argument of the PRAGMA.  Invoking this
+    <p>Invoking this
     pragma without an argument is equivalent to calling the
     <a href="c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint()</a> C interface.</p>
+    Invoking this pragma with an argument is equivalent to calling the
+    <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> C interface with a 
+    <a href="c3ref/c_checkpoint_full.html">3rd parameter</a>
+    corresponding to the argument:
+
+    <dl>
+    <dt>PASSIVE<dd>
+      Checkpoint as many frames as possible without waiting for any database 
+      readers or writers to finish. Sync the db file if all frames in the log
+      are checkpointed. This mode is the same as calling 
+      sqlite3_wal_checkpoint(). The
+      <a href="c3ref/busy_handler.html">busy-handler callback</a> is never invoked.
+   
+    <dt>FULL<dd>
+      This mode blocks 
+      (invokes the <a href="c3ref/busy_handler.html">busy-handler callback</a>)
+      until there is no
+      database writer and all readers are reading from the most recent database
+      snapshot. It then checkpoints all frames in the log file and syncs the
+      database file. FULL blocks database writers while it is
+      running, but not database readers.
+   
+    <dt>RESTART<dd>
+      This mode works the same way as SQLITE_CHECKPOINT_FULL, except after 
+      checkpointing the log file it blocks (calls the 
+      <a href="c3ref/busy_handler.html">busy-handler callback</a>)
+      until all readers are reading from the database file only. This ensures 
+      that the next client to write to the database file restarts the log file 
+      from the beginning. RESTART blocks database writers while it is
+      running, but not database readers.
+    </dl>
+
 
     <p>The wal_checkpoint pragma returns a single row with three
     integer columns.  The first column is usually 0 but will be
@@ -1530,7 +1591,7 @@ PRAGMA <b>main.</b>locking_mode=EXCLUSIVE;
     for example because another thread or process was actively
     using the database.  In other words, the first column is 0 if the
     equivalent call to <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> would have returned
-    <a href="c3ref/c_abort.html">SQLITE_OK</a> or 1 if the equivalent call would have returned <a href="c3ref/c_abort.html">SQLITE_BUSY</a>.
+    <a href="rescode.html#ok">SQLITE_OK</a> or 1 if the equivalent call would have returned <a href="rescode.html#busy">SQLITE_BUSY</a>.
     The second column is the number of modified pages that have been
     written to the write-ahead log file.
     The third column is the number of pages in the write-ahead log file

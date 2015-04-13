@@ -291,7 +291,7 @@ directory.</p>
 <p>SQLite will always allocate at least mxPathname+1 bytes for the
 output buffer xFullPathname.  The exact size of the output buffer
 is also passed as a parameter to both  methods. If the output buffer
-is not large enough, <a href="../c3ref/c_abort.html">SQLITE_CANTOPEN</a> should be returned. Since this is
+is not large enough, <a href="../rescode.html#cantopen">SQLITE_CANTOPEN</a> should be returned. Since this is
 handled as a fatal error by SQLite, vfs implementations should endeavor
 to prevent this by setting mxPathname to a sufficiently large value.</p>
 

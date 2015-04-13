@@ -143,11 +143,13 @@ a:visited { color: #734559 }
 #define SQLITE_TESTCTRL_ISKEYWORD               16
 #define SQLITE_TESTCTRL_SCRATCHMALLOC           17
 #define SQLITE_TESTCTRL_LOCALTIME_FAULT         18
-#define SQLITE_TESTCTRL_EXPLAIN_STMT            19
+#define SQLITE_TESTCTRL_EXPLAIN_STMT            19  /* NOT USED */
 #define SQLITE_TESTCTRL_NEVER_CORRUPT           20
 #define SQLITE_TESTCTRL_VDBE_COVERAGE           21
 #define SQLITE_TESTCTRL_BYTEORDER               22
-#define SQLITE_TESTCTRL_LAST                    22
+#define SQLITE_TESTCTRL_ISINIT                  23
+#define SQLITE_TESTCTRL_SORTER_MMAP             24
+#define SQLITE_TESTCTRL_LAST                    24
 </pre></blockquote><p>
 These constants are the valid operation code parameters used
 as the first argument to <a href="../c3ref/test_control.html">sqlite3_test_control()</a>.</p>

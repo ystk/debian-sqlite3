@@ -688,6 +688,21 @@ SELECT * FROM docs WHERE docs MATCH 'title:linux problems';
 SELECT * FROM docs WHERE body MATCH 'title:linux driver';
 </table></div>
 
+<ul>
+  <li style="list-style:none"><p>
+    If the FTS table is an FTS4 table (not FTS3), a token may also be prefixed
+    with a "&#94;" character. In this case, in order to match the token must
+    appear as the very first token in any column of the matching row. Examples:
+</ul>
+
+<div class=codeblock style="margin:0 15ex"><table width=100% style="border:1px solid #80a796;padding:0 1ex;background-color:#EEEEEE"><tr><td><pre style="font-size:1.1em"><i>-- All documents for which "linux" is the first token of at least one</i>
+<i>-- column.</i>
+SELECT * FROM docs WHERE docs MATCH '&#94;linux';
+
+<i>-- All documents for which the first token in column "title" begins with "lin".</i>
+SELECT * FROM docs WHERE body MATCH 'title: &#94;lin*';
+</table></div>
+
 <a name="phrase"></a>
 
 <ul>
@@ -1849,9 +1864,11 @@ END;
 <p>
   When the languageid option is used, SQLite invokes the xLanguageid()
   on the sqlite3_tokenizer_module object immediately after the object
-  is created in order to pass in the language id that particular
+  is created in order to pass in the language id that the
   tokenizer should use.  The xLanguageid() method will never be called
-  more than once for any single tokenizer object.
+  more than once for any single tokenizer object.  The fact that different
+  languages might be tokenized differently is one reason why no single
+  FTS query can return rows with different languageid values.
   
 
 
@@ -2100,8 +2117,10 @@ SELECT * FROM t1 WHERE t1 MATCH 'abc*';
 
 <p>
   For general use in cases where the workload contains few UPDATE or DELETE
-  operations, is 8. If the workload contains many UPDATE or DELETE commands, 
-  or if query speed is a concern, it may be advantageous to reduce it to 2.
+  operations, a good choice for automerge is 8. If the workload contains
+  many UPDATE or DELETE commands, 
+  or if query speed is a concern, it may be advantageous to reduce automerge
+  to 2.
 
 <p>
   For reasons of backwards compatibility, the "automerge=1" command sets

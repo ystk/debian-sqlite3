@@ -150,7 +150,7 @@ entry point where as follows:</p>
 
 <p>If the xEntryPoint routine encounters an error, it should make *pzErrMsg
 point to an appropriate error message (obtained from <a href="../c3ref/mprintf.html">sqlite3_mprintf()</a>)
-and return an appropriate <a href="../c3ref/c_abort.html">error code</a>.  SQLite ensures that *pzErrMsg
+and return an appropriate <a href="../rescode.html">error code</a>.  SQLite ensures that *pzErrMsg
 is NULL before calling the xEntryPoint().  SQLite will invoke
 <a href="../c3ref/free.html">sqlite3_free()</a> on *pzErrMsg after xEntryPoint() returns.  If any
 xEntryPoint() returns an error, the <a href="../c3ref/open.html">sqlite3_open()</a>, <a href="../c3ref/open.html">sqlite3_open16()</a>,

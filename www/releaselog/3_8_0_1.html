@@ -148,12 +148,12 @@ a:visited { color: #734559 }
     transaction from closing.
 <li>Add the <a href="../compile.html#default_automatic_index">SQLITE_DEFAULT_AUTOMATIC_INDEX</a> compile-time option.  Setting this option
     to 0 disables automatic indices by default.
-<li>Issue an <a href="../c3ref/c_abort_rollback.html">SQLITE_WARNING_AUTOINDEX</a> warning on the <a href="../c3ref/c_config_covering_index_scan.html#sqliteconfiglog">SQLITE_CONFIG_LOG</a> whenever
+<li>Issue an <a href="../rescode.html#warning_autoindex">SQLITE_WARNING_AUTOINDEX</a> warning on the <a href="../c3ref/c_config_covering_index_scan.html#sqliteconfiglog">SQLITE_CONFIG_LOG</a> whenever
     the query planner uses an automatic index.
 <li>Added the <a href="../compile.html#fts3_max_expr_depth">SQLITE_FTS3_MAX_EXPR_DEPTH</a> compile-time option.
 <li>Added an optional 5th parameter defining the collating sequence to the 
     next_char() extension SQL function.
-<li>The <a href="../c3ref/c_abort_rollback.html">SQLITE_BUSY_SNAPSHOT</a> extended error code is returned in WAL mode when
+<li>The <a href="../rescode.html#busy_snapshot">SQLITE_BUSY_SNAPSHOT</a> extended error code is returned in WAL mode when
     a read transaction cannot be upgraded to a write transaction because the read is
     on an older snapshot.
 <li>Enhancements to the sqlite3_analyzer utility program to provide size

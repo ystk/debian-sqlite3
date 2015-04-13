@@ -24,7 +24,7 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
   confflags += --build $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/$(DEB_HOST_MULTIARCH)/tcl8.6
   export CROSS_BUILDING=no
 else
-  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/$(DEB_HOST_GNU_TYPE)/tcl8.6 LDFLAGS=-L/usr/lib/$(DEB_HOST_GNU_TYPE)
+  confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) --with-tcl=/usr/lib/$(DEB_HOST_MULTIARCH)/tcl8.6 LDFLAGS=-L/usr/lib/$(DEB_HOST_MULTIARCH)
   export CROSS_BUILDING=yes
 endif
 

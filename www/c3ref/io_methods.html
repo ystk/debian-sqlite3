@@ -201,7 +201,7 @@ core reserves all opcodes less than 100 for its own use.
 A <a href="../c3ref/c_fcntl_busyhandler.html">list of opcodes</a> less than 100 is available.
 Applications that define a custom xFileControl method should use opcodes
 greater than 100 to avoid conflicts.  VFS implementations should
-return <a href="../c3ref/c_abort.html">SQLITE_NOTFOUND</a> for file control opcodes that they do not
+return <a href="../rescode.html#notfound">SQLITE_NOTFOUND</a> for file control opcodes that they do not
 recognize.</p>
 
 <p>The xSectorSize() method returns the sector size of the

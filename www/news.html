@@ -132,7 +132,95 @@ a:visited { color: #734559 }
 
 <h2>Recent News</h2>
 
-<a name="2014_06_04"></a><h3>2014-06-04 - Release 3.8.5</h3><blockquote>
+<a name="2014_10_30"></a><h3>2014-10-30 - Release 3.8.7.1</h3><blockquote>
+<p>SQLite <a href="releaselog/3_8_7_1.html">version 3.8.7.1</a> is a bug-fix release.</p>
+
+<p><p>The primary reason for this bug-fix release is to address a problem with
+   updating the value of fields at the end of a table that were added
+   using <a href="lang_altertable.html">ALTER TABLE ADD COLUMN</a>.  This problem
+   <a href="https://www.sqlite.org/src/info/43107840f1c02">1</a> first appeared in the
+   3.8.7 release.</p>
+
+<p><p>Another minor annoyance in the 3.8.7 release was the fact that the
+   Android build tried to use the strchrnul() function from the standard
+   C library but that function is not available on Android.  Android builds
+   had to add -DHAVE_STRCHRNUL=0 to work around the problem.  This patch
+   fixes that so that Android builds should now work without any changes.</p>
+
+<p><p>The operation of <a href="pragma.html#pragma_journal_mode">PRAGMA journal_mode=TRUNCATE</a> has been enhanced so that
+   it invokes fsync() after truncating the journal file when
+   <a href="pragma.html#pragma_synchronous">PRAGMA synchronous=FULL</a>.  This helps to preserve transaction durability
+   in the case of a power loss occurring shortly after commit.</p>
+
+<p><p>Finally, a couple of long-standing and obscure problems associated with run
+   UPDATE and DELETE on VIEWs were fixed.</p>
+
+<p><p>The <a href="https://www.sqlite.org/src/vdiff?from=e4ab094f8afce0817f4074e823fabe59fc29ebb4&to=83afe23e553e802c0947c80d0ffdd120423e7c52&sbs=1">changes from 3.8.7</a> are minimal.
+</blockquote><hr width="50%"><a name="2014_10_17"></a><h3>2014-10-17 - Release 3.8.7</h3><blockquote>
+<p>SQLite <a href="releaselog/3_8_7.html">version 3.8.7</a> is a regularly scheduled maintenance release.
+   Upgrading from all prior versions is recommended.</p>
+
+<p><p>Most of the changes from the previous release have been micro-optimizations
+   designed to help SQLite run a little faster.  Each individual optimization
+   has an unmeasurably small performance impact.  But the improvements add up.
+   Measured on a well-defined workload (which the SQLite developers use
+   as a proxy for a typical application workload) using cachegrind on Linux
+   and compiled with gcc 4.8.1 and -Os on x64 linux, the current release 
+   does over 20% more work for the same number of CPU cycles compared to the
+   previous release.  Cachegrind is not a real CPU, and the workload
+   used for measurement is only a proxy.  So your performance may vary.
+   We expect to see about half the measured and reported improvement in
+   real-world applications. 10% is less than 20% but it is still pretty
+   good, we think.</p>
+
+<p><p>This release includes a new set of C-language interfaces that have
+   unsigned 64-bit instead of signed 32-bit length parameters.  The new
+   APIs do not provide any new capabilities.  But they do make it easier
+   to write applications that are more resistant to integer overflow
+   vulnerabilities.</p>
+
+<p><p>This release also includes a new sorter that is able to use multiple
+   threads to help with large sort operations.  (Sort operations are
+   sometimes required to implement ORDER BY and/or GROUP BY clauses and
+   are almost always required for CREATE INDEX.)  The multi-threads sorter
+   is turned off by default and must be enabled using the
+   <a href="pragma.html#pragma_threads">PRAGMA threads</a> SQL command.  Note that the multi-threaded sorter
+   provides faster real-time performance for large sorts, but it also
+   uses more CPU cycles and more energy.
+</blockquote><hr width="50%"><a name="2014_08_15"></a><h3>2014-08-15 - Release 3.8.6</h3><blockquote>
+<p>SQLite <a href="releaselog/3_8_6.html">version 3.8.6</a> is a regularly scheduled maintenance release.
+   Upgrading from all previous versions is recommended.</p>
+
+<p><p>This release contains the usual assortment of obscure bug fixes.
+   One bug, however, deserves special attention.
+   A problem appeared in the <a href="lang_createindex.html">CREATE INDEX</a> command beginning with
+   <a href="releaselog/3_8_2.html">version 3.8.2</a> (2013-12-06) that allowed, under some circumstances,
+   a UNIQUE index to be created on a column that was not unique.  Once
+   the index was created, no new non-unique entries could be inserted, but
+   preexisting non-unique entries would remain.  See ticket
+   <a href="http://www.sqlite.org/src/info/9a6daf340df99ba93c">9a6daf340df99ba93c</a>
+   for further information.  In addition to fixing this bug, the
+   <a href="pragma.html#pragma_integrity_check">PRAGMA integrity_check</a> command has been enhanced to detect
+   non-uniqueness in UNIQUE indices, so that if this bug did introduce
+   any problems in databases, those problems can be easily detected.</p>
+
+<p><p>Other noteworthy changes include the addition of support for
+   <a href="lang_expr.html#hexint">hexadecimal integers</a> (ex: 0x1234), and performance enhancements
+   to the <a href="lang_expr.html#in_op">IN operator</a> which, according to 
+   <a href="http://www.mail-archive.com/sqlite-users%40sqlite.org/msg85350.html">mailing list reports</a>,
+   help some queries run up to five times faster.</p>
+
+<p><p>Version 3.8.6 uses 25% fewer CPU cycles than version 3.8.0 from
+   approximately one year ago, according to <a href="http://valgrind.org/">valgrind</a>
+   and the
+   <a href="http://www.sqlite.org/src/artifact/d29c8048beb7e">test/speedtest1.c</a>
+   test program.
+   On the other hand,
+   the compiled binary for version 3.8.6 is about 5% larger than 3.8.0.
+   The size increase is 
+   due in part to the addition of new features such as <a href="withoutrowid.html">WITHOUT ROWID</a>
+   tables and <a href="lang_with.html">common table expressions</a>.
+</blockquote><hr width="50%"><a name="2014_06_04"></a><h3>2014-06-04 - Release 3.8.5</h3><blockquote>
 <p>SQLite <a href="releaselog/3_8_5.html">version 3.8.5</a> is a regularly scheduled maintenance release.
    Upgrading from the previous version is recommended.</p>
 

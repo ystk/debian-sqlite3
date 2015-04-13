@@ -186,7 +186,7 @@ INSERT INTO t1 VALUES((SELECT max(a) FROM t1)+1,123);
   declaration.  Then the key chosen will be one more than the
   largest key that has ever existed in that table.  If the largest
   possible key has previously existed in that table, then the <a href="lang_insert.html">INSERT</a>
-  will fail with an <a href="c3ref/c_abort.html">SQLITE_FULL</a> error code.</p></blockquote></li>
+  will fail with an <a href="rescode.html#full">SQLITE_FULL</a> error code.</p></blockquote></li>
 <a name="q2"></a>
 <p><b>(2) What datatypes does SQLite support?</b></p>
 <blockquote>SQLite uses <a href="datatype3.html">dynamic typing</a>.  Content can be stored as INTEGER,
@@ -433,13 +433,13 @@ COMMIT;
   </pre></blockquote></blockquote></li>
 <a name="q15"></a>
 <p><b>(15) What is an SQLITE_SCHEMA error, and why am I getting one?</b></p>
-<blockquote><p>An <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> error is returned when a 
+<blockquote><p>An <a href="rescode.html#schema">SQLITE_SCHEMA</a> error is returned when a 
   prepared SQL statement is no longer valid and cannot be executed.
   When this occurs, the statement must be recompiled from SQL using 
   the <a href="c3ref/prepare.html">sqlite3_prepare()</a> API.
   An SQLITE_SCHEMA error can only occur when using the <a href="c3ref/prepare.html">sqlite3_prepare()</a>,
   and <a href="c3ref/step.html">sqlite3_step()</a> interfaces to run SQL.
-  You will never receive an <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> error from
+  You will never receive an <a href="rescode.html#schema">SQLITE_SCHEMA</a> error from
   <a href="c3ref/exec.html">sqlite3_exec()</a>.  Nor will you receive an error if you
   prepare statements using <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a> instead of
   <a href="c3ref/prepare.html">sqlite3_prepare()</a>.</p>
@@ -447,7 +447,7 @@ COMMIT;
   <p>The <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a> interface creates a
   <a href="c3ref/stmt.html">prepared statement</a> that will automatically recompile itself if
   the schema changes.  The easiest way to deal with
-  <a href="c3ref/c_abort.html">SQLITE_SCHEMA</a> errors is to always use <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a>
+  <a href="rescode.html#schema">SQLITE_SCHEMA</a> errors is to always use <a href="c3ref/prepare.html">sqlite3_prepare_v2()</a>
   instead of <a href="c3ref/prepare.html">sqlite3_prepare()</a>.</blockquote></li>
 <a name="q16"></a>
 <p><b>(16) Why does ROUND(9.95,1)  return 9.9 instead of 10.0?
@@ -577,7 +577,7 @@ COMMIT;
 <a name="q21"></a>
 <p><b>(21) What is an SQLITE_CORRUPT error?  What does it mean for the database
   to be "malformed"? Why am I getting this error?</b></p>
-<blockquote><p>An <a href="c3ref/c_abort.html">SQLITE_CORRUPT</a> error is returned when SQLite detects an error
+<blockquote><p>An <a href="rescode.html#corrupt">SQLITE_CORRUPT</a> error is returned when SQLite detects an error
   in the structure, format, or other control elements of the
   database file.</p>
 

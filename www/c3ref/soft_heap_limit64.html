@@ -137,7 +137,7 @@ limit by reducing the number of pages held in the page cache
 as heap memory usages approaches the limit.
 The soft heap limit is "soft" because even though SQLite strives to stay
 below the limit, it will exceed the limit rather than generate
-an <a href="../c3ref/c_abort.html">SQLITE_NOMEM</a> error.  In other words, the soft heap limit
+an <a href="../rescode.html#nomem">SQLITE_NOMEM</a> error.  In other words, the soft heap limit
 is advisory only.</p>
 
 <p>The return value from sqlite3_soft_heap_limit64() is the size of

@@ -137,8 +137,8 @@ Autocommit mode is disabled by a <a href="../lang_transaction.html">BEGIN</a> st
 Autocommit mode is re-enabled by a <a href="../lang_transaction.html">COMMIT</a> or <a href="../lang_transaction.html">ROLLBACK</a>.</p>
 
 <p>If certain kinds of errors occur on a statement within a multi-statement
-transaction (errors including <a href="../c3ref/c_abort.html">SQLITE_FULL</a>, <a href="../c3ref/c_abort.html">SQLITE_IOERR</a>,
-<a href="../c3ref/c_abort.html">SQLITE_NOMEM</a>, <a href="../c3ref/c_abort.html">SQLITE_BUSY</a>, and <a href="../c3ref/c_abort.html">SQLITE_INTERRUPT</a>) then the
+transaction (errors including <a href="../rescode.html#full">SQLITE_FULL</a>, <a href="../rescode.html#ioerr">SQLITE_IOERR</a>,
+<a href="../rescode.html#nomem">SQLITE_NOMEM</a>, <a href="../rescode.html#busy">SQLITE_BUSY</a>, and <a href="../rescode.html#interrupt">SQLITE_INTERRUPT</a>) then the
 transaction might be rolled back automatically.  The only way to
 find out whether SQLite automatically rolled back the transaction after
 an error is to use this function.</p>

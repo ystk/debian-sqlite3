@@ -137,8 +137,8 @@ a:visited { color: #734559 }
     return the correct values.</li>
 <li>Added the <a href="../c3ref/errcode.html">sqlite3_extended_errcode()</a> interface.</li>
 <li>The <a href="../lang_transaction.html">COMMIT</a> command now succeeds even if there are pending queries.
-    It returns <a href="../c3ref/c_abort.html">SQLITE_BUSY</a> if there are pending incremental BLOB I/O requests.
-<li>The error code is changed to <a href="../c3ref/c_abort.html">SQLITE_BUSY</a> (instead of <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>)
+    It returns <a href="../rescode.html#busy">SQLITE_BUSY</a> if there are pending incremental BLOB I/O requests.
+<li>The error code is changed to <a href="../rescode.html#busy">SQLITE_BUSY</a> (instead of <a href="../rescode.html#error">SQLITE_ERROR</a>)
     when an attempt is made to <a href="../lang_transaction.html">ROLLBACK</a> while one or more queries are
     still pending.</li>
 <li>Drop all support for the <a href="../malloc.html#memsysx">experimental memory allocators</a> memsys4 and

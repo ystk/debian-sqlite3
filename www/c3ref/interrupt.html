@@ -145,7 +145,7 @@ is closed or might close before sqlite3_interrupt() returns.</p>
 sqlite3_interrupt() is called, then it might not have an opportunity
 to be interrupted and might continue to completion.</p>
 
-<p>An SQL operation that is interrupted will return <a href="../c3ref/c_abort.html">SQLITE_INTERRUPT</a>.
+<p>An SQL operation that is interrupted will return <a href="../rescode.html#interrupt">SQLITE_INTERRUPT</a>.
 If the interrupted SQL operation is an INSERT, UPDATE, or DELETE
 that is inside an explicit transaction, then the entire transaction
 will be rolled back automatically.</p>

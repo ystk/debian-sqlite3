@@ -1,3 +1,28 @@
+sqlite3 (3.8.7.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Thu, 06 Nov 2014 16:24:21 +0000
+
+sqlite3 (3.8.7-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Register with doc-base (closes: #691596).
+  * Update Standards-Version to 3.9.6 .
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Fri, 17 Oct 2014 15:09:56 +0000
+
+sqlite3 (3.8.6-1) unstable; urgency=low
+
+  * New upstream release.
+  * Update 20-hurd-locking-style.patch to match this release.
+  * Merge with Ubuntu.
+
+  [ Matthias Klose <doko@ubuntu.com> ]
+  * Fix i386 cross builds.
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Sat, 23 Aug 2014 07:37:16 +0000
+
 sqlite3 (3.8.5-2) unstable; urgency=low
 
   * Fix FTBFS on x86 architectures (closes: #751878).
