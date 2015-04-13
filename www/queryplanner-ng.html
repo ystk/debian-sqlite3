@@ -165,7 +165,7 @@ But for larger and more complex queries, such as
 multi-way joins with many indices
 and subqueries, there can be hundreds, thousands, or millions
 of reasonable algorithms for computing the result.
-The job of the query planner is to chose a single "best" query plan from
+The job of the query planner is to choose the single "best" query plan from
 this multitude of possibilities.</p>
 
 <p>Query planners are what make SQL database engines so amazingly useful and powerful.
@@ -188,7 +188,7 @@ It cannot determine how long any particular plan will take
 without actually running that plan.  So when comparing two
 or more plans to figure out which is "best", the query planner has to make
 some guesses and assumptions and those guesses and assumptions will 
-sometimes be wrong. A good query plan is one that will
+sometimes be wrong. A good query planner is one that will
 find the correct solution often enough that application
 programmers rarely need to get involved.</p>
 
@@ -486,7 +486,7 @@ low-selectivity indices without having run <a href="lang_analyze.html">ANALYZE</
 planners look at many fewer possible implementations for each query and 
 so they may have stumbled over a good plan by stupid luck.  The NGQP, on 
 the other hand, looks at many more query plan possibilities, and it may 
-chose a different query plan that
+choose a different query plan that
 works better in theory, assuming good indices, but which gives a performance
 regression in practice, because of the shape of the data.</p>
 
@@ -717,10 +717,10 @@ This is a long-standing feature of SQLite that is specifically designed
 to allow knowledgeable programmers
 to enforce a particular loop nesting order.  Once the join
 was changed to CROSS JOIN (the addition of a single keyword) the NGQP was
-forced to chose the faster algorithm-1 regardless of whether or not
+forced to choose the faster algorithm-1 regardless of whether or not
 statistical information had been gathered using ANALYZE.</p>
 
-<p>We say that algorithm-1 "faster", but this
+<p>We say that algorithm-1 is "faster", but this
 is not strictly true.  Algorithm-1 is faster in common repositories, but
 it is possible to construct a repository in which
 every check-in is on a different uniquely-named branch and
@@ -740,7 +740,7 @@ to the problem in this case.</p>
 <li><p><b>Don't panic!</b>
 Cases where the query planner picks an inferior plan are actually quite
 rare.  You are unlikely to run across any problems in your application.
-If you are not having performance issues, the you do not need to worry
+If you are not having performance issues, you do not need to worry
 about any of this.</p>
 
 <li><p><b>Create appropriate indices.</b>
@@ -758,7 +758,7 @@ boolean or "enum" columns as the left-most columns of your indices.</p>
 
 <p>The Fossil performance problem described in the previous section of
 this document arose because there were over
-ten thousands entries in the TAGXREF table with the same value for the 
+ten-thousand entries in the TAGXREF table with the same value for the 
 left-most column (the TAGID column) of the TAGXREF_I1 index.</p>
 
 <li><p><b>If you must use a low-quality index, be sure to run <a href="lang_analyze.html">ANALYZE</a>.</b>
@@ -786,7 +786,7 @@ by indices have a strong probability of being true.  If this assumption
 is incorrect, it could lead to a suboptimal query plan.  The
 <a href="lang_corefunc.html#unlikely">unlikely()</a> and <a href="lang_corefunc.html#likelihood">likelihood()</a> SQL functions can be used to provide
 hints to the query planner about WHERE clause terms that are probably
-not true, and thus aid the query planner is selecting the best possible
+not true, and thus aid the query planner in selecting the best possible
 plan.
 
 <li><p><b>Use the <a href="optoverview.html#crossjoin">CROSS JOIN</a> syntax to enforce a particular

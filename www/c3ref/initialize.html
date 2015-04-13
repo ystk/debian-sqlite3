@@ -162,10 +162,10 @@ sqlite3_shutdown().</p>
 sqlite3_os_init().  Similarly, sqlite3_shutdown()
 will invoke sqlite3_os_end().</p>
 
-<p>The sqlite3_initialize() routine returns <a href="../c3ref/c_abort.html">SQLITE_OK</a> on success.
+<p>The sqlite3_initialize() routine returns <a href="../rescode.html#ok">SQLITE_OK</a> on success.
 If for some reason, sqlite3_initialize() is unable to initialize
 the library (perhaps it is unable to allocate a needed resource such
-as a mutex) it returns an <a href="../c3ref/c_abort.html">error code</a> other than <a href="../c3ref/c_abort.html">SQLITE_OK</a>.</p>
+as a mutex) it returns an <a href="../rescode.html">error code</a> other than <a href="../rescode.html#ok">SQLITE_OK</a>.</p>
 
 <p>The sqlite3_initialize() routine is called internally by many other
 SQLite interfaces so that an application usually does not need to
@@ -202,7 +202,7 @@ When <a href="../custombuild.html">built for other platforms</a>
 option) the application must supply a suitable implementation for
 sqlite3_os_init() and sqlite3_os_end().  An application-supplied
 implementation of sqlite3_os_init() or sqlite3_os_end()
-must return <a href="../c3ref/c_abort.html">SQLITE_OK</a> on success and some other <a href="../c3ref/c_abort.html">error code</a> upon
+must return <a href="../rescode.html#ok">SQLITE_OK</a> on success and some other <a href="../rescode.html">error code</a> upon
 failure.
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,

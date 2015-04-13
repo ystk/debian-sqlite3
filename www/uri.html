@@ -150,19 +150,17 @@ parameter.
 
 <p>
 In order to maintain full backwards compatibility for legacy applications,
-the URI filename capability is disabled by default.  
-In order for URI filenames
-to work, one or more of the following must be true:
+the URI filename capability is disabled by default.
+URI filenames can be enabled or disabled using the <a href="compile.html#use_uri">SQLITE_USE_URI=1</a>
+or <a href="compile.html#use_uri">SQLITE_USE_URI=0</a> compile-time options.
+The compile-time setting for URI filenames can be changed
+at start-time using the <a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_covering_index_scan.html#sqliteconfiguri">SQLITE_CONFIG_URI</a>,1)
+or <a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_covering_index_scan.html#sqliteconfiguri">SQLITE_CONFIG_URI</a>,0) configuration calls.
+Regardless of the compile-time or start-time settings, URI filenames
+can be enabled for individual database connections by including the
+<a href="c3ref/c_open_autoproxy.html">SQLITE_OPEN_URI</a> bit in the set of bits passed as the F parameter
+to <a href="c3ref/open.html">sqlite3_open_v2(N,P,F,V)</a>.
 </p>
-
-<ol>
-<li><p>The SQLite library is compiled with the <a href="compile.html#use_uri">SQLITE_USE_URI</a> 
-       compile-time option.</p></li>
-<li><p>The <a href="c3ref/config.html">sqlite3_config</a>(<a href="c3ref/c_config_covering_index_scan.html#sqliteconfiguri">SQLITE_CONFIG_URI</a>, 1); configuration option
-       is set at application start-time.</p></li>
-<li><p>The <a href="c3ref/c_open_autoproxy.html">SQLITE_OPEN_URI</a> bit is OR-ed in with the set bits passed in
-       as the 3rd parameter to the <a href="c3ref/open.html">sqlite3_open_v2()</a> interface.</p></li>
-</ol>
 
 <p>
 If URI filenames are recognized when the database connection is originally
@@ -364,7 +362,7 @@ on immutable database files.  If these query parameter (or
 the <a href="c3ref/c_iocap_atomic.html">SQLITE_IOCAP_IMMUTABLE</a> bit in xDeviceCharacteristics)
 asserts that a database file is immutable and that file 
 changes anyhow, then SQLite might return incorrect query 
-results and/or <a href="c3ref/c_abort.html">SQLITE_CORRUPT</a> errors.
+results and/or <a href="rescode.html#corrupt">SQLITE_CORRUPT</a> errors.
 </dd>
 </dl>
 

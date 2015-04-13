@@ -165,7 +165,7 @@ to free memory from unpinned cache pages then retry the allocation
 request.  
 Failing that, SQLite will either stop what
 it is doing and return the
-<a href="c3ref/c_abort.html">SQLITE_NOMEM</a> error code back up to the application or it will
+<a href="rescode.html#nomem">SQLITE_NOMEM</a> error code back up to the application or it will
 make do without the requested memory.
 </p></li>
 
@@ -961,7 +961,7 @@ then Robson proves that no memory allocation request will ever fail
 within the application.
 To put this another way, the application developer can select a value
 for <b>N</b> that will guarantee that no call to any SQLite interface
-will ever return <a href="c3ref/c_abort.html">SQLITE_NOMEM</a>.  The memory pool will never become
+will ever return <a href="rescode.html#nomem">SQLITE_NOMEM</a>.  The memory pool will never become
 so fragmented that a new memory allocation request cannot be satisfied.
 This is an important property for
 applications where a software fault could cause injury, physical harm, or

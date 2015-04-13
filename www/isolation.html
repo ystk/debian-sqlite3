@@ -260,7 +260,7 @@ Another example: X starts a read transaction using <a href="lang_transaction.htm
 Y makes a changes to the database using <a href="lang_update.html">UPDATE</a>.  Then X tries to make a
 change to the database using <a href="lang_update.html">UPDATE</a>.  The attempt by X to escalate its
 transaction from a read transaction to a write transaction fails with an
-<a href="c3ref/c_abort_rollback.html">SQLITE_BUSY_SNAPSHOT</a> error because the snapshot of the database being
+<a href="rescode.html#busy_snapshot">SQLITE_BUSY_SNAPSHOT</a> error because the snapshot of the database being
 viewed by X is no longer the latest version of the database.  If X were
 allowed to write, it would fork the history of the database file, which is
 something SQLite does not support.  In order for X to write to the database,
@@ -277,7 +277,7 @@ its transaction instead of just an ordinary BEGIN.  The <a href="lang_transactio
 command goes ahead and starts a write transaction, and thus blocks all
 other writers.  If the <a href="lang_transaction.html#immediate">BEGIN IMMEDIATE</a> operation succeeds, then no
 subsequent operations in that transaction will ever fail with an
-<a href="c3ref/c_abort.html">SQLITE_BUSY</a> error.
+<a href="rescode.html#busy">SQLITE_BUSY</a> error.
 </p>
 
 <h2>No Isolation Between Operations On The Same Database Connection</h2>

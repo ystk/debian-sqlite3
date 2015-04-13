@@ -142,15 +142,15 @@ by <a href="../c3ref/prepare.html">sqlite3_prepare()</a> or its variants <a href
 points during the compilation process, as logic is being created
 to perform various actions, the authorizer callback is invoked to
 see if those actions are allowed.  The authorizer callback should
-return <a href="../c3ref/c_abort.html">SQLITE_OK</a> to allow the action, <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> to disallow the
+return <a href="../rescode.html#ok">SQLITE_OK</a> to allow the action, <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> to disallow the
 specific action but allow the SQL statement to continue to be
 compiled, or <a href="../c3ref/c_deny.html">SQLITE_DENY</a> to cause the entire SQL statement to be
 rejected with an error.  If the authorizer callback returns
-any value other than <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a>, <a href="../c3ref/c_abort.html">SQLITE_OK</a>, or <a href="../c3ref/c_deny.html">SQLITE_DENY</a>
+any value other than <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a>, <a href="../rescode.html#ok">SQLITE_OK</a>, or <a href="../c3ref/c_deny.html">SQLITE_DENY</a>
 then the <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> or equivalent call that triggered
 the authorizer will fail with an error message.</p>
 
-<p>When the callback returns <a href="../c3ref/c_abort.html">SQLITE_OK</a>, that means the operation
+<p>When the callback returns <a href="../rescode.html#ok">SQLITE_OK</a>, that means the operation
 requested is ok.  When the callback returns <a href="../c3ref/c_deny.html">SQLITE_DENY</a>, the
 <a href="../c3ref/prepare.html">sqlite3_prepare_v2()</a> or equivalent call that triggered the
 authorizer will fail with an error message explaining that
@@ -167,7 +167,7 @@ details about the action to be authorized.</p>
 and the callback returns <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a> then the
 <a href="../c3ref/stmt.html">prepared statement</a> statement is constructed to substitute
 a NULL value in place of the table column that would have
-been read if <a href="../c3ref/c_abort.html">SQLITE_OK</a> had been returned.  The <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a>
+been read if <a href="../rescode.html#ok">SQLITE_OK</a> had been returned.  The <a href="../c3ref/c_deny.html">SQLITE_IGNORE</a>
 return can be used to deny an untrusted user access to individual
 columns of a table.
 If the action code is <a href="../c3ref/c_alter_table.html">SQLITE_DELETE</a> and the callback returns

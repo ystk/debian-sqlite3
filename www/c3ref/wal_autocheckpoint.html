@@ -146,6 +146,9 @@ configured by this function.</p>
 <p>The <a href="../pragma.html#pragma_wal_autocheckpoint">wal_autocheckpoint pragma</a> can be used to invoke this interface
 from SQL.</p>
 
+<p>Checkpoints initiated by this mechanism are
+<a href="../c3ref/wal_checkpoint_v2.html">PASSIVE</a>.</p>
+
 <p>Every new <a href="../c3ref/sqlite3.html">database connection</a> defaults to having the auto-checkpoint
 enabled with a threshold of 1000 or <a href="../compile.html#default_wal_autocheckpoint">SQLITE_DEFAULT_WAL_AUTOCHECKPOINT</a>
 pages.  The use of this interface

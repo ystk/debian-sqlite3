@@ -145,10 +145,12 @@ eMode parameter:</p>
 Checkpoint as many frames as possible without waiting for any database
 readers or writers to finish. Sync the db file if all frames in the log
 are checkpointed. This mode is the same as calling
-sqlite3_wal_checkpoint(). The busy-handler callback is never invoked.</p>
+sqlite3_wal_checkpoint(). The <a href="../c3ref/busy_handler.html">busy-handler callback</a>
+is never invoked.</p>
 
 <p><dt>SQLITE_CHECKPOINT_FULL<dd>
-This mode blocks (calls the busy-handler callback) until there is no
+This mode blocks (it invokes the
+<a href="../c3ref/busy_handler.html">busy-handler callback</a>) until there is no
 database writer and all readers are reading from the most recent database
 snapshot. It then checkpoints all frames in the log file and syncs the
 database file. This call blocks database writers while it is running,
@@ -156,7 +158,8 @@ but not database readers.</p>
 
 <p><dt>SQLITE_CHECKPOINT_RESTART<dd>
 This mode works the same way as SQLITE_CHECKPOINT_FULL, except after
-checkpointing the log file it blocks (calls the busy-handler callback)
+checkpointing the log file it blocks (calls the
+<a href="../c3ref/busy_handler.html">busy-handler callback</a>)
 until all readers are reading from the database file only. This ensures
 that the next client to write to the database file restarts the log file
 from the beginning. This call blocks database writers while it is running,

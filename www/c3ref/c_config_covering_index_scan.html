@@ -159,7 +159,7 @@ can be passed as the first argument to the <a href="../c3ref/config.html">sqlite
 Existing configuration options might be discontinued.  Applications
 should check the return code from <a href="../c3ref/config.html">sqlite3_config()</a> to make sure that
 the call worked.  The <a href="../c3ref/config.html">sqlite3_config()</a> interface will return a
-non-zero <a href="../c3ref/c_abort.html">error code</a> if a discontinued or unsupported configuration option
+non-zero <a href="../rescode.html">error code</a> if a discontinued or unsupported configuration option
 is invoked.</p>
 
 <p><dl>
@@ -172,7 +172,7 @@ by a single thread.   If SQLite is compiled with
 the <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> compile-time option then
 it is not possible to change the <a href="../threadsafe.html">threading mode</a> from its default
 value of Single-thread and so <a href="../c3ref/config.html">sqlite3_config()</a> will return
-<a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the SQLITE_CONFIG_SINGLETHREAD
+<a href="../rescode.html#error">SQLITE_ERROR</a> if called with the SQLITE_CONFIG_SINGLETHREAD
 configuration option.</dd></p>
 
 <p><a name="sqliteconfigmultithread"></a>
@@ -187,7 +187,7 @@ environment as long as no two threads attempt to use the same
 <a href="../c3ref/sqlite3.html">database connection</a> at the same time.  If SQLite is compiled with
 the <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> compile-time option then
 it is not possible to set the Multi-thread <a href="../threadsafe.html">threading mode</a> and
-<a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the
+<a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../rescode.html#error">SQLITE_ERROR</a> if called with the
 SQLITE_CONFIG_MULTITHREAD configuration option.</dd></p>
 
 <p><a name="sqliteconfigserialized"></a>
@@ -204,7 +204,7 @@ same <a href="../c3ref/stmt.html">prepared statement</a> in different threads at
 If SQLite is compiled with
 the <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> compile-time option then
 it is not possible to set the Serialized <a href="../threadsafe.html">threading mode</a> and
-<a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> if called with the
+<a href="../c3ref/config.html">sqlite3_config()</a> will return <a href="../rescode.html#error">SQLITE_ERROR</a> if called with the
 SQLITE_CONFIG_SERIALIZED configuration option.</dd></p>
 
 <p><a name="sqliteconfigmalloc"></a>
@@ -310,7 +310,7 @@ content of the <a href="../c3ref/mutex_methods.html">sqlite3_mutex_methods</a> s
 the <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> compile-time option then
 the entire mutexing subsystem is omitted from the build and hence calls to
 <a href="../c3ref/config.html">sqlite3_config()</a> with the SQLITE_CONFIG_MUTEX configuration option will
-return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>.</dd></p>
+return <a href="../rescode.html#error">SQLITE_ERROR</a>.</dd></p>
 
 <p><a name="sqliteconfiggetmutex"></a>
  <dt>SQLITE_CONFIG_GETMUTEX</dt>
@@ -324,7 +324,7 @@ profiling or testing, for example.   If SQLite is compiled with
 the <a href="../compile.html#threadsafe">SQLITE_THREADSAFE=0</a> compile-time option then
 the entire mutexing subsystem is omitted from the build and hence calls to
 <a href="../c3ref/config.html">sqlite3_config()</a> with the SQLITE_CONFIG_GETMUTEX configuration option will
-return <a href="../c3ref/c_abort.html">SQLITE_ERROR</a>.</dd></p>
+return <a href="../rescode.html#error">SQLITE_ERROR</a>.</dd></p>
 
 <p><a name="sqliteconfiglookaside"></a>
  <dt>SQLITE_CONFIG_LOOKASIDE</dt>
@@ -363,8 +363,8 @@ The void pointer that is the second argument to SQLITE_CONFIG_LOG is
 passed through as the first parameter to the application-defined logger
 function whenever that function is invoked.  The second parameter to
 the logger function is a copy of the first parameter to the corresponding
-<a href="../c3ref/log.html">sqlite3_log()</a> call and is intended to be a <a href="../c3ref/c_abort.html">result code</a> or an
-<a href="../c3ref/c_abort_rollback.html">extended result code</a>.  The third parameter passed to the logger is
+<a href="../c3ref/log.html">sqlite3_log()</a> call and is intended to be a <a href="../rescode.html">result code</a> or an
+<a href="../rescode.html#extrc">extended result code</a>.  The third parameter passed to the logger is
 log message after formatting via <a href="../c3ref/mprintf.html">sqlite3_snprintf()</a>.
 The SQLite logging interface is not reentrant; the logger function
 supplied by the application must not invoke any SQLite interface.

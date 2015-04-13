@@ -475,6 +475,10 @@ place depends on the affinity of the operands.
 Operand affinity is determined by the following rules:
 
 <ul>
+  <li><p>The affinity of the right-hand operand of an IN or NOT IN
+  operator is NONE if the operand is a list and is the same as the
+  affinity of the result set expression if the operand is a SELECT.
+
   <li><p>An expression that is a simple reference to a column value
   has the same affinity as the column.
   Note that if X and Y.Z 
@@ -499,7 +503,7 @@ the comparison according to the following rules in the order shown:</p>
 
 <ul>
 <li><p>If one operand has INTEGER, REAL or NUMERIC affinity
-and the other operand as TEXT or NONE affinity
+and the other operand has TEXT or NONE affinity
 then NUMERIC affinity is applied to other operand.
 
 <li><p>If one operand has TEXT affinity and the other has NONE affinity,

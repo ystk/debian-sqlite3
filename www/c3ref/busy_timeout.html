@@ -135,15 +135,17 @@ for a specified amount of time when a table is locked.  The handler
 will sleep multiple times until at least "ms" milliseconds of sleeping
 have accumulated.  After at least "ms" milliseconds of sleeping,
 the handler returns 0 which causes <a href="../c3ref/step.html">sqlite3_step()</a> to return
-<a href="../c3ref/c_abort.html">SQLITE_BUSY</a> or <a href="../c3ref/c_abort_rollback.html">SQLITE_IOERR_BLOCKED</a>.</p>
+<a href="../rescode.html#busy">SQLITE_BUSY</a>.</p>
 
 <p>Calling this routine with an argument less than or equal to zero
 turns off all busy handlers.</p>
 
 <p>There can only be a single busy handler for a particular
-<a href="../c3ref/sqlite3.html">database connection</a> any any given moment.  If another busy handler
+<a href="../c3ref/sqlite3.html">database connection</a> at any given moment.  If another busy handler
 was defined  (using <a href="../c3ref/busy_handler.html">sqlite3_busy_handler()</a>) prior to calling
-this routine, that other busy handler is cleared.
+this routine, that other busy handler is cleared.</p>
+
+<p>See also:  <a href="../pragma.html#pragma_busy_timeout">PRAGMA busy_timeout</a>
 </p><p>See also lists of
   <a href="objlist.html">Objects</a>,
   <a href="constlist.html">Constants</a>, and

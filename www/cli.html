@@ -222,7 +222,7 @@ sqlite&gt;</pre></blockquote>
 <p>Be careful when using the ".save" command as it will overwrite any
 preexisting database files having the same name without prompting for
 confirmation.  As with the ".open" command, you might want to use a
-full pathname with forward-slash directory separators to avoid abiguity.
+full pathname with forward-slash directory separators to avoid ambiguity.
 
 <h3>Special commands to sqlite3</h3>
 
@@ -249,9 +249,11 @@ at any time.  For example:
                          If TABLE specified, only dump tables matching
                          LIKE pattern TABLE.
 .echo on|off           Turn command echo on or off
+.eqp on|off            Enable or disable automatic EXPLAIN QUERY PLAN
 .exit                  Exit this program
 .explain ?on|off?      Turn output mode suitable for EXPLAIN on or off.
                          With no args, it turns EXPLAIN on.
+.fullschema            Show schema and the content of sqlite_stat tables
 .headers on|off        Turn display of headers on or off
 .help                  Show this message
 .import FILE TABLE     Import data from FILE into TABLE
@@ -282,7 +284,8 @@ at any time.  For example:
 .schema ?TABLE?        Show the CREATE statements
                          If TABLE specified, only show tables matching
                          LIKE pattern TABLE.
-.separator STRING      Change separator used by output mode and .import
+.separator STRING ?NL? Change separator used by output mode and .import
+                         NL is the end-of-line mark for CSV
 .shell CMD ARGS...     Run CMD ARGS... in a system shell
 .show                  Show the current values for various settings
 .stats on|off          Turn stats on or off
@@ -377,7 +380,8 @@ hello       10
 goodbye     20        
 sqlite&gt;</pre></blockquote>
 
-<p>By default, each column is at least 10 characters wide. 
+<p>By default, each column is between 1 and 10 characters wide, depending
+on the column header name and the width of the first column of data.
 Data that is too wide to fit in a column is truncated.  You can
 adjust the column widths using the ".width" command.  Like this:</p>
 
@@ -426,8 +430,8 @@ which is the name of the table to be inserted into.  For example:</p>
 
 <blockquote><pre>sqlite&gt; <b>.mode insert new_table</b>
 sqlite&gt; <b>select * from tbl1;</b>
-INSERT INTO 'new_table' VALUES('hello',10);
-INSERT INTO 'new_table' VALUES('goodbye',20);
+INSERT INTO "new_table" VALUES('hello',10);
+INSERT INTO "new_table" VALUES('goodbye',20);
 sqlite&gt;</pre></blockquote>
 
 
@@ -438,9 +442,11 @@ all of the intervening &lt;TR&gt;s, &lt;TH&gt;s, and &lt;TD&gt;s
 are.  The html output mode is envisioned as being useful for
 CGI.</p>
 
+<a name="explain"></a>
+
 <p>The ".explain" dot command can be used to set the output mode
 to "column" and to set the column widths to values that are reasonable
-for looking at the output of an EXPLAIN command.  The EXPLAIN command
+for looking at the output of an <a href="lang_explain.html">EXPLAIN</a> command.  The EXPLAIN command
 is an SQLite-specific SQL extension that is useful for debugging.  If any
 regular SQL is prefaced by EXPLAIN, then the SQL command is parsed and
 analyzed but is not executed.  Instead, the sequence of virtual machine
@@ -476,7 +482,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 22    Goto           0     2     0                    00</pre></blockquote>
 
 <p>Notice how the shell changes the indentation of some opcodes to
-help show the loop structure of the VDBE program.
+help show the loop structure of the <a href="opcode.html">VDBE</a> program.
 
 <h3>Writing results to a file</h3>
 
@@ -508,6 +514,35 @@ in a text editor, one could type:</p>
 
 <blockquote><pre>sqlite3&gt; <b>.once '|open -f'</b>
 sqlite3&gt; <b>SELECT * FROM bigTable;</b></pre></blockquote>
+
+<a name="fileio"></a>
+
+<h4>File I/O Functions</h4>
+
+<p>The command-line shell adds two <a href="c3ref/create_function.html">application-defined SQL functions</a> that
+facilitate read content from a file into an table column, and writing the
+content of a column into a file, respectively.
+
+<p>The readfile(X) SQL function reads the entire content of the file named
+X and returns that content as a BLOB.  This can be used to load content into
+a table.  For example:
+
+<blockquote><pre>sqlite&gt; <b>CREATE TABLE images(name TEXT, type TEXT, img BLOB);</b>
+sqlite&gt; <b>INSERT INTO images(name,type,img</b>)
+   ...&gt; <b>  VALUES('icon','jpeg',readfile('icon.jpg'));</b></pre></blockquote>
+
+<p>The writefile(X,Y) SQL function write the blob Y into the file named X
+and returns the number of bytes written.  Use this function to extract
+the content of a single table column into a file.  For example:
+
+<blockquote><pre>sqlite&gt; <b>SELECT writefile('icon.jpg',img) FROM images WHERE name='icon';</b></pre></blockquote>
+
+<p>Note that the readfile(X) and writefile(X,Y) functions are extension
+functions and are not built into the core SQLite library.  These routines
+are available as a <a href="loadext.html">loadable extension</a> in the
+<a href="http://www.sqlite.org/src/artifact?ci=trunk&filename=ext/misc/fileio.c">ext/misc/fileio.c</a>
+source file in the <a href="download.html#srctree">SQLite source code repositories</a>.
+
 
 <h3>Querying the database schema</h3>
 
@@ -629,6 +664,20 @@ and the second column is the filename of the external file.</p>
 
 <blockquote><pre>sqlite&gt; <b>.databases</b></pre></blockquote>
 
+<a name="fullschema"></a>
+
+<p>The ".fullschema" dot-command works like the ".schema" command in
+that it displays the entire database schema.  But ".fullschema" also
+includes dumps of the statistics tables "sqlite_stat1", "sqlite_stat3",
+and "sqlite_stat4", if they exist.  The ".fullschema" command normally
+provides all of the information needed to exactly recreate a query
+plan for a specific query.  When reporting suspected problems with
+the SQLite query planner to the SQLite development team, developers
+are requested to provide the complete ".fullschema" output as part
+of the trouble report.  Note that the sqlite_stat3 and sqlite_stat4
+tables contain samples of index entries and so might contain sensitive
+data, so do not send the ".fullschema" output of a proprietary database
+over a public channel.</p>
 
 <a name="csv"></a>
 
@@ -725,6 +774,30 @@ into other popular SQL database engines.  Like this:</p>
 <blockquote><pre>$ <b>createdb ex2</b>
 $ <b>sqlite3 ex1 .dump | psql ex2</b></pre></blockquote>
 
+<h3>Loading Extensions</h3>
+
+<p>You can add new custom <a href="c3ref/create_function.html">application-defined SQL functions</a>,
+<a href="datatype3.html#collation">collating sequences</a>, <a href="vtab.html">virtual tables</a>, and <a href="vfs.html">VFSes</a> to the command-line
+shell at run-time using the ".load" command.  First, convert the
+extension in to a DLL or shared library (as described in the
+<a href="loadext.html">Run-Time Loadable Extensions</a> document) then type:
+
+<blockquote><pre>sqlite&gt; .load /path/to/my_extension</pre></blockquote>
+
+<p>Note that SQLite automatically adds the appropriate extension suffix
+(".dll" on windows, ".dylib" on Mac, ".so" on most other unixes) to the
+extension filename.  It is generally a good idea to specify the full
+pathname of the extension.
+
+<p>SQLite computes the entry point for the extension based on the extension
+filename.  To override this choice, simply add the name of the extension
+as a second argument to the ".load" command.
+
+<p>Source code for several useful extensions can be found in the
+<a href="http://www.sqlite.org/src/tree?name=ext/misc&ci=trunk">ext/misc</a>
+subdirectory of the SQLite source tree.  You can use these extensions
+as-is, or as a basis for creating your own custom extensions to address
+your own particular needs.
 
 <h3>Other Dot Commands</h3>
 
@@ -773,8 +846,9 @@ to that function.</p>
 The source code to the sqlite3 command line interface is in a single
 file named "shell.c" which you can
 <a href="http://www.sqlite.org/src/finfo?name=src/shell.c">
-download</a> from the SQLite website.  Compile this file (together
-with the <a href="amalgamation.html">sqlite3 library source code</a> to generate
+download</a> from the SQLite website.  
+<a href="howtocompile.html">Compile</a> this file (together
+with the <a href="amalgamation.html">sqlite3 library source code</a>) to generate
 the executable.  For example:</p>
 
 <blockquote><pre>

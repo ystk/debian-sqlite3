@@ -158,8 +158,8 @@ appears after the AS keyword when the database is connected using <a href="../la
 For the main database file, the database name is "main".
 For TEMP tables, the database name is "temp".</p>
 
-<p>On success, <a href="../c3ref/c_abort.html">SQLITE_OK</a> is returned and the new <a href="../c3ref/blob.html">BLOB handle</a> is written
-to *ppBlob. Otherwise an <a href="../c3ref/c_abort.html">error code</a> is returned and *ppBlob is set
+<p>On success, <a href="../rescode.html#ok">SQLITE_OK</a> is returned and the new <a href="../c3ref/blob.html">BLOB handle</a> is written
+to *ppBlob. Otherwise an <a href="../rescode.html">error code</a> is returned and *ppBlob is set
 to be a null pointer.
 This function sets the <a href="../c3ref/sqlite3.html">database connection</a> error code and message
 accessible via <a href="../c3ref/errcode.html">sqlite3_errcode()</a> and <a href="../c3ref/errcode.html">sqlite3_errmsg()</a> and related
@@ -173,7 +173,7 @@ then the BLOB handle is marked as "expired".
 This is true if any column of the row is changed, even a column
 other than the one the BLOB handle is open on.
 Calls to <a href="../c3ref/blob_read.html">sqlite3_blob_read()</a> and <a href="../c3ref/blob_write.html">sqlite3_blob_write()</a> for
-an expired BLOB handle fail with a return code of <a href="../c3ref/c_abort.html">SQLITE_ABORT</a>.
+an expired BLOB handle fail with a return code of <a href="../rescode.html#abort">SQLITE_ABORT</a>.
 Changes written into a BLOB prior to the BLOB expiring are not
 rolled back by the expiration of the BLOB.  Such changes will eventually
 commit if the transaction continues to completion.</p>

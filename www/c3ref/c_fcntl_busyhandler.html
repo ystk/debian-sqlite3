@@ -295,12 +295,12 @@ pragma or NULL if the pragma has no argument.  The handler for an
 of the char** argument point to a string obtained from <a href="../c3ref/mprintf.html">sqlite3_mprintf()</a>
 or the equivalent and that string will become the result of the pragma or
 the error message if the pragma fails. If the
-<a href="../c3ref/c_fcntl_busyhandler.html#sqlitefcntlpragma">SQLITE_FCNTL_PRAGMA</a> file control returns <a href="../c3ref/c_abort.html">SQLITE_NOTFOUND</a>, then normal
+<a href="../c3ref/c_fcntl_busyhandler.html#sqlitefcntlpragma">SQLITE_FCNTL_PRAGMA</a> file control returns <a href="../rescode.html#notfound">SQLITE_NOTFOUND</a>, then normal
 <a href="../pragma.html#syntax">PRAGMA</a> processing continues.  If the <a href="../c3ref/c_fcntl_busyhandler.html#sqlitefcntlpragma">SQLITE_FCNTL_PRAGMA</a>
-file control returns <a href="../c3ref/c_abort.html">SQLITE_OK</a>, then the parser assumes that the
+file control returns <a href="../rescode.html#ok">SQLITE_OK</a>, then the parser assumes that the
 VFS has handled the PRAGMA itself and the parser generates a no-op
 prepared statement.  If the <a href="../c3ref/c_fcntl_busyhandler.html#sqlitefcntlpragma">SQLITE_FCNTL_PRAGMA</a> file control returns
-any result code other than <a href="../c3ref/c_abort.html">SQLITE_OK</a> or <a href="../c3ref/c_abort.html">SQLITE_NOTFOUND</a>, that means
+any result code other than <a href="../rescode.html#ok">SQLITE_OK</a> or <a href="../rescode.html#notfound">SQLITE_NOTFOUND</a>, that means
 that the VFS encountered an error while handling the <a href="../pragma.html#syntax">PRAGMA</a> and the
 compilation of the PRAGMA fails with an error.  The <a href="../c3ref/c_fcntl_busyhandler.html#sqlitefcntlpragma">SQLITE_FCNTL_PRAGMA</a>
 file control occurs at the beginning of pragma statement analysis and so

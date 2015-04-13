@@ -155,20 +155,21 @@ library can do to defend against this.</p>
 
 <h3>1.1 Continuing to use a file descriptor after it has been closed</h3>
 
-<p>We have seen cases where a file descriptor was open on a log file,
+<p>We have seen multiple cases where a file descriptor was open on a file,
 then that file descriptor was closed and reopened on an SQLite database.
-Later, some other thread continued to write log information into the
-old file descriptor, not realizing that the log file had been closed
+Later, some other thread continued to write into the
+old file descriptor, not realizing that the original file had been closed
 already.  But because the file descriptor had been reopened by SQLite,
-the information that was intended to go into the log file ended up
+the information that was intended to go into the original file ended up
 overwriting parts of the SQLite database, leading to corruption of the
 database.</p>
 
 <p>One example of this occurred circa 2013-08-30 on the canonical repository
 for the <a href="http://www.fossil-scm.org/">Fossil DVCS</a>.  In that event,
-file descriptor 2 (standard error) was being erroneously closed prior to 
+file descriptor 2 (standard error) was being erroneously closed (by
+<a href="http://www.stunnel.org/">stunnel</a>, we suspect) prior to 
 <a href="c3ref/open.html">sqlite3_open_v2()</a> so that the file descriptor used for the
-repository database file was 2.  Later, another application 
+repository database file was 2.  Later, an application 
 bug caused an assert() statement to emit
 an error message by invoking write(2,...).  But since file descriptor 2 was 
 now connected to a database file, the error message
@@ -176,6 +177,10 @@ overwrote part of the database.  To guard against this kind of problem,
 SQLite <a href="releaselog/3_8_1.html">version 3.8.1</a> and later refuse to use low-numbered file descriptors
 for database files. 
 (See <a href="compile.html#minimum_file_descriptor">SQLITE_MINIMUM_FILE_DESCRIPTOR</a> for additional information.)</p>
+
+<p>Another example of corruption caused by using a closed file
+descriptor was 
+<a href="https://code.facebook.com/posts/313033472212144/debugging-file-corruption-on-ios/">reported by facebook engineers</a> in a blog post on 2014-08-12.</p>
 
 <h3>1.2 Backup or restore while a transaction is active</h3>
 

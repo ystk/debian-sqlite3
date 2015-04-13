@@ -136,25 +136,25 @@ into the open BLOB, starting at offset iOffset.</p>
 
 <p>If the <a href="../c3ref/blob.html">BLOB handle</a> passed as the first argument was not opened for
 writing (the flags parameter to <a href="../c3ref/blob_open.html">sqlite3_blob_open()</a> was zero),
-this function returns <a href="../c3ref/c_abort.html">SQLITE_READONLY</a>.</p>
+this function returns <a href="../rescode.html#readonly">SQLITE_READONLY</a>.</p>
 
 <p>This function may only modify the contents of the BLOB; it is
 not possible to increase the size of a BLOB using this API.
 If offset iOffset is less than N bytes from the end of the BLOB,
-<a href="../c3ref/c_abort.html">SQLITE_ERROR</a> is returned and no data is written.  If N is
-less than zero <a href="../c3ref/c_abort.html">SQLITE_ERROR</a> is returned and no data is written.
+<a href="../rescode.html#error">SQLITE_ERROR</a> is returned and no data is written.  If N is
+less than zero <a href="../rescode.html#error">SQLITE_ERROR</a> is returned and no data is written.
 The size of the BLOB (and hence the maximum value of N+iOffset)
 can be determined using the <a href="../c3ref/blob_bytes.html">sqlite3_blob_bytes()</a> interface.</p>
 
 <p>An attempt to write to an expired <a href="../c3ref/blob.html">BLOB handle</a> fails with an
-error code of <a href="../c3ref/c_abort.html">SQLITE_ABORT</a>.  Writes to the BLOB that occurred
+error code of <a href="../rescode.html#abort">SQLITE_ABORT</a>.  Writes to the BLOB that occurred
 before the <a href="../c3ref/blob.html">BLOB handle</a> expired are not rolled back by the
 expiration of the handle, though of course those changes might
 have been overwritten by the statement that expired the BLOB handle
 or by other independent statements.</p>
 
 <p>On success, sqlite3_blob_write() returns SQLITE_OK.
-Otherwise, an  <a href="../c3ref/c_abort.html">error code</a> or an <a href="../c3ref/c_abort_rollback.html">extended error code</a> is returned.</p>
+Otherwise, an  <a href="../rescode.html">error code</a> or an <a href="../rescode.html#extrc">extended error code</a> is returned.</p>
 
 <p>This routine only works on a <a href="../c3ref/blob.html">BLOB handle</a> which has been created
 by a prior successful call to <a href="../c3ref/blob_open.html">sqlite3_blob_open()</a> and which has not

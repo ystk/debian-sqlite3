@@ -291,7 +291,7 @@ the database.  For SQLite versions 3.7.0.1 and earlier, this value is
 interpreted as a big-endian integer and must be a power of two between
 512 and 32768, inclusive.  Beginning with SQLite version 3.7.1, a page
 size of 65536 bytes is supported.  The value 65536 will not fit in a
-two-byte integer, so to specify a 65536-byte page size, the value is
+two-byte integer, so to specify a 65536-byte page size, the value
 at offset 16 is 0x00 0x01.
 This value can be interpreted as a big-endian
 1 and thought of is as a magic number to represent the 65536 page size.
@@ -429,7 +429,7 @@ values.  This capability was added in SQLite version 3.1.4
 on 2005-03-11.</li>
 <li value=4>Format 4 causes SQLite to respect the
 <a href="lang_createindex.html#descidx">DESC keyword</a> on
-index declarations.  (The DESC keyword is ignored in indices for 
+index declarations.  (The DESC keyword is ignored in indexes for 
 formats 1, 2, and 3.)
 Format 4 also adds two new boolean record type values (<a href="fileformat2.html#serialtype">serial types</a>
 8 and 9.)  Support for format 4 was added in SQLite 3.3.0 on
@@ -634,7 +634,7 @@ All pages within each complete b-tree are of the same type: either table
 or index.  There is a one table b-trees in the database file
 for each rowid table in the database schema, including system tables
 such as sqlite_master.  There is one index b-trees
-in the database file for each index in the schema, including implied indices
+in the database file for each index in the schema, including implied indexes
 created by uniqueness constraints.  There are no b-trees associated with
 <a href="vtab.html">virtual tables</a>.  Specific virtual table implementations might make use
 of <a href="fts3.html#*shadowtab">shadow tables</a> for storage, but those shadow tables will have separate
@@ -1106,16 +1106,19 @@ SQLite defines three built-in collating functions:
 
 <blockquote><table border=0 cellspacing=10>
 <tr><td valign=top>BINARY
-    <td>Strings are compared byte by byte using the memcmp() function
+    <td> The built-in BINARY collation compares strings byte by byte
+        using the memcmp() function
         from the standard C library.
 <tr><td valign=top>NOCASE
-    <td>Like BINARY except that uppercase ASCII characters ('A' through 'Z')
+    <td> The NOCASE collation is like BINARY except that uppercase
+        ASCII characters ('A' through 'Z')
         are folded into their lowercase equivalents prior to running the
-        comparison.  Note that only ASCII characters are case-folded.  NOCASE
+        comparison.  Note that only ASCII characters are case-folded.
+        NOCASE
         does not implement a general purpose unicode caseless comparison.
 <tr><td valign=top>RTRIM
-    <td>Like BINARY except that spaces at the end of the string are elided
-        prior to comparison.
+    <td> RTRIM is like BINARY except that spaces at the end of the string
+        are elided prior to comparison.
 </table></blockquote>
 
 <p>Additional application-specific collating functions can be added to
@@ -1131,12 +1134,12 @@ though this can be overridden using a COLLATE clause in the
 
 <h3>2.3 Representation Of SQL Tables</h3>
 
-<p>Each ordinary SQL table in the database schema is represented on-disk
+<p> Each ordinary SQL table in the database schema is represented on-disk
 by a table b-tree.  Each entry in the table b-tree corresponds to a row
 of the SQL table.  The <a href="lang_createtable.html#rowid">rowid</a> of the SQL table is the 64-bit signed
 integer key for each entry in the table b-tree.</p>
 
-<p>The content of each SQL table row is stored in the database file by
+<p> The content of each SQL table row is stored in the database file by
 first combining the values in the various columns into a byte array
 in the record format, then storing that byte array as the payload in
 an entry in the table b-tree.  The order of values in the record is
@@ -1147,7 +1150,7 @@ column appears in the record as a NULL value.  SQLite will always use
 the table b-tree key rather than the NULL value when referencing the
 <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a> column.</p>
 
-<p>If the <a href="datatype3.html#affinity">affinity</a> of a column is REAL and that column contains a
+<p> If the <a href="datatype3.html#affinity">affinity</a> of a column is REAL and that column contains a
 value that can be converted to an integer without loss of information
 (if the value contains no fractional part and is not too large to be
 represented as an integer) then the column may be stored in the record
@@ -1199,7 +1202,7 @@ or primary key values and contain the same value for all indexed columns.</p>
 <h4>2.5.1 Suppression of redundant columns in WITHOUT ROWID secondary indexed
 </h4>
 
-<p>In an index on a WITHOUT ROWID table, if one or more of the columns
+<p> In an index on a WITHOUT ROWID table, if one or more of the columns
 of table PRIMARY KEY are also columns of the index, then the
 indexed column is not repeated in the table-key suffix on the end of
 the index record.  As an example, consider the following SQL:
@@ -1223,7 +1226,7 @@ indexed.  The ex25acde example above demonstrates this.  Each entry in
 the ex25acde index consists of only the columns a, c, d, and e, in that
 order.</p>
 
-<p>The suppression of redundant columns in the key suffix of an index
+<p> The suppression of redundant columns in the key suffix of an index
 entry only occurs in WITHOUT ROWID tables.  In an ordinary rowid table,
 the index entry always ends with the rowid even if the <a href="lang_createtable.html#rowid">INTEGER PRIMARY KEY</a>
 column is one of the columns being indexed.</p>
@@ -1262,7 +1265,7 @@ for both ordinary and <a href="vtab.html">virtual tables</a>.</p>
 
 </p>The sqlite_master.name column will hold the name of the object.
 <a href="lang_createtable.html#uniqueconst">UNIQUE</a> and <a href="lang_createtable.html#primkeyconst">PRIMARY KEY</a> constraints on tables cause SQLite to create
-<a href="fileformat2.html#intschema">internal indices</a> with names of the form "sqlite_autoindex_TABLE_N"
+<a href="fileformat2.html#intschema">internal indexes</a> with names of the form "sqlite_autoindex_TABLE_N"
 where TABLE is replaced by the name of the table that contains the
 constraint and N is an integer beginning with 1 and increasing by one
 with each constraint seen in the table definition.
@@ -1282,7 +1285,7 @@ column stores the name of the table or view that causes the trigger
 to fire.</p>
 
 <p>The sqlite_master.rootpage column stores the page number of the root
-b-tree page for tables and indices.  For rows that define views, triggers,
+b-tree page for tables and indexes.  For rows that define views, triggers,
 and virtual tables, the rootpage column is 0 or NULL.</p>
 
 <p>The sqlite_master.sql column stores SQL text that describes the
@@ -1309,7 +1312,7 @@ space.
 <p>The text in the sqlite_master.sql column is a copy of the original
 CREATE statement text that created the object, except normalized as
 described above and as modified by subsequent <a href="lang_altertable.html">ALTER TABLE</a> statements.
-The sqlite_master.sql is NULL for the <a href="fileformat2.html#intschema">internal indices</a> that are
+The sqlite_master.sql is NULL for the <a href="fileformat2.html#intschema">internal indexes</a> that are
 automatically created by <a href="lang_createtable.html#uniqueconst">UNIQUE</a> or <a href="lang_createtable.html#primkeyconst">PRIMARY KEY</a> constraints.</p>
 
 
@@ -1317,7 +1320,7 @@ automatically created by <a href="lang_createtable.html#uniqueconst">UNIQUE</a> 
 
 <h4>2.6.1 Internal Schema Objects</h4>
 
-<p>In addition to the tables, indices, views, and triggers created by
+<p>In addition to the tables, indexes, views, and triggers created by
 the application and/or the developer using CREATE statements SQL, the
 sqlite_master table may contain zero or more entries for 
 <i>internal schema objects</i> that are created by SQLite for its 
@@ -1372,7 +1375,7 @@ that table.
 If the sqlite_sequence.seq field of an AUTOINCREMENT table is already at
 the largest integer value (9223372036854775807) then attempts to add new
 rows to that table with an automatically generated integer primary will fail
-with an <a href="c3ref/c_abort.html">SQLITE_FULL</a> error.
+with an <a href="rescode.html#full">SQLITE_FULL</a> error.
 The sqlite_sequence.seq field is automatically updated if required when
 new entries are added to an AUTOINCREMENT table.  
 The sqlite_sequence row for an AUTOINCREMENT table is automatically deleted
@@ -1394,7 +1397,7 @@ but application code cannot drop the sqlite_sequence table.
 <h4>2.6.3 The sqlite_stat1 table</h4>
 
 <p>The sqlite_stat1 is an internal table created by the <a href="lang_analyze.html">ANALYZE</a> command
-and used to hold supplemental information about tables and indices that the
+and used to hold supplemental information about tables and indexes that the
 query planner can use to help it find better ways of performing queries.
 Applications can update, delete from, insert into or drop the sqlite_stat1
 table, but may not create or alter the sqlite_stat1 table.
@@ -1404,12 +1407,13 @@ The schema of the sqlite_stat1 table is as follows:
 CREATE TABLE sqlite_stat1(tbl,idx,stat);
 </pre></blockquote>
 
-<p>There is normally one row per index, with the index identified by the
+<p> There is normally one row per index, with the index identified by the
 name in the sqlite_stat1.idx column.  The sqlite_stat1.tbl column is
 the name of the table to which the index belongs.  In each such row, 
 the sqlite_stat.stat column will be
-a string consisting of a list of integers.  The first integer in this
-list is the approximate number of rows in the index and in the table.  
+a string consisting of a list of integers followed by zero or more 
+arguments.  The first integer in this
+list is the approximate number of rows in the index and in the table.
 The second integer is the approximate average number of rows in the index
 that have the same value in the first column of the index.  The third 
 integer is the approximate average number of rows in the index that have 
@@ -1420,20 +1424,23 @@ a K-column index, there will be K+1 integers in the stat column.  If
 the index is unique, then the last integer will be 1.
 
 <p>The list of integers in the stat column can optionally be followed
-by the keyword "unordered".  The "unordered" keyword, if it is present,
-must be separated from the last integer by a single space.  If the
-"unordered" keyword is present, then the query planner assumes that
-the index is unordered and will not use the index for a range query
+by arguments, each of which is a sequence of non-space characters.
+All arguments are preceded by a single space.
+Unrecognized arguments are silently ignored.
+
+<p>If the "unordered" argument is present, then the query planner assumes
+that the index is unordered and will not use the index for a range query
 or for sorting.
 
-<p>The list of integers in the stat column can also optionally be followed
-by a token of the form "sz=NNN" where NNN is an unsigned integer.  The
-"sz=NNN" token, if present, must be separated from the last integer by a
-single space.  The "sz=NNN" token means that the average row size over all 
-records of the table or
+<p>The "sz=NNN" argument (where NNN represents a sequence of 1 or more digits)
+means that the average row size over all records of the table or
 index is NNN bytes per row.  The SQLite query planner might use the
 estimated row size information provided by the "sz=NNN" token
-to help it choose smaller tables and indices that require less disk I/O.
+to help it choose smaller tables and indexes that require less disk I/O.
+
+<p>New text tokens may be added to the end of the stat column in future
+enhancements to SQLite.  For compatibility, unrecognized tokens at the end
+of the stat column are silently ignored.
 
 <p>If the sqlite_stat1.idx column is NULL, then the sqlite_stat1.stat
 column contains a single integer which is the approximate number of
@@ -1482,7 +1489,7 @@ sqlite_stat2 table, it is exists, is simply ignored.
 
 <h4>2.6.5 The sqlite_stat3 table</h4>
 
-<p>The sqlite_stat3 is only only used if SQLite is compiled
+<p>The sqlite_stat3 is only used if SQLite is compiled
 with <a href="compile.html#enable_stat3">SQLITE_ENABLE_STAT3</a> or <a href="compile.html#enable_stat4">SQLITE_ENABLE_STAT4</a>
 and if the SQLite version number is 3.7.9 or greater.
 The sqlite_stat3 table is neither read nor written by any
@@ -1504,7 +1511,7 @@ The sqlite_stat3.sample column holds the value of the left-most field of an
 index identified by sqlite_stat3.idx and sqlite_stat3.tbl.
 The sqlite_stat3.nEq column holds the approximate
 number of entries in the index whose left-most column exactly matches
-the sample.  
+the sample.
 The sqlite_stat3.nLt holds the approximate number of entries in the
 index whose left-most column is less than the sample.
 The sqlite_stat3.nDLt column holds the approximate
@@ -1516,6 +1523,13 @@ The <a href="lang_analyze.html">ANALYZE</a> command will typically generate sqli
 that contain between 10 and 40 samples that are distributed across
 the key space and with large nEq values.
 
+<p>In a well-formed sqlite_stat3 table, the samples for any single
+index must appear in the same order that they occur in the index.  
+In other words, if the entry with left-most column S1 is earlier in
+the index b-tree than the
+entry with lef-most column S2, then in the sqlite_stat3 table, 
+sample S1 must have a smaller rowid than sample S2.
+
 <a name="stat4tab"></a>
 
 <h4>2.6.6 The sqlite_stat4 table</h4>
@@ -1525,30 +1539,68 @@ with <a href="compile.html#enable_stat4">SQLITE_ENABLE_STAT4</a> and if the SQLi
 3.8.1 or greater.  The sqlite_stat4 table is neither read nor written by any
 version of SQLite before 3.8.1.
 The sqlite_stat4 table contains additional information
-about the distribution of keys within an index, information that the
-query planner can use to devise better and faster query algorithms.
+about the distribution of keys within an index or the distribution of
+keys in the primary key of a <a href="withoutrowid.html">WITHOUT ROWID</a> table.
+The query planner can sometimes use the additional information in
+the sqlite_stat4 table to devise better and faster query algorithms.
 The schema of the sqlite_stat4 table is as follows:
 
 <blockquote><pre>
 CREATE TABLE sqlite_stat4(tbl,idx,nEq,nLt,nDLt,sample);
 </pre></blockquote>
 
-<p>There are usually multiple entries in the sqlite_stat4 table for each index.
-The sqlite_stat4.sample column holds the content of an index entry in
-the <a href="fileformat2.html#record_format">record format</a>.  The index entry stored is taken from the
-index identified by sqlite_stat4.idx and sqlite_stat4.tbl.
-The sqlite_stat4.nEq column holds a list of integers where the K-th integer
-is the approximate number of entries in the index whose left-most K columns
-exactly match the K left-most columns of the sample.
-The sqlite_stat4.nLt holds a list of integers where the K-th integer is
-the approximate number of entries in the
-index whose K left-most columns are collectively less than the 
-K left-most columns of the sample.
-The sqlite_stat4.nDLt column holds a list of integers where the K-th 
-integers is the approximate
-number of entries in the index that are distinct in the first K columns and
-that are whose left-most K columns are collectively less than the left-most
-K columns of the sample.
+<p>There are typically between 10 to 40 entries in the sqlite_stat4 table for
+each index for which statistics are available, however these limits are
+not hard bounds.
+The meanings of the columns in the sqlite_stat4 table are as follows:
+
+<center>
+<table border="0" width="100%" cellpadding="10">
+<tr><td valign="top" align="right">tbl:</td>
+    <td>The sqlite_stat4.tbl column holds name of the table that owns
+    the index that the row describes
+
+<tr><td valign="top" align="right">idx:</td>
+    <td>The sqlite_stat4.idx column holds name of the index that the
+    row describes, or in the case of
+    an sqlite_stat4 entry for a <a href="withoutrowid.html">WITHOUT ROWID</a> table, the
+    name of the table itself.
+
+<tr><td valign="top" align="right">sample:</td>
+    <td>The sqlite_stat4.sample column holds a BLOB
+    in the <a href="fileformat2.html#record_format">record format</a> that encodes the indexed columns followed by
+    the rowid for a rowid table or by the columns of the primary key 
+    for a WITHOUT ROWID table.
+    The sqlite_stat4.sample BLOB for the WITHOUT ROWID table itself 
+    contains just the columns of the primary key.
+    Let the number of columns encoded by the sqlite_stat4.sample blob be N.
+    For indexes on an ordinary rowid table, N will be one more than the number 
+    of columns indexed.
+    For indexes on WITHOUT ROWID tables, N will be the number of columns
+    indexed plus the number of columns in the primary key.
+    For a WITHOUT ROWID table, N will be the number of columns in the
+    primary key.
+
+<tr><td valign="top" align="right">nEq:</td>
+    <td>The sqlite_stat4.nEq column holds a list of N integers where 
+    the K-th integer is the approximate number of entries in the index
+    whose left-most K columns exactly match the K left-most columns
+    of the sample.
+
+<tr><td valign="top" align="right">nLt:</td>
+    <td>The sqlite_stat4.nLt column holds a list of N integers where
+    the K-th integer is the approximate number of entries in the
+    index whose K left-most columns are collectively less than the 
+    K left-most columns of the sample.
+
+<tr><td valign="top" align="right">nDLt:</td>
+    <td>The sqlite_stat4.nDLt column holds a list of N integers where
+    the K-th integers is the approximate
+    number of entries in the index that are distinct in the first K columns and
+    that are whose left-most K columns are collectively less than the left-most
+    K columns of the sample.
+</table>
+</center>
 
 <p>The sqlite_stat4 is a generalization of the sqlite_stat3 table.  The
 sqlite_stat3 table provides information about the left-most column of an
@@ -1559,6 +1611,12 @@ of the index.
 The <a href="lang_analyze.html">ANALYZE</a> command will typically generate sqlite_stat4 tables
 that contain between 10 and 40 samples that are distributed across
 the key space and with large nEq values.
+
+<p>In a well-formed sqlite_stat4 table, the samples for any single
+index must appear in the same order that they occur in the index.  
+In other words, if entry S1 is earlier in the index b-tree than 
+entry S2, then in the sqlite_stat4 table, sample S1 must have a
+smaller rowid than sample S2.
 
 <a name="rollbackjournal"></a>
 

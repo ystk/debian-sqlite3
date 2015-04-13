@@ -255,6 +255,14 @@ with non-standard compilation options.
   This macro sets the default page count for the <a href="wal.html">WAL</a>
   <a href="wal.html#ckpt">automatic checkpointing</a> feature.  If unspecified,
   the default page count is 1000.
+</p></blockquote><a name="default_worker_threads"></a>
+<p><b>SQLITE_DEFAULT_WORKER_THREADS=<i>N</i></b></p><blockquote><p>
+  This macro sets the default value for
+  the <a href="c3ref/c_limit_attached.html#sqlitelimitworkerthreads">SQLITE_LIMIT_WORKER_THREADS</a> parameter.  The <a href="c3ref/c_limit_attached.html#sqlitelimitworkerthreads">SQLITE_LIMIT_WORKER_THREADS</a>
+  parameter sets the maximum number of auxiliary threads that a single
+  <a href="c3ref/stmt.html">prepared statement</a> will launch to assist it with a query.  If not specified,
+  the default maximum is 0.
+  The value set here cannot be more than <a href="compile.html#max_worker_threads">SQLITE_MAX_WORKER_THREADS</a>.
 </p></blockquote><a name="fts3_max_expr_depth"></a>
 <p><b>SQLITE_FTS3_MAX_EXPR_DEPTH=<i>N</i></b></p><blockquote><p>
   This macro sets the maximum depth of the search tree that corresponds to
@@ -295,6 +303,12 @@ with non-standard compilation options.
   by forcing the spinning thread to give up after a fixed number of attempts
   at recompiling the prepared statement.  The default setting is 50 which is
   more than adequate for most applications.
+</p></blockquote><a name="max_worker_threads"></a>
+<p><b>SQLITE_MAX_WORKER_THREADS=<i>N</i></b></p><blockquote><p>
+  Set an upper bound on the <a href="c3ref/limit.html">sqlite3_limit</a>(db,<a href="c3ref/c_limit_attached.html#sqlitelimitworkerthreads">SQLITE_LIMIT_WORKER_THREADS</a>,N)
+  setting that determines the maximum number of auxiliary threads that a single
+  <a href="c3ref/stmt.html">prepared statement</a> will use to aid with CPU-intensive computations
+  (mostly sorting).  See also the <a href="compile.html#default_worker_threads">SQLITE_DEFAULT_WORKER_THREADS</a> options.
 </p></blockquote><a name="minimum_file_descriptor"></a>
 <p><b>SQLITE_MINIMUM_FILE_DESCRIPTOR=<i>N</i></b></p><blockquote><p>
   The unix <a href="vfs.html">VFS</a> will never use a file descriptor less than <i>N</i>.  The
@@ -491,7 +505,7 @@ the available settings:</p>
   <a href="uri.html">URI filenames</a> normally throw an error is the authority section is
   not either empty or "localhost".  However, if SQLite is compiled with
   the SQLITE_ALLOW_URI_AUTHORITY compile-time option, then the URI is
-  is converted into a Uniform Naming Convention (UNC) filename and passed
+  converted into a Uniform Naming Convention (UNC) filename and passed
   down to the underlying operating system that way.  
   <p>
   Some future versions of SQLite may change to enable this feature
@@ -714,14 +728,7 @@ the available settings:</p>
   if the SQLITE_ENABLE_STAT4 compile-time option is used.
 </p></blockquote><a name="enable_tree_explain"></a>
 <p><b>SQLITE_ENABLE_TREE_EXPLAIN</b></p><blockquote><p>
-  This option adds support for the <a href="c3ref/c_testctrl_always.html">SQLITE_TESTCTRL_EXPLAIN_STMT</a> test-control
-  in the SQLite core.  When the <a href="cli.html">command-line shell</a> is also compiled with
-  this option, the ".explain" dot-command enables a mode that uses the
-  <a href="c3ref/c_testctrl_always.html">SQLITE_TESTCTRL_EXPLAIN_STMT</a> interface to display an ASCII-art diagram
-  of the parse tree for each SQL query statement that is run in the shell.
-  This mechanism is useful for debugging the SQLite parser and code
-  generator.  This whole mechanism is highly experimental and could change
-  drastically or be eliminated in future releases of SQLite.
+  This compile-time option is no longer used.
 </p></blockquote><a name="enable_update_delete_limit"></a>
 <p><b>SQLITE_ENABLE_UPDATE_DELETE_LIMIT</b></p><blockquote><p>
   This option enables an optional ORDER BY and LIMIT clause on 
@@ -900,20 +907,20 @@ when used in combination with other options.</p>
   By default, the <a href="c3ref/step.html">sqlite3_step()</a> interface will automatically invoke
   <a href="c3ref/reset.html">sqlite3_reset()</a> to reset the <a href="c3ref/stmt.html">prepared statement</a> if necessary.  This
   compile-time option changes that behavior so that <a href="c3ref/step.html">sqlite3_step()</a> will
-  return <a href="c3ref/c_abort.html">SQLITE_MISUSE</a> if it called again after returning anything other
-  than <a href="c3ref/c_abort.html">SQLITE_ROW</a>, <a href="c3ref/c_abort.html">SQLITE_BUSY</a>, or <a href="c3ref/c_abort.html">SQLITE_LOCKED</a> unless there was an
+  return <a href="rescode.html#misuse">SQLITE_MISUSE</a> if it called again after returning anything other
+  than <a href="rescode.html#row">SQLITE_ROW</a>, <a href="rescode.html#busy">SQLITE_BUSY</a>, or <a href="rescode.html#locked">SQLITE_LOCKED</a> unless there was an
   intervening call to <a href="c3ref/reset.html">sqlite3_reset()</a>.</p>
 
 <p>  In SQLite version 3.6.23.1 and earlier, <a href="c3ref/step.html">sqlite3_step()</a> used to always
-  return <a href="c3ref/c_abort.html">SQLITE_MISUSE</a> if it was invoked again after returning anything
-  other than <a href="c3ref/c_abort.html">SQLITE_ROW</a> without an intervening call to <a href="c3ref/reset.html">sqlite3_reset()</a>.
+  return <a href="rescode.html#misuse">SQLITE_MISUSE</a> if it was invoked again after returning anything
+  other than <a href="rescode.html#row">SQLITE_ROW</a> without an intervening call to <a href="c3ref/reset.html">sqlite3_reset()</a>.
   This caused problems on some poorly written smartphone applications which
-  did not correctly handle the <a href="c3ref/c_abort.html">SQLITE_LOCKED</a> and <a href="c3ref/c_abort.html">SQLITE_BUSY</a> error 
+  did not correctly handle the <a href="rescode.html#locked">SQLITE_LOCKED</a> and <a href="rescode.html#busy">SQLITE_BUSY</a> error 
   returns.  Rather than fix the many defective smartphone applications, 
   the behavior of SQLite was changed in 3.6.23.2 to automatically reset
   the prepared statement.  But that changed caused issues in other 
   improperly implemented applications that were actually looking
-  for an <a href="c3ref/c_abort.html">SQLITE_MISUSE</a> return to terminate their query loops.  (Anytime
+  for an <a href="rescode.html#misuse">SQLITE_MISUSE</a> return to terminate their query loops.  (Anytime
   an application gets an SQLITE_MISUSE error code from SQLite, that means the
   application is misusing the SQLite interface and is thus incorrectly
   implemented.)  The SQLITE_OMIT_AUTORESET interface was added to SQLite
@@ -1209,7 +1216,9 @@ when used in combination with other options.</p>
   (they generate no code) since turning them on makes SQLite run approximately
   three times slower.  But for testing and analysis, it is useful to turn
   the assert() statements on.  The SQLITE_DEBUG compile-time option does this.
-  SQLITE_DEBUG also turns on some other debugging features.
+  <p>SQLITE_DEBUG also enables some other debugging features, such as
+  special <a href="pragma.html#syntax">PRAGMA</a> statements that turn on tracing and listing features
+  used for troubleshooting and analysis of the <a href="opcode.html">VDBE</a> and code generator.
 </p></blockquote><a name="memdebug"></a>
 <p><b>SQLITE_MEMDEBUG</b></p><blockquote><p>
   The SQLITE_MEMDEBUG option causes an instrumented 

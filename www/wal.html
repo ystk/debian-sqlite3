@@ -400,9 +400,26 @@ disabled using the <a href="pragma.html#pragma_wal_autocheckpoint">wal_autocheck
 <a href="c3ref/wal_autocheckpoint.html">sqlite3_wal_autocheckpoint()</a> C interface.  A program can also 
 use <a href="c3ref/wal_hook.html">sqlite3_wal_hook()</a> to register a callback to be invoked whenever
 any transaction commits to the WAL.  This callback can then invoke
-<a href="c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint()</a> to for a checkpoint based on whatever
+<a href="c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint()</a> or <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> based on whatever
 criteria it thinks is appropriate.  (The automatic checkpoint mechanism
 is implemented as a simple wrapper around <a href="c3ref/wal_hook.html">sqlite3_wal_hook()</a>.)</p>
+
+<h3>Application-Initiated Checkpoints</h3>
+
+<p>An application can initiate a checkpoint using any writable database
+connection on the database simply by invoking
+<a href="c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint()</a> or <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a>.
+There are three subtypes of checkpoints that vary in their aggressiveness:
+PASSIVE, FULL, and RESTART.  The default checkpoint style is PASSIVE, which
+does as much work as it can without interfering with other database
+connections, and which might not run to completion if there are
+concurrent readers or writers.
+All checkpoints initiated by <a href="c3ref/wal_checkpoint.html">sqlite3_wal_checkpoint()</a> and
+by the automatic checkpoint mechanism are PASSIVE.  FULL and RESTART
+checkpoints try harder to run the checkpoint to completion and can only
+be initiated by a call to <a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a>.  See the
+<a href="c3ref/wal_checkpoint_v2.html">sqlite3_wal_checkpoint_v2()</a> documentation for additional information
+on FULL and RESET checkpoints.
 
 <h3>Persistence of WAL mode</h3>
 

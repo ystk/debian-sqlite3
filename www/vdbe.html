@@ -129,17 +129,20 @@ a:visited { color: #734559 }
 <div class=startsearch></div>
   
 
-
 <h2>The Virtual Database Engine of SQLite</h2>
 
-<blockquote><b>
+<blockquote><font color="red">
+<b>Obsolete Documentation Warning:</b>
 This document describes the virtual machine used in SQLite version 2.8.0. 
-The virtual machine in SQLite version 3.0 and 3.1 is very similar in
-concept but many of the opcodes have changed and the algorithms are
-somewhat different.  Use this document as a rough guide to the idea
-behind the virtual machine in SQLite version 3, not as a reference on
-how the virtual machine works.
-</b></blockquote>
+The virtual machine in SQLite version 3.0 and 3.1 is similar in
+concept but is now register-based instead of stack-based, has five
+operands per opcode instead of three, and has a different set of
+opcodes from those shown below.  See the <a href="opcode.html">virtual machine instructions</a>
+document for the current set of VDBE opcodes and a brief overview
+of how the VDBE operates.  This document is retained as an historical
+reference.
+</font></blockquote>
+
 
 <p>If you want to know how the SQLite library works internally,
 you need to begin with a solid understanding of the Virtual Database

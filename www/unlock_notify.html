@@ -492,7 +492,7 @@ int sqlite3_blocking_prepare_v2(
 
   <p>
     The caller could distinguish between this special "DROP TABLE|INDEX" 
-    case and other cases by using <a href="c3ref/c_abort_rollback.html">extended error codes</a>. When it is appropriate
+    case and other cases by using <a href="rescode.html#extrc">extended error codes</a>. When it is appropriate
     to call <a href="c3ref/unlock_notify.html">sqlite3_unlock_notify()</a>, the extended error code is
     SQLITE_LOCKED_SHAREDCACHE. Otherwise, in the "DROP TABLE|INDEX" case,
     it is just plain SQLITE_LOCKED. Another solution might be to limit

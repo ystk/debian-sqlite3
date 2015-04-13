@@ -310,9 +310,8 @@ uses bitmaps with one bit per join-table in the query optimizer.
 </p>
 
 <p>
-SQLite uses a very efficient O(N&sup2;) greedy algorithm for determining
-the order of tables in a join and so a large join can be
-<a href="c3ref/prepare.html">prepared</a> quickly.
+SQLite uses an efficient <a href="queryplanner-ng.html">query planner algorithm</a>
+and so even a large join can be <a href="c3ref/prepare.html">prepared</a> quickly.
 Hence, there is no mechanism to raise or lower the limit on the
 number of tables in a join.
 </p>
@@ -472,9 +471,7 @@ that allows two or more databases to be associated to the same database
 connection and to operate as if they were a single database.  The number
 of simultaneously attached databases is limited to SQLITE_MAX_ATTACHED
 which is set to 10 by default.
-The code generator in SQLite uses bitmaps
-to keep track of attached databases.  That means that the number of
-attached databases cannot be increased above 62.</p>
+The maximum number of attached databases cannot be increased above 125.</p>
 
 <p>
 The maximum number of attached databases can be lowered at run-time using

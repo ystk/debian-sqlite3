@@ -1426,7 +1426,7 @@ struct UnpackedRecord {
   KeyInfo *pKeyInfo;  /* Collation and sort-order information */
   u16 nField;         /* Number of entries in apMem}; hd_resolve_one {}; hd_puts { */
   i8 default_rc;      /* Comparison result if keys are equal */
-  u8 isCorrupt;       /* Corruption detected by xRecordCompare() */
+  u8 errCode;         /* Error detected by xRecordCompare (CORRUPT or NOMEM) */
   Mem *aMem;          /* Values */
   int r1;             /* Value to return if (lhs > rhs) */
   int r2;             /* Value to return if (rhs < lhs) */
@@ -1497,7 +1497,7 @@ sqlite3BtreeGetMeta.</span> (P: <a class=reqlink href=#H50109>H50109</a>)</p>
 
       <h3 id="sqlite3BtreeCursorHasMoved">3.8.4 sqlite3BtreeCursorHasMoved</h3>
 
-      <pre class=api>int sqlite3BtreeCursorHasMoved(BtCursor*, int*);</pre>
+      <pre class=api>int sqlite3BtreeCursorHasMoved(BtCursor*);</pre>
 
       <h3 id="sqlite3BtreePutData">3.8.5 sqlite3BtreePutData</h3>
 

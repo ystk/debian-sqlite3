@@ -134,8 +134,8 @@ The sqlite3_finalize() function is called to delete a <a href="../c3ref/stmt.htm
 If the most recent evaluation of the statement encountered no errors
 or if the statement is never been evaluated, then sqlite3_finalize() returns
 SQLITE_OK.  If the most recent evaluation of statement S failed, then
-sqlite3_finalize(S) returns the appropriate <a href="../c3ref/c_abort.html">error code</a> or
-<a href="../c3ref/c_abort_rollback.html">extended error code</a>.</p>
+sqlite3_finalize(S) returns the appropriate <a href="../rescode.html">error code</a> or
+<a href="../rescode.html#extrc">extended error code</a>.</p>
 
 <p>The sqlite3_finalize(S) routine can be called at any point during
 the life cycle of <a href="../c3ref/stmt.html">prepared statement</a> S:
