@@ -1,3 +1,14 @@
+sqlite3 (3.8.7.1-1+deb8u1) jessie-security; urgency=high
+
+  * Fix CVE-2015-3414 , use of uninitialized memory when parsing collation
+    sequences.
+  * Fix CVE-2015-3415 , properly implement comparison operators in
+    sqlite3VdbeExec() .
+  * Fix CVE-2015-3416 , properly handle precision and width values during
+    floating-point conversions in sqlite3VXPrintf() .
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Sat, 02 May 2015 07:59:48 +0000
+
 sqlite3 (3.8.7.1-1) unstable; urgency=medium
 
   * New upstream bugfix release.

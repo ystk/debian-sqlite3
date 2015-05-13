@@ -6,3 +6,6 @@
 10-665363-disable-malloc-usable-size.patch
 31-increase_SQLITE_MAX_DEFAULT_PAGE_SIZE_to_32k.patch
 02-use-packaged-lempar.c.patch
+40-CVE-2015-3414.patch
+41-CVE-2015-3415.patch
+42-CVE-2015-3416.patch
