@@ -1,0 +1,29 @@
+Index: sqlite3/src/memjournal.c
+==================================================================
+--- sqlite3/src/memjournal.c
++++ sqlite3/src/memjournal.c
+@@ -77,6 +77,7 @@ static int memjrnlRead(
+ 
+   /* SQLite never tries to read past the end of a rollback journal file */
+   assert( iOfst+iAmt<=p->endpoint.iOffset );
++  assert( p->readpoint.iOffset==0 || p->readpoint.pChunk!=0 );
+ 
+   if( p->readpoint.iOffset!=iOfst || iOfst==0 ){
+     sqlite3_int64 iOff = 0;
+@@ -88,6 +89,7 @@ static int memjrnlRead(
+     }
+   }else{
+     pChunk = p->readpoint.pChunk;
++    assert( pChunk!=0 );
+   }
+ 
+   iChunkOffset = (int)(iOfst%JOURNAL_CHUNKSIZE);
+@@ -99,7 +101,7 @@ static int memjrnlRead(
+     nRead -= iSpace;
+     iChunkOffset = 0;
+   } while( nRead>=0 && (pChunk=pChunk->pNext)!=0 && nRead>0 );
+-  p->readpoint.iOffset = iOfst+iAmt;
++  p->readpoint.iOffset = pChunk ? iOfst+iAmt : 0;
+   p->readpoint.pChunk = pChunk;
+ 
+   return SQLITE_OK;

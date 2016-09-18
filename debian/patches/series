@@ -9,3 +9,7 @@
 40-CVE-2015-3414.patch
 41-CVE-2015-3415.patch
 42-CVE-2015-3416.patch
+45-CVE-2016-6153_part1.patch
+46-CVE-2016-6153_part2.patch
+47-CVE-2016-6153_part3.patch
+50-fix_in-memory_journal.patch

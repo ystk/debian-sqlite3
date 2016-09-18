@@ -1,3 +1,11 @@
+sqlite3 (3.8.7.1-1+deb8u2) jessie; urgency=medium
+
+  * Fix CVE-2016-6153 , Tempdir Selection Vulnerability.
+  * Backport fix for segfault following heavy SAVEPOINT usage
+    (closes: #835205).
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Thu, 25 Aug 2016 16:10:24 +0000
+
 sqlite3 (3.8.7.1-1+deb8u1) jessie-security; urgency=high
 
   * Fix CVE-2015-3414 , use of uninitialized memory when parsing collation
