@@ -13,3 +13,4 @@
 46-CVE-2016-6153_part2.patch
 47-CVE-2016-6153_part3.patch
 50-fix_in-memory_journal.patch
+51-CVE-2018-20346-Magellan.patch

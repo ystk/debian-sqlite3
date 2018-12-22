@@ -1,3 +1,11 @@
+sqlite3 (3.8.7.1-1+deb8u3) jessie-security; urgency=medium
+
+  * Non-maintainer upload by the Debian LTS Team. 
+  * CVE-2018-20346: Add extra defenses against strategically corrupt databases
+    to fts3/4. 
+
+ -- Mike Gabriel <sunweaver@debian.org>  Sat, 22 Dec 2018 00:28:43 +0100
+
 sqlite3 (3.8.7.1-1+deb8u2) jessie; urgency=medium
 
   * Fix CVE-2016-6153 , Tempdir Selection Vulnerability.
