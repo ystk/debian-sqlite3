@@ -1,4 +1,3 @@
-#02-lemon-snprintf.patch
 10-520466-libsqlite3-depends-on-libdl.patch
 10-520478-squash-bad-deps.patch
 20-hurd-locking-style.patch
@@ -14,3 +13,8 @@
 47-CVE-2016-6153_part3.patch
 50-fix_in-memory_journal.patch
 51-CVE-2018-20346-Magellan.patch
+CVE-2018-8740.patch
+CVE-2017-2518.patch
+CVE-2017-2520.patch
+CVE-2017-2519.patch
+CVE-2017-10989.patch
