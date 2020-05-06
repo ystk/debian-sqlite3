@@ -1,3 +1,12 @@
+sqlite3 (3.8.7.1-1+deb8u5) jessie-security; urgency=high
+
+  * CVE-2020-11655: Prevent a denial of service attack via a malformed
+    window-function SQL query. In the event of a semantic error in an aggregate
+    query, SQLite did not return early from the resetAccumulator() function
+    which would lead to a crash via a segmentation fault.
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 05 May 2020 20:46:21 +0100
+
 sqlite3 (3.8.7.1-1+deb8u4) jessie-security; urgency=high
 
   * Non-maintainer upload by the LTS team.
