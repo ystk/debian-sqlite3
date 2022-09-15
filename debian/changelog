@@ -1,3 +1,11 @@
+sqlite3 (3.8.7.1-1+deb8u8) jessie-security; urgency=high
+
+  * Non-maintainer upload by the Freexian ELTS Team.
+  * CVE-2020-35525: Prevent a potential null pointer deference issue in
+    INTERSEC query processing.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 15 Sep 2022 08:10:17 +0100
+
 sqlite3 (3.8.7.1-1+deb8u7) jessie-security; urgency=medium
 
   * Non-maintainer upload by the Freexian ELTS Team.
